@@ -1,51 +1,38 @@
+require("dotenv").config({ path: "../.env" });
+
+const bodyParser = require("body-parser");
 const express = require("express");
 const app = express();
-const port = 1203;
-const bodyParser = require("body-parser");
+const port = process.env.PORT || 1203;
 const mongoose = require("mongoose");
 const router = require("../router/router");
-const methodoverride = require('method-override');
-const cors = require("cors")
+const methodoverride = require("method-override");
+const cors = require("cors");
 
 const clientsRoute = require("../router/clients");
 const produitsRoute = require("../router/produits");
 const commandesRoute = require("../router/commandes");
 
-app.use(cors());
+app.use(cors({ origin: "*" }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
-
 app.use("/uploads", express.static("uploads"));
 
 app.use("/clients", clientsRoute);
 app.use("/produits", produitsRoute);
 app.use("/commandes", commandesRoute);
 
-//Eto no fampidirana mongodb
-mongoose.connect('mongodb://localhost:27017/GeIt',);
-const db = mongoose.connection;
-
-
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => console.log("MongoDB connecté !"))
+  .catch((err) => {
+    console.error("Erreur MongoDB:", err);
+    process.exit(1);
+  });
 
 app.use(methodoverride("_method"));
-
-db.on('error',()=>{
-    console.log("Une erreur c' est produit!");
-
-})
-db.once('open',()=>{
-    console.log("Mongodb connecter avec succes!");
-    
-})
-
 app.use(router);
 
-/* app.get("/",()=>{
-    console.log("Welcome in our web site");
-    
-}) */
-
-app.listen(port,()=>{
-    console.log(`Serveur creer avec succes au port ${port} !`);
-    
-})
+app.listen(port, () => {
+  console.log(`Serveur démarré au port ${port} !`);
+});

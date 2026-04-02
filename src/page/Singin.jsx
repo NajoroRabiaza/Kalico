@@ -1,3 +1,4 @@
+import API_URL from "../api";
 import React, { useEffect, useState } from "react";
 import "./SignIn.css";
 import { useNavigate, Link } from "react-router-dom";
@@ -101,7 +102,7 @@ function Inscription() {
 
   useEffect(() => {
     const inputData = async () => {
-      const dataSend = await fetch("http://localhost:1203/signup  ", {
+      const dataSend = await fetch(`${API_URL}/signup`, {
         method: "POST",
         mode: "cors",
         headers: {

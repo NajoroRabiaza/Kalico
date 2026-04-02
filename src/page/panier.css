@@ -1,29 +1,31 @@
-.panier_container_main {
-  position: fixed;
-  top: 50%;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-  background-color: #d3d3d3;
-  z-index: 1001;
-}
+
+  .panier_container_main {
+    position: fixed;
+    top:50%;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background-color: #d3d3d3;
+    z-index: 1001;
+  }
+  
 
 body {
   background-color: #d3d3d3;
+  /* overflow: hidden; */
 }
-
 .panier_container {
   position: relative;
   right: 0;
   display: flex;
+  /* flex-direction: row-reverse; */
   justify-content: flex-start;
   gap: 3vh;
   margin-top: 7%;
   padding: 100px;
   font-family: Arial, Helvetica, sans-serif;
 }
-
 .panier_container h1 {
   font-size: 1.3rem;
   margin-bottom: 50px;
@@ -39,8 +41,8 @@ body {
   padding-bottom: 30px;
   padding-left: 5%;
   z-index: 0;
-}
 
+}
 .pan_image {
   width: 100px;
   height: 100px;
@@ -50,7 +52,6 @@ body {
   border-radius: 10px;
   position: relative;
 }
-
 .name {
   margin-top: -20%;
   margin-left: 12%;
@@ -59,19 +60,15 @@ body {
   position: relative;
   color: black;
 }
-
 .remove {
   width: 15%;
   margin-left: 85%;
   margin-top: 20%;
   transition: 0.3s ease-in-out;
-  cursor: pointer;
 }
-
 .remove:hover {
   transform: scale(1.1);
 }
-
 .prix_pan {
   font-size: 1.5rem;
   margin-left: -60%;
@@ -79,7 +76,6 @@ body {
   position: relative;
   text-align: center;
 }
-
 .cart_img {
   align-items: normal;
   z-index: 1001;
@@ -89,35 +85,34 @@ body {
 .bouttons:hover {
   background-color: brown;
 }
-
 .quantity {
   padding: 0%;
 }
-
 .quantiti {
   width: 100%;
   margin-top: 2%;
   margin-left: 5%;
 }
-
 .bouttons {
   width: 5%;
   border-radius: 20%;
 }
-
 .total {
   width: 120%;
   height: 50px;
   text-align: center;
+  /* position: fixed; */
   margin-top: -40%;
-  margin-left: 150%;
+margin-left: 150%;
+  
   padding-top: 10px;
+  
   background-color: rgba(253, 136, 33, 1);
   border-radius: 10px;
   border: 1px solid rgba(249, 143, 51, 0.789);
   color: white;
+  /* z-index: 999; */
 }
-
 .ScrollPanier {
   height: 360px;
   width: 50%;
@@ -125,23 +120,106 @@ body {
   overflow: hidden visible;
   position: fixed;
   top: 20%;
-  margin-left: 32%;
+  margin-left:32%;
   box-shadow: 0 0 5px rgb(116, 116, 116);
   border-radius: 10px;
   z-index: 0;
-}
 
+}
 #btnconfirme {
   background-color: rgb(235, 139, 55);
   border: none;
   margin-top: -15%;
   z-index: 0;
-}
 
+}
 #btnconfirme:hover {
   background-color: orange;
 }
+@media (min-width: 768px) and (max-width: 1023px){
+  .panier_container{
+    width: 10%;
+    /* position: relative; */
+    margin-left: 100%;
+  }
+  .cart_box {
+    width: 100%;
+    z-index: 0;
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+.ScrollPanier {
+    width: 60%;
+    right: 5%;
+    position: fixed;
+    top: 20%;
+  }
+  .total {
+    width:22rem;
+    margin-top: -5rem;
+    /* z-index: 1000; */
+    margin-left:-50rem;
+  }
+  #btnconfirme {
+    width: 50%;
+    height: 50px;
+    position: fixed;
+    margin-left: 1rem;
+    margin-top: -15rem;
 
+  }
+
+  .pan_image {
+    width: 80px;
+    height: 80px;
+    left: 5%;
+  }
+  .name {
+    font-size: 1.3rem;
+    margin-left: 32%;
+    margin-top: -17%;
+    text-align: left;
+  }
+  .cart_box{
+    align-items: center;
+    text-align: center;
+  }
+  .quantiti {
+    width: 100%;
+    margin-left: -8%;
+    font-size: 10%;
+    margin-top: 13%;
+    position: fixed;
+  }
+  .quantity {
+   
+      width: auto;
+      margin-left: -15%;
+      font-size: 1rem;
+      margin-top: -7%; 
+      gap: 3rem;
+      display: inline-block;
+      padding: 72px;
+    
+
+  }
+  .bouttons {
+    width: 2%;
+    height: 25px;
+    margin-left: -10%;
+    margin-top: 0%;
+    font-size: 1.2rem;
+    padding: 0px;
+    position: fixed;
+  }
+  .prix_pan {
+    font-size: 1.2rem;
+  margin-left: 8%;
+  margin-top: 2%;
+    position: fixed;
+    text-align: center;
+  }
+}
 .return {
   position: fixed;
   top: 90%;
@@ -172,284 +250,5 @@ body {
 .return p {
   margin: 0;
   line-height: 1.5;
-  font-size: 19px;
-}
-
-/* ========== RESPONSIVE TABLET ========== */
-@media (min-width: 768px) and (max-width: 1023px) {
-  .panier_container {
-    width: 100%;
-    padding: 60px 20px;
-    margin-left: 0;
-  }
-
-  .cart_box {
-    width: 100%;
-    z-index: 0;
-    padding-left: 10px;
-    padding-right: 10px;
-  }
-
-  .ScrollPanier {
-    width: 70%;
-    left: 50%;
-    transform: translateX(-50%);
-    margin-left: 0;
-    position: fixed;
-    top: 20%;
-    height: 400px;
-  }
-
-  .total {
-    width: 70%;
-    margin-top: -5rem;
-    margin-left: 0;
-    position: fixed;
-    left: 50%;
-    transform: translateX(-50%);
-  }
-
-  #btnconfirme {
-    width: 50%;
-    height: 50px;
-    position: fixed;
-    left: 50%;
-    transform: translateX(-50%);
-    margin-top: -15rem;
-  }
-
-  .pan_image {
-    width: 80px;
-    height: 80px;
-    left: 0;
-  }
-
-  .name {
-    font-size: 1.2rem;
-    margin-left: 20%;
-    margin-top: -15%;
-    text-align: left;
-  }
-
-  .cart_box {
-    align-items: center;
-    text-align: center;
-  }
-
-  .quantiti {
-    width: 100%;
-    margin-left: 0;
-    font-size: 10%;
-    margin-top: 10%;
-    position: relative;
-  }
-
-  .quantity {
-    width: auto;
-    margin-left: 0;
-    font-size: 1rem;
-    margin-top: 0;
-    gap: 2rem;
-    display: inline-block;
-  }
-
-  .bouttons {
-    width: 30px;
-    height: 30px;
-    margin: 0 5px;
-    font-size: 1.2rem;
-    padding: 0px;
-    position: relative;
-  }
-
-  .prix_pan {
-    font-size: 1.2rem;
-    margin-left: 0;
-    margin-top: 0;
-    position: relative;
-    text-align: center;
-  }
-
-  .return {
-    width: 250px;
-    right: 20px;
-    font-size: 16px;
-  }
-}
-
-/* ========== RESPONSIVE MOBILE ========== */
-@media (max-width: 767px) {
-  .panier_container_main {
-    top: 0;
-  }
-
-  .panier_container {
-    width: 100%;
-    padding: 20px 10px;
-    margin-top: 15%;
-    gap: 1vh;
-  }
-
-  .panier_container h1 {
-    font-size: 1.1rem;
-    margin-bottom: 20px;
-  }
-
-  .ScrollPanier {
-    width: 95%;
-    left: 50%;
-    transform: translateX(-50%);
-    margin-left: 0;
-    position: fixed;
-    top: 15%;
-    height: 50vh;
-    max-height: 400px;
-  }
-
-  .cart_box {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 15px 5px;
-    border-bottom: 1px solid #4b1903;
-  }
-
-  .cart_img {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-
-  .pan_image {
-    width: 70px;
-    height: 70px;
-    margin-right: 15px;
-    margin-left: 0;
-  }
-
-  .name {
-    font-size: 1.1rem;
-    margin: 0;
-    text-align: left;
-    flex: 1;
-  }
-
-  .remove {
-    width: 25px;
-    height: 25px;
-    margin: 0;
-    margin-left: auto;
-  }
-
-  .quantiti {
-    width: 100%;
-    margin: 10px 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .quantity {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .bouttons {
-    width: 30px;
-    height: 30px;
-    font-size: 1rem;
-    border-radius: 5px;
-    margin: 0;
-  }
-
-  .quantity span {
-    font-size: 1.1rem;
-    padding: 0 10px;
-  }
-
-  .prix_pan {
-    font-size: 1.2rem;
-    margin: 0;
-    font-weight: bold;
-    color: #ee9045;
-  }
-
-  .total {
-    width: 90%;
-    height: 50px;
-    margin: 0;
-    position: fixed;
-    bottom: 100px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.1rem;
-  }
-
-  #btnconfirme {
-    width: 90%;
-    height: 50px;
-    position: fixed;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%);
-    margin: 0;
-    font-size: 1rem;
-    border-radius: 10px;
-  }
-
-  .return {
-    width: 90%;
-    max-width: 300px;
-    left: 50%;
-    transform: translateX(-50%);
-    top: auto;
-    bottom: 20px;
-    font-size: 14px;
-    padding: 15px 20px;
-  }
-
-  .return p {
-    font-size: 16px;
-  }
-}
-
-/* ========== SMALL MOBILE (320px - 480px) ========== */
-@media (max-width: 480px) {
-  .ScrollPanier {
-    height: 45vh;
-    top: 18%;
-  }
-
-  .pan_image {
-    width: 60px;
-    height: 60px;
-  }
-
-  .name {
-    font-size: 1rem;
-  }
-
-  .bouttons {
-    width: 28px;
-    height: 28px;
-    font-size: 0.9rem;
-  }
-
-  .prix_pan {
-    font-size: 1.1rem;
-  }
-
-  .total {
-    font-size: 1rem;
-    height: 45px;
-  }
-
-  #btnconfirme {
-    height: 45px;
-    font-size: 0.95rem;
-  }
+  font-size: 19px
 }

@@ -2,7 +2,6 @@
   font-family: "comic";
   src: url(../fonts/COMIC.TTF);
 }
-
 .StyleFooter {
   position: absolute;
   width: 100%;
@@ -13,7 +12,6 @@
   margin-left: 0px;
   z-index: 10;
 }
-
 .logo_ftr {
   height: 60%;
   margin-left: 2%;
@@ -22,27 +20,22 @@
   margin-right: auto;
   margin-bottom: auto;
 }
-
 .contact {
   font-size: 25px;
   margin-right: 100px;
 }
-
 .contact:hover {
   color: rgb(255, 255, 255);
 }
-
 .contact::after {
   content: "";
   height: 2px;
   display: block;
   background: #000000;
 }
-
 .contact:hover::after {
   background: white;
 }
-
 .icon_ftr:hover {
   transform: scale(1.1);
 }
@@ -54,7 +47,6 @@
   margin-right: 100px;
   transition: 0.3s ease-in-out;
 }
-
 .texte_ftr {
   padding-inline: 2%;
   padding-block: 2%;
@@ -62,23 +54,25 @@
   font-size: 17px;
   color: #6d3132;
 }
-
 .bouton_ftr:hover {
   border-color: #c4c3c3;
   color: #cf1111;
   box-shadow: 20xp beige;
   background-color: #948979;
 }
-
 .StyleFooter p {
   margin-top: -200px;
   margin-right: 50px;
+  /* line-height: 1.2; */
+  /* margin-left: 10px; */
+  /* color: #FBCFD0; */
   background: none;
+  /* font-size: 17px; */
   font-family: Georgia, "Times New Roman", Times, serif;
+  /* margin: 200px; */
   margin-left: auto;
   margin-right: auto;
 }
-
 .footer_3D {
   width: 80%;
   height: 212px;
@@ -99,33 +93,28 @@
 .item_ftr {
   text-align: center;
 }
-
 .txt_ftr {
+  /* margin-top: 220px; */
   text-align: center;
   align-items: center;
   font-size: 0px;
 }
-
 .txt_ftr h1 {
   font-size: 20px;
   margin-top: 20px;
   font-family: "comic";
   color: #d3d3d3;
 }
-
 .txt_ftr h1 span {
   color: #ff9d2a;
   margin-left: 0.5%;
+  /* font-family:  */
 }
-
-/* ========== RESPONSIVE TABLET ========== */
 @media (min-width: 768px) and (max-width: 1024px) {
   .StyleFooter {
     height: 30%;
-    margin-top: 15%;
-    padding-top: 8%;
+    margin-top: 10%;
   }
-
   .logo_ftr {
     height: 50%;
     width: auto;
@@ -134,140 +123,8 @@
     margin-right: auto;
     margin-bottom: auto;
   }
-
   .contact {
     font-size: 20px;
-    margin-right: 60px;
-  }
-
-  .icon_ftr {
-    width: 40px;
-    margin-right: 60px;
-  }
-
-  .footer_3D {
-    width: 85%;
-    height: 180px;
-    margin-top: -10%;
-  }
-
-  .txt_ftr h1 {
-    font-size: 18px;
-  }
-}
-
-/* ========== RESPONSIVE MOBILE ========== */
-@media (max-width: 767px) {
-  .StyleFooter {
-    height: auto;
-    min-height: 280px;
-    margin-top: 30%;
-    padding-top: 15%;
-    padding-bottom: 20px;
-  }
-
-  .logo_ftr {
-    height: 80px;
-    width: auto;
-    margin: 0 auto;
-    display: block;
-  }
-
-  .contact {
-    font-size: 16px;
-    margin-right: 0;
-    margin: 10px auto;
-    text-align: center;
-  }
-
-  .icon_ftr {
-    width: 35px;
-    height: 35px;
-    margin: 10px 15px;
-  }
-
-  .texte_ftr {
-    font-size: 14px;
-    padding: 10px;
-    text-align: center;
-  }
-
-  .StyleFooter p {
-    margin-top: 20px;
-    margin-right: 20px;
-    margin-left: 20px;
-    font-size: 14px;
-    text-align: center;
-  }
-
-  .footer_3D {
-    width: 90%;
-    height: auto;
-    min-height: 150px;
-    padding: 20px 10px;
-    margin-top: 0;
-    flex-direction: column;
-    gap: 15px;
-  }
-
-  .item_ftr {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .item_ftr:nth-child(2) {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-
-  .txt_ftr {
-    margin-top: 15px;
-  }
-
-  .txt_ftr h1 {
-    font-size: 16px;
-    margin-top: 10px;
-    line-height: 1.4;
-  }
-
-  .txt_ftr h1 span {
-    display: inline;
-    margin-left: 5px;
-  }
-}
-
-/* ========== SMALL MOBILE (320px - 480px) ========== */
-@media (max-width: 480px) {
-  .StyleFooter {
-    min-height: 250px;
-    padding-top: 20%;
-  }
-
-  .logo_ftr {
-    height: 70px;
-  }
-
-  .contact {
-    font-size: 14px;
-  }
-
-  .icon_ftr {
-    width: 30px;
-    height: 30px;
-    margin: 8px 12px;
-  }
-
-  .footer_3D {
-    width: 95%;
-    padding: 15px 8px;
-  }
-
-  .txt_ftr h1 {
-    font-size: 14px;
+    margin-right: 100px;
   }
 }

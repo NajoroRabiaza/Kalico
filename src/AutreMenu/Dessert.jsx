@@ -1,3 +1,4 @@
+import API_URL from "../api";
 import React, { useEffect, useState, useContext } from "react";
 import Navbar from "../component/navbar";
 import { CartContext } from "../context/CartContext";
@@ -12,10 +13,10 @@ function Dessert({Userconnecte}) {
 
   useEffect(() => {
     const fetchDessert = () => {
-    fetch("http://localhost:1203/produits/categorie/dessert")
+    fetch(`${API_URL}/produits/categorie/dessert`)
       .then((res) => res.json())
       .then((data) =>
-        setProduits(data.map((p) => ({ ...p, img: `http://localhost:1203/${p.img}` })))
+        setProduits(data.map((p) => ({ ...p, img: `${API_URL}/${p.img}` })))
       )
       .catch((err) => console.error("Erreur chargement Dessert :", err));
     };

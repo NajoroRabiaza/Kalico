@@ -1,3 +1,4 @@
+import API_URL from "../api";
 import React, { useEffect } from "react";
 import { useState } from "react";
 import "./forgotPassword.css";
@@ -33,7 +34,7 @@ const ChangePassword = (props) => {
     useEffect(() => {
         async function PasswordUpdate() {
             try {
-                const UpdadateFetching = await fetch(`http://localhost:1203/ChangePass/${id}`, {
+                const UpdadateFetching = await fetch(`${API_URL}/ChangePass/${id}`, {
                     method: "POST",
                     mode: "cors",
                     headers: {
@@ -91,6 +92,7 @@ const ChangePassword = (props) => {
                                 borderRadius: "5px",
                                 border: "1px solid #ccc",
                                 outline: "none",
+                                border: "none",
                                 borderBottomColor: "black",
                                 background: "white",
 

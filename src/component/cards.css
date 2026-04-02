@@ -2,13 +2,17 @@
   display: flex;
   justify-content: center;
   margin-top: -5%;
-}
+ 
+  }
+  
+
 
 .font {
   position: absolute;
   opacity: 15%;
   display: flex;
   object-fit: cover;
+  
   width: 200%;
   margin-top: -110px;
 }
@@ -17,15 +21,16 @@
   width: 100%;
   image-resolution: 100%;
   height: 200px;
+
   object-fit: cover;
   margin-top: 0px;
   margin-left: 10%;
   border-radius: 25px;
 }
-
 .card {
   height: 20rem;
   width: 62%;
+  /* max-width: 60%; */
   border: 0.1px solid rgb(0, 0, 0);
   border-radius: 25px;
   overflow: hidden;
@@ -37,12 +42,10 @@
   transition: all 0.5s ease;
   margin-bottom: 40%;
 }
-
 .card:hover .description {
   opacity: 100%;
   position: relative;
 }
-
 .card:hover .ajouter {
   border-radius: 10px;
   height: 50px;
@@ -52,11 +55,9 @@
   bottom: 0px;
   border-radius: 20px;
 }
-
 .card:hover {
   height: 430px;
 }
-
 .card_text {
   text-align: center;
   padding-bottom: 0px;
@@ -64,7 +65,6 @@
   margin-top: 3px;
   width: auto;
 }
-
 .titre_card {
   font-size: 1.5rem;
   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
@@ -73,8 +73,8 @@
   padding-left: 15px;
   word-wrap: break-word;
   width: auto;
+  /* position: relative; */
 }
-
 .description {
   font-size: 10;
   font-family: Arial, Helvetica, sans-serif;
@@ -102,13 +102,11 @@
   border-bottom-right-radius: 0%;
   padding-left: 7%;
 }
-
 .card:hover .prix {
   margin-top: -22.5%;
   width: 40%;
   padding-left: 5%;
 }
-
 .ajouter {
   border-radius: 10px;
   height: 50px;
@@ -117,20 +115,15 @@
   left: 170px;
   bottom: -40px;
   background-color: #ee9045;
-  cursor: pointer;
-  border: none;
 }
-
 .ajouter:hover {
   background-color: #d6976b;
 }
-
 .boutton:hover {
   transform: scale(1.1);
   background-color: #503103;
   color: #f8f8f8;
 }
-
 .quantity-controls {
   background-color: #ffffff;
   width: 120px;
@@ -141,14 +134,11 @@
   justify-items: center;
   padding-bottom: 1.5%;
 }
-
 .quantity-controls1 {
   background-color: transparent;
   border-radius: 100px;
   height: 28px;
   width: 28px;
-  cursor: pointer;
-  border: 1px solid #ccc;
 }
 
 .quantity-controls2 {
@@ -156,28 +146,24 @@
   border-radius: 100px;
   height: 28px;
   width: 28px;
-  cursor: pointer;
-  border: 1px solid #ccc;
 }
-
 .quantity-controls button:hover {
   background: #ee9045;
 }
-
 .qtt {
   margin: 20px;
   font-size: 1.5rem;
 }
-
 .stock_restant {
   opacity: 0;
+  /* position: relative; */
   font-size: 1rem;
   color: #3d3d3d;
   margin-top: -75px;
   text-align: right;
   right: 50px;
+  /* padding-left: 15px; */
 }
-
 .card:hover .stock_restant {
   position: relative;
   opacity: 1;
@@ -189,236 +175,157 @@
   margin: 10% auto;
   max-width: 80%;
   align-items: center;
+  /* margin: auto; */
   display: grid;
   grid-template-columns: repeat(3, 33%);
+
   position: relative;
   transition: margin-top 1.4s ease;
 }
 
 .All_Cards.active-search {
-  margin-top: 60%;
+  margin-top: 60%; 
 }
 
-/* ========== RESPONSIVE TABLET ========== */
-@media (max-width: 1024px) and (min-width: 768px) {
+@media (max-width: 1024px) {
   .cards_container {
     display: flex;
     justify-content: center;
-    margin-top: 20%;
+    margin-top: 30%;
   }
-
   .All_Cards {
-    grid-template-columns: repeat(2, 48%);
-    gap: 30px;
-    margin: 15% auto;
-    max-width: 90%;
+    grid-template-columns: repeat(2,45% );
+    gap: 50px;
+    margin: auto;
+    /* margin-left: 3%; */
   }
-
-  .card {
-    width: 90%;
-    height: 22rem;
+  .card 
+{width: 80%;
   }
-
-  .card:hover {
-    height: 400px;
-  }
-
   .carteimage {
     width: 100%;
-    height: 180px;
-    margin-left: 8%;
+    image-resolution: 100%;
+    height: 200px;
+    object-fit: cover;
+    margin-top: 0px;
+    margin-left: 12%;
+    border-radius: 25px;
   }
-
   .titre_card {
-    font-size: 1.3rem;
-    width: 75%;
-  }
+    font-size: 1.5rem;
+  
+    word-wrap: break-word;
+    width: 70%;
 
+  }
   .ajouter {
-    left: 120px;
-    top: 30px;
+    left: 130px;
+    top: 40px;
     width: 100px;
   }
-
   .quantity-controls {
     width: 100px;
     top: 10px;
+    position: relative;
   }
-
   .qtt {
     margin: 10px;
     font-size: 1.2rem;
   }
-
   .card:hover .prix {
-    margin-top: -20%;
+    margin-top: -22%;
     width: 50%;
+    padding-left: 5%;
   }
-
   .card:hover .description {
     opacity: 100%;
     top: 1rem;
-    width: 75%;
+    position: relative;
+    width: 70%;
   }
-
   .card:hover .ajouter {
-    width: 180px;
-    left: -30px;
+    border-radius: 10px;
+    height: 50px;
     top: 0px;
+    width: 200px;
+    left: -38px;
+    position: relative;
+    bottom: 0px;
+    border-radius: 20px;
   }
 
   .card:hover .stock_restant {
-    top: 50px;
-    right: 80px;
+    position: relative;
+    opacity: 1;
+    top: 55px;
+    right: 100px;
   }
 }
 
-/* ========== RESPONSIVE MOBILE ========== */
 @media (max-width: 767px) {
-  .cards_container {
-    margin-top: 25%;
-  }
-
   .All_Cards {
-    grid-template-columns: repeat(2, 48%);
-    gap: 15px 10px;
-    margin: 20% auto;
-    max-width: 95%;
-    padding: 0 10px;
+    grid-template-columns: repeat(2, 50%);
+    margin: auto;
+    gap:0%
   }
-
   .card {
-    height: auto;
-    min-height: 280px;
-    width: 100%;
-    margin-bottom: 0;
+    height: 25rem;
+    width: 70%;
+  
+    border: 0.1px solid rgb(0, 0, 0);
+    border-radius: 25px;
+    overflow: hidden;
+    display: flex;
+    /* flex-direction: column; */
+    box-shadow: 0px 4px 8px black;
+    border-color: rgb(255, 255, 254);
+    background-color: #e5d2c7;
+    z-index: 1;
+    /* margin-bottom: 2%; */
+    transition: all 0.5s ease;
+    margin-bottom: 20%;
   }
-
-  .card:hover {
-    height: auto;
-    min-height: 320px;
-  }
-
   .carteimage {
-    width: 90%;
-    height: 140px;
-    margin-left: 5%;
-    border-radius: 15px;
-  }
-
-  .titre_card {
-    font-size: 1rem;
-    padding-left: 10px;
-    width: 90%;
-    margin-top: 5px;
-  }
-
-  .prix {
-    font-size: 1rem;
-    height: 26px;
-    margin-top: -3.5rem;
-    padding-left: 8px;
-    padding-right: 8px;
-  }
-
-  .card:hover .prix {
-    margin-top: -3.5rem;
-    width: auto;
-  }
-
-  .description {
-    font-size: 12px;
-    margin-top: 30px;
-    padding-left: 10px;
-    opacity: 1;
-    position: relative;
-    height: auto;
-    max-width: 85%;
-  }
-
-  .quantity-controls {
-    width: 90px;
-    left: 3%;
-    margin-top: 8px;
-    padding-bottom: 3px;
-  }
-
-  .quantity-controls1,
-  .quantity-controls2 {
-    height: 25px;
-    width: 25px;
-  }
-
-  .qtt {
-    margin: 8px;
-    font-size: 1rem;
-  }
-
-  .ajouter {
-    position: relative;
-    left: 0;
-    bottom: 0;
-    top: 8px;
-    width: 90%;
-    height: 40px;
-    margin: 0 5%;
-    font-size: 0.9rem;
-  }
-
-  .card:hover .ajouter {
-    width: 90%;
-    left: 5%;
-    top: 8px;
-  }
-
-  .stock_restant {
-    opacity: 1;
-    position: relative;
-    margin-top: 8px;
-    right: 0;
-    text-align: right;
-    padding-right: 10px;
-    font-size: 0.9rem;
-  }
-
-  .card:hover .stock_restant {
-    top: 0;
-    right: 10px;
-  }
-}
-
-/* ========== SMALL MOBILE (320px - 480px) ========== */
-@media (max-width: 480px) {
-  .All_Cards {
-    grid-template-columns: 1fr;
-    gap: 20px;
-    max-width: 90%;
-  }
-
-  .card {
     width: 100%;
-    min-height: 320px;
+    image-resolution: 100%;
+    height: 200px;
+    object-fit: cover;
+    margin-top: 0px;
+    margin-left: 16%;
+    border-radius: 25px;
   }
-
-  .carteimage {
-    height: 160px;
-  }
-
-  .titre_card {
-    font-size: 1.1rem;
-  }
-
-  .description {
-    font-size: 13px;
-    max-width: 90%;
-  }
-
   .quantity-controls {
+  
     width: 100px;
+    border-radius: 100px;
+    left: 2%;
+    z-index: 1000;
+    position: relative;
+    justify-items: center;
+    padding-bottom: 1.5%;
   }
 
+  .description {
+    font-size: 15px;
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: left;
+    padding-left: 10px;
+    margin-top: 60px;
+    position: relative;
+    height: 4.2rem;
+    max-width: 50%;
+    opacity: 1;
+  }   
   .ajouter {
-    height: 42px;
-    font-size: 1rem;
+    left: 120px;
+    top: 45px;
+    height: 50px;
+    width: 70px;
+  }
+  .stock_restant {
+    position: relative;
+    opacity: 1;
+    top: 50px;
+    right: 100px;
   }
 }

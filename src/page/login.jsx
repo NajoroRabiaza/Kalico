@@ -1,3 +1,4 @@
+import API_URL from "../api";
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "./SignIn.css";
@@ -38,19 +39,19 @@ function Loginpage({ setUserConnecte }) {
   useEffect(() => {
     const dataComparing = async () => {
       try {
-        const datafetching = await fetch("http://localhost:1203/dataUser", {
+        const datafetching = await fetch(`${API_URL}/dataUser`, {
           method: "GET",
         });
         const donnefetch = await datafetching.json();
+        //console.log(donnefetch[0].name);
         setData(donnefetch);
       } catch (error) {
-        console.log("Une erreur s'est produite lors du chargement des utilisateurs.");
+        console.log("Une erreur c' est produit!");
       }
     };
     dataComparing();
-    // ✅ Tableau vide : on ne charge qu'UNE seule fois au montage
-    // L'ancien code avait [data] ce qui causait une boucle infinie
-  }, []);
+    //console.log(data[0].email);
+  }, [data]);
 
   function handleclicLogin() {
     console.log(data);
@@ -146,7 +147,7 @@ function Loginpage({ setUserConnecte }) {
       SetLoginemail(email);
       const loginBackend = async () => {
         try {
-          const fetchDatalogin = await fetch("http://localhost:1203/login", {
+          const fetchDatalogin = await fetch(`${API_URL}/login`, {
             method: "POST",
             mode: "cors",
             headers: {
@@ -158,21 +159,12 @@ function Loginpage({ setUserConnecte }) {
               email: email,
             }),
           });
-          const result = await fetchDatalogin.json();
-          // ✅ On sauvegarde le token et les infos user dans localStorage
-          // pour que la session persiste après un rechargement de page
-          if (result.token) {
-            localStorage.setItem("token", result.token);
-            localStorage.setItem("user", JSON.stringify(result.user));
-            setUserConnecte(true);
-          }
-        } catch (error) {
-          console.log("Erreur lors de la connexion au backend:", error);
-        }
+        } catch (error) { }
       };
       loginBackend();
       setSuccesConnect(true);
 
+      /* alert("Connexion reussit") */
       setTimeout(() => {
         navigation("/");
       }, 1000);

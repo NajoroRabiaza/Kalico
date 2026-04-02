@@ -16,7 +16,6 @@
   overflow: hidden;
   z-index: 1001;
 }
-
 .Container_MOdal h2 {
   color: white;
   font-size: 40px;
@@ -24,7 +23,6 @@
   position: absolute;
   top: 85px;
 }
-
 .Container_MOdal div h1 {
   text-align: center;
   height: 40px;
@@ -36,7 +34,6 @@
   right: 10px;
   bottom: 500px;
 }
-
 .Container_MOdal > div {
   height: 550px;
   width: 900px;
@@ -44,6 +41,9 @@
   justify-content: flex-end;
   align-items: center;
   position: relative;
+  /* overflow: hidden; */
+  position: relative;
+  display: flex;
   top: 50px;
   background-color: #eeeae7;
   border-radius: 30px;
@@ -55,6 +55,7 @@
   height: 500px;
   width: 500px;
   background-color: #eeeae7;
+  /* border-left: 1px solid black; */
 }
 
 .Container_MOdal > div .butonPayment button {
@@ -69,12 +70,10 @@
   position: relative;
   left: 70px;
 }
-
 .Container_MOdal > div .butonPayment .active {
   background-color: rgb(239, 143, 8);
   color: rgb(248, 243, 243);
 }
-
 .Container_MOdal > div .butonPayment .MvolaPay:active {
   background-color: rgb(239, 143, 8);
   color: rgb(248, 243, 243);
@@ -86,6 +85,8 @@
   width: 300px;
   position: absolute;
   right: 100px;
+
+  /* background-color: aquamarine; */
 }
 
 input {
@@ -150,43 +151,47 @@ input {
   border-right: none;
   border-bottom-color: rgba(255, 166, 0, 0.762);
 }
-
 .price {
   height: 546px;
   width: 3%;
   padding-left: 200px;
+  /* background-color: rgba(203, 199, 199, 0.763); */
   position: absolute;
   right: 498px;
   border-bottom-left-radius: 20px;
   border-top-left-radius: 20px;
 }
-
 .price .title {
   height: 100px;
   width: 300px;
 }
-
-.verticalLineModal {
+/* .price .title h3 {
+  color: rgb(8, 8, 8);
+  margin-bottom: 20px;
+  text-align: end;
+}
+.title img {
+  margin-top: 40px;
+}
+ */
+ .verticalLineModal{
   width: 0.5;
   height: 500px;
   background-color: rgba(133, 133, 133, 0.726);
   position: relative;
   right: 450px;
-}
-
+ }
 .totalModal {
   color: rgba(101, 99, 99, 0.825);
   position: relative;
-  bottom: -310px;
+  bottom:-310px;
   left: 60px;
 }
-
 .butonPayment button img {
   height: 50px;
   width: 50px;
   color: black;
 }
-
 .erreurModal2 {
   height: 20px;
   width: 20px;
@@ -198,238 +203,4 @@ input {
   bottom: 50px;
   left: 73%;
   cursor: pointer;
-}
-
-/* ========== RESPONSIVE TABLET ========== */
-@media (max-width: 1024px) and (min-width: 768px) {
-  .Container_MOdal > div {
-    width: 90%;
-    max-width: 700px;
-    height: auto;
-    min-height: 500px;
-    flex-direction: column;
-    padding: 20px;
-  }
-
-  .Container_MOdal h2 {
-    font-size: 32px;
-    top: 60px;
-  }
-
-  .Container_MOdal > div .butonPayment {
-    width: 100%;
-    height: auto;
-    padding: 20px 0;
-  }
-
-  .Container_MOdal > div .butonPayment button {
-    width: 80%;
-    left: 10%;
-    margin: 15px auto;
-  }
-
-  .Container_MOdal > div .butonPayment .inputText {
-    position: relative;
-    right: 0;
-    margin: 20px auto;
-    width: 80%;
-  }
-
-  input {
-    width: 100%;
-  }
-
-  .btnSubmit {
-    position: relative;
-    top: 20px;
-    right: 0;
-    width: 100%;
-    height: auto;
-  }
-
-  .btnSubmit #SubmitBtn {
-    width: 80%;
-    left: 10%;
-  }
-
-  .verticalLineModal {
-    display: none;
-  }
-
-  .price {
-    position: relative;
-    right: 0;
-    width: 100%;
-    padding: 20px;
-    height: auto;
-  }
-
-  .totalModal {
-    position: relative;
-    bottom: 0;
-    left: 0;
-    text-align: center;
-    margin-top: 20px;
-  }
-}
-
-/* ========== RESPONSIVE MOBILE ========== */
-@media (max-width: 767px) {
-  .Container_MOdal {
-    padding: 10px;
-  }
-
-  .Container_MOdal h2 {
-    font-size: 24px;
-    top: 40px;
-    padding: 0 20px;
-    text-align: center;
-  }
-
-  .Container_MOdal div h1 {
-    height: 35px;
-    width: 35px;
-    font-size: 20px;
-    right: 5px;
-    top: 5px;
-    bottom: auto;
-  }
-
-  .Container_MOdal > div {
-    width: 95%;
-    max-width: 100%;
-    height: auto;
-    min-height: auto;
-    flex-direction: column;
-    padding: 15px;
-    border-radius: 15px;
-    top: 20px;
-  }
-
-  .Container_MOdal > div .butonPayment {
-    width: 100%;
-    height: auto;
-    padding: 10px 0;
-  }
-
-  .Container_MOdal > div .butonPayment button {
-    width: 90%;
-    height: 45px;
-    left: 5%;
-    margin: 10px auto;
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .Container_MOdal > div .butonPayment button img {
-    height: 35px;
-    width: 35px;
-    margin-right: 8px;
-  }
-
-  .Container_MOdal > div .butonPayment .inputText {
-    position: relative;
-    right: 0;
-    margin: 15px auto;
-    width: 90%;
-    height: auto;
-  }
-
-  input {
-    width: 100%;
-    height: 40px;
-    font-size: 14px;
-    padding: 5px 10px;
-    box-sizing: border-box;
-  }
-
-  .date {
-    position: relative;
-    top: 0;
-    width: 100%;
-    margin-top: 15px;
-  }
-
-  .date p {
-    width: 100%;
-    font-size: 14px;
-    padding: 12px 5px;
-  }
-
-  .btnSubmit {
-    position: relative;
-    top: 0;
-    right: 0;
-    width: 100%;
-    height: auto;
-    margin-top: 20px;
-  }
-
-  .btnSubmit #SubmitBtn {
-    width: 90%;
-    height: 50px;
-    left: 5%;
-    font-size: 16px;
-  }
-
-  .verticalLineModal {
-    display: none;
-  }
-
-  .price {
-    position: relative;
-    right: 0;
-    width: 100%;
-    padding: 10px;
-    height: auto;
-    border-radius: 0;
-  }
-
-  .totalModal {
-    position: relative;
-    bottom: 0;
-    left: 0;
-    text-align: center;
-    margin-top: 15px;
-    font-size: 18px;
-  }
-
-  .erreurModal2 {
-    left: 50%;
-    transform: translateX(-50%);
-    bottom: auto;
-    top: 5px;
-  }
-}
-
-/* ========== SMALL MOBILE (320px - 480px) ========== */
-@media (max-width: 480px) {
-  .Container_MOdal h2 {
-    font-size: 20px;
-    top: 30px;
-  }
-
-  .Container_MOdal > div {
-    width: 98%;
-    padding: 10px;
-  }
-
-  .Container_MOdal > div .butonPayment button {
-    width: 95%;
-    height: 40px;
-    font-size: 13px;
-  }
-
-  .btnSubmit #SubmitBtn {
-    width: 95%;
-    height: 45px;
-    font-size: 15px;
-  }
-
-  input {
-    height: 38px;
-    font-size: 13px;
-  }
 }

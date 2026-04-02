@@ -1,3 +1,4 @@
+import API_URL from "../api";
 import React, { useEffect, useState, useContext } from "react";
 import Navbar from "../component/navbar";
 import Cartes from "../component/cartes";
@@ -12,12 +13,12 @@ function Menu({ Userconnecte }) {
 
   useEffect(() => {
     const fetchMenuSpecial = () => {
-      fetch("http://localhost:1203/produits/menuSpecial")
+      fetch(`${API_URL}/produits/menuSpecial`)
         .then((res) => res.json())
         .then((data) =>
           setMenuSpecial(data.map((p) => ({
             ...p,
-            img: `http://localhost:1203/${p.img}`,
+            img: `${API_URL}/${p.img}`,
           })))
         )
         .catch((err) => console.error("Erreur fetch menu spécial:", err));

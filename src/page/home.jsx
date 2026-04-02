@@ -12,7 +12,7 @@ import Footer from "../component/footer.jsx";
 import Cards from "../component/Card";
 import { CartContext } from "../context/CartContext.jsx";
 import { useToast } from "../context/ToastContext";
-
+import API_URL from "../api";
 
 export const produitContext = createContext();
 
@@ -22,18 +22,16 @@ function Home() {
   const { showToast } = useToast();
   const [produits, setProduits] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const isSearching = searchQuery.length > 0; // pas compris cet ligne, maybe un derivé de taille pour eviter le debordement
-  
+  const isSearching = searchQuery.length > 0;
 
-  // Recuperation des produits (avec images et leurs format)
   const fetchProduits = () => {
-    fetch("http://localhost:1203/produits")
+    fetch(`${API_URL}/produits`)
       .then((res) => res.json())
       .then((data) => {
         const produitsAvecImageUrl = data
           .map((p) => ({
             ...p,
-            img: `http://localhost:1203/${p.img}`,
+            img: `${API_URL}/${p.img}`,
           }))
           .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         setProduits(produitsAvecImageUrl);
@@ -55,136 +53,88 @@ function Home() {
 
   const handleSearchSubmit = (query) => {
     setSearchQuery(query.trim().toLowerCase());
-  };  
+  };
 
-  // on affiche les Produits affichés en fonction du filtre de rechercher de produits
-  const produitsFiltres = produits.filter((p) =>
-    p.nom.toLowerCase().includes(searchQuery) ||
-    p.description?.toLowerCase().includes(searchQuery)
+  const produitsFiltres = produits.filter(
+    (p) =>
+      p.nom.toLowerCase().includes(searchQuery) ||
+      p.description?.toLowerCase().includes(searchQuery)
   );
 
   return (
     <>
       <div className="HomePage">
-      <div class="multi-image">
-<img src="src/image/boribory.png" alt="rond" className="im1" />
-{/* <img src="src/image/boribory.png" alt="rond" className="im2" /> */}
-{/* <img src="src/image/boribory.png" alt="rond" className="im3" /> */}
-</div>
+        <div class="multi-image">
+          <img src="src/image/boribory.png" alt="rond" className="im1" />
+        </div>
 
-
-      <CustomNavbar size={cart.length} onSearchChange={handleSearchSubmit} />
+        <CustomNavbar size={cart.length} onSearchChange={handleSearchSubmit} />
 
         <header>
-        <section className={`animated-section ${isSearching ? "slide-up" : "slide-down"}`}>
-          <div className="carousel">
-            <SystemeCrousel />
-          </div>
-        </section>
+          <section className={`animated-section ${isSearching ? "slide-up" : "slide-down"}`}>
+            <div className="carousel">
+              <SystemeCrousel />
+            </div>
+          </section>
         </header>
 
         <section className="mt-4">
-        <section className={`animated-section ${isSearching ? "slide-up" : "slide-down"}`}>
-          <div className="BarreDemenu">
-            <Container>
-              <Row>
-                <div className="texte">
-                  <p className="text">Explorer notre menu</p>
-                  <p className="texts">
-                    Choisissez parmi notre menu varié, composé d'une sélection
-                    de plats savoureux.
-                  </p>
-                </div>
-
-                <div className="contenairMenu">
-                  <div className="menu">
-                    <Image
-                      className="imagemenu"
-                      src="src/image/pates.png"
-                      onMouseOver={(e) =>
-                        (e.currentTarget.src = "src/image/pates1.png")
-                      }
-                      onMouseOut={(e) =>
-                        (e.currentTarget.src = "src/image/pates.png")
-                      }
-                      onClick={() => handleClic("/Soupe")}
-                      roundedCircle
-                    />
-                    <span className="SousTitre">Pâtes</span>
+          <section className={`animated-section ${isSearching ? "slide-up" : "slide-down"}`}>
+            <div className="BarreDemenu">
+              <Container>
+                <Row>
+                  <div className="texte">
+                    <p className="text">Explorer notre menu</p>
+                    <p className="texts">
+                      Choisissez parmi notre menu varié, composé d'une sélection
+                      de plats savoureux.
+                    </p>
                   </div>
 
-                  <div className="menu">
-                    <Image
-                      className="imagemenu"
-                      src="src/image/snack.png"
-                      onMouseOver={(e) =>
-                        (e.currentTarget.src = "src/image/snack1.png")
-                      }
-                      onMouseOut={(e) =>
-                        (e.currentTarget.src = "src/image/snack.png")
-                      }
-                      onClick={() => handleClic("/Burger")}
-                      roundedCircle
-                    />
-                    <span className="SousTitre">Snack</span>
+                  <div className="contenairMenu">
+                    <div className="menu">
+                      <Image className="imagemenu" src="src/image/pates.png"
+                        onMouseOver={(e) => (e.currentTarget.src = "src/image/pates1.png")}
+                        onMouseOut={(e) => (e.currentTarget.src = "src/image/pates.png")}
+                        onClick={() => handleClic("/Soupe")} roundedCircle />
+                      <span className="SousTitre">Pâtes</span>
+                    </div>
+                    <div className="menu">
+                      <Image className="imagemenu" src="src/image/snack.png"
+                        onMouseOver={(e) => (e.currentTarget.src = "src/image/snack1.png")}
+                        onMouseOut={(e) => (e.currentTarget.src = "src/image/snack.png")}
+                        onClick={() => handleClic("/Burger")} roundedCircle />
+                      <span className="SousTitre">Snack</span>
+                    </div>
+                    <div className="menu">
+                      <Image className="imagemenu" src="src/image/riz.png"
+                        onMouseOver={(e) => (e.currentTarget.src = "src/image/riz1.png")}
+                        onMouseOut={(e) => (e.currentTarget.src = "src/image/riz.png")}
+                        onClick={() => handleClic("/Riz")} roundedCircle />
+                      <span className="SousTitre">Riz</span>
+                    </div>
+                    <div className="menu">
+                      <Image className="imagemenu" src="src/image/dessert.png"
+                        onMouseOver={(e) => (e.currentTarget.src = "src/image/dessert1.png")}
+                        onMouseOut={(e) => (e.currentTarget.src = "src/image/dessert.png")}
+                        onClick={() => handleClic("/Dessert")} roundedCircle />
+                      <span className="SousTitre">Dessert</span>
+                    </div>
+                    <div className="menu">
+                      <Image className="imagemenu" src="src/image/boisson.png"
+                        onMouseOver={(e) => (e.currentTarget.src = "src/image/boisson1.png")}
+                        onMouseOut={(e) => (e.currentTarget.src = "src/image/boisson.png")}
+                        onClick={() => handleClic("/Jus")} roundedCircle />
+                      <span className="SousTitre">Boisson</span>
+                    </div>
                   </div>
-
-                  <div className="menu">
-                    <Image
-                      className="imagemenu"
-                      src="src/image/riz.png"
-                      onMouseOver={(e) =>
-                        (e.currentTarget.src = "src/image/riz1.png")
-                      }
-                      onMouseOut={(e) =>
-                        (e.currentTarget.src = "src/image/riz.png")
-                      }
-                      onClick={() => handleClic("/Riz")}
-                      roundedCircle
-                    />
-                    <span className="SousTitre">Riz</span>
-                  </div>
-
-                  <div className="menu">
-                    <Image
-                      className="imagemenu"
-                      src="src/image/dessert.png"
-                      onMouseOver={(e) =>
-                        (e.currentTarget.src = "src/image/dessert1.png")
-                      }
-                      onMouseOut={(e) =>
-                        (e.currentTarget.src = "src/image/dessert.png")
-                      }
-                      onClick={() => handleClic("/Dessert")}
-                      roundedCircle
-                    />
-                    <span className="SousTitre">Dessert</span>
-                  </div>
-
-                  <div className="menu">
-                    <Image
-                      className="imagemenu"
-                      src="src/image/boisson.png"
-                      onMouseOver={(e) =>
-                        (e.currentTarget.src = "src/image/boisson1.png")
-                      }
-                      onMouseOut={(e) =>
-                        (e.currentTarget.src = "src/image/boisson.png")
-                      }
-                      onClick={() => handleClic("/Jus")}
-                      roundedCircle
-                    />
-                    <span className="SousTitre">Boisson</span>
-                  </div>
-                </div>
-              </Row>
-              <hr />
-            </Container>
-          </div>
+                </Row>
+                <hr />
+              </Container>
+            </div>
           </section>
         </section>
 
-        {/* Cartes filtreés via la recherche */}
         <div className={`All_Cards ${isSearching ? "active-search" : ""}`}>
           {produitsFiltres.length > 0 ? (
             produitsFiltres.map((item) => (

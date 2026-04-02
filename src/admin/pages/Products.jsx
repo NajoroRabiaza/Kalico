@@ -1,3 +1,4 @@
+import API_URL from "../../api";
 import { useEffect, useState } from 'react';
 import CustomTable from '../components/CustomTable';
 import { productsColumns as originalColumns } from '../data/productsData';
@@ -14,7 +15,7 @@ export default function Products() {
 
   const fetchProduits = () => {
     setLoading(true);
-    fetch("http://localhost:1203/produits")
+    fetch(`${API_URL}/produits`)
       .then(res => res.json())
       .then(data => {
         const produitsAvecTri = data.sort(
@@ -54,7 +55,7 @@ export default function Products() {
 
   const handleDelete = async (id) => {
     try {
-      const res = await fetch(`http://localhost:1203/produits/${id}`, {
+      const res = await fetch(`${API_URL}/produits/${id}`, {
         method: "DELETE",
       });
       if (!res.ok) throw new Error("Erreur suppression");
@@ -87,8 +88,8 @@ export default function Products() {
     try {
       const isEdit = !!editingProduct._id;
       const url = isEdit
-        ? `http://localhost:1203/produits/${editingProduct._id}`
-        : "http://localhost:1203/produits";
+        ? `${API_URL}/produits/${editingProduct._id}`
+        : `${API_URL}/produits`;
       const method = isEdit ? "PUT" : "POST";
 
       const res = await fetch(url, {

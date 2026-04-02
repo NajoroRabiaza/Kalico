@@ -1,3 +1,4 @@
+import API_URL from "../api";
 import React, { useEffect, useState, useContext } from "react";
 import Navbar from "../component/navbar";
 import { CartContext } from "../context/CartContext";
@@ -12,10 +13,10 @@ function Riz({Userconnecte}) {
 
   useEffect(() => {
     const fetchRiz = () => {
-    fetch("http://localhost:1203/produits/categorie/riz")
+    fetch(`${API_URL}/produits/categorie/riz`)
       .then((res) => res.json())
       .then((data) =>
-        setProduits(data.map((p) => ({ ...p, img: `http://localhost:1203/${p.img}` })))
+        setProduits(data.map((p) => ({ ...p, img: `${API_URL}/${p.img}` })))
       )
       .catch((err) => console.error("Erreur chargement Riz :", err));
     };

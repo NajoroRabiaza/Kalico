@@ -1,3 +1,4 @@
+import API_URL from "../api";
 import React, { useContext, useEffect, useState } from "react";
 import "./modal.css";
 import { CartContext } from "../context/CartContext";
@@ -76,7 +77,7 @@ function Modal({ oneclose, condition, totalCommande }) {
         date: new Date(),
         status: "en attente",
       };
-      fetch("http://localhost:1203/commandes", {
+      fetch(`${API_URL}/commandes`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(commande),
@@ -111,7 +112,7 @@ function Modal({ oneclose, condition, totalCommande }) {
         date: new Date(),
         status: "en attente",
       };
-      fetch("http://localhost:1203/commandes", {
+      fetch(`${API_URL}/commandes`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(commande),

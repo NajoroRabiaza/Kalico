@@ -1,3 +1,4 @@
+import API_URL from "../../api";
 import { useEffect, useState } from 'react';
 import CustomTable from '../components/CustomTable';
 import { columns, formatCommandes } from '../data/CommandesData';
@@ -6,7 +7,7 @@ export default function Commande() {
   const [commandes, setCommandes] = useState([]);
 
   const fetchCommandes = () => {
-    fetch('http://localhost:1203/commandes')
+    fetch('${API_URL}/commandes')
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) {
@@ -31,7 +32,7 @@ export default function Commande() {
   
 
   const handleDeleteCommande = (id) => {
-    fetch(`http://localhost:1203/commandes/${id}`, {
+    fetch(`${API_URL}/commandes/${id}`, {
       method: "DELETE",
     })
       .then((res) => {
@@ -45,7 +46,7 @@ export default function Commande() {
   };
 
   const handleStatutChange = (commandeId, newStatut) => {
-    fetch(`http://localhost:1203/commandes/${commandeId}`, {
+    fetch(`${API_URL}/commandes/${commandeId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

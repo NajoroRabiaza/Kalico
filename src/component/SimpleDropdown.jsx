@@ -1,3 +1,4 @@
+import API_URL from "../api";
 import { useEffect, useRef, useState, useContext } from "react";
 import { CartContext } from "../context/CartContext";
 import CommandeDetailModal from "./CommandeDetailModal";
@@ -13,7 +14,7 @@ export default function SimpleDropdown() {
   const fetchCommandes = () => {
     setIsLoading(true);
     setTimeout(() => {
-      fetch("http://localhost:1203/commandes")
+      fetch(`${API_URL}/commandes`)
         .then((res) => res.json())
         .then((data) => {
           if (Array.isArray(data)) {

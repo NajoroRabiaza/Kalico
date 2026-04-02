@@ -1,3 +1,4 @@
+import API_URL from "../api";
 import React, { useEffect } from "react";
 import { useState } from "react";
 import "./forgotPassword.css";
@@ -22,7 +23,7 @@ const ForgotPassword = () => {
     useEffect(() => {
         const findPass = async () => {
             try {
-                const findUpdating = await fetch("http://localhost:1203/dataUser", {
+                const findUpdating = await fetch(`${API_URL}/dataUser`, {
                     method: 'GET'
                 })
                 const donneFetcher = await findUpdating.json();

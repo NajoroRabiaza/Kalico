@@ -17,6 +17,8 @@ body {
   z-index: 999;
   background: transparent;
   transition: background 0.4s ease;
+  /* display: flex; */
+  /* align-items: center; */
 }
 
 .nav.nav-scrolled {
@@ -28,6 +30,7 @@ body {
 .container {
   width: 100%;
   max-width: 100%;
+  /* margin: 0 auto; */
   margin-top: -0.5%;
   padding: 0 1rem;
   display: flex;
@@ -40,6 +43,7 @@ body {
   left: 0rem;
   align-items: center;
   display: flex;
+  /* position: fixed; */
   position: relative;
   flex: 0 0 auto;
   margin-top: auto;
@@ -48,7 +52,7 @@ body {
 .logo img {
   height: 9rem;
   z-index: 1001;
-  transition: all 0.5s ease;
+  transition: color 0.5s ease;
 }
 
 .nav.nav-scrolled .logo img {
@@ -57,10 +61,13 @@ body {
 }
 
 .main_list {
+  /* display: block; */
+  /* flex-direction: column; */
   position: relative;
   left: 10%;
   width: 100%;
   align-items: center;
+  /* gap: 2rem; */
 }
 
 .navlinks {
@@ -71,6 +78,7 @@ body {
   position: relative;
   margin-top: 0rem;
   min-width: 100%;
+  /* left: -50%; */
 }
 
 .navlinks li {
@@ -80,6 +88,7 @@ body {
 .navlinks li a {
   text-decoration: none;
   color: #000000;
+
   font-size: 1.4rem;
   transition: color 0.3s ease;
   display: flex;
@@ -93,6 +102,7 @@ body {
 
 /* Barre de recherche */
 .search-container {
+  /* display: flex; */
   position: fixed;
   left: 70rem;
   margin-top: -1rem;
@@ -105,16 +115,14 @@ body {
   border: none;
   font-size: 1.2rem;
 }
-
 .search-icon {
   position: absolute;
   left: 10px;
   top: 22px;
   color: #888;
   font-size: 1rem;
-  pointer-events: none;
+  pointer-events: none; /* ne bloque pas le clic sur le champ */
 }
-
 .right-side {
   display: flex;
   align-items: center;
@@ -122,22 +130,27 @@ body {
   gap: 1.2rem;
   width: auto;
   margin-top: -1.3rem;
+  /* right: 1%; */
+  /* background-color: rgb(208, 216, 215); */
+  /* margin-left: auto; */
+
+  /* left: auto; */
   position: fixed;
 }
 
 .profile-container {
   position: relative;
+  /* display: inline-block; */
   cursor: pointer;
   z-index: 1000;
   display: flex;
   align-items: center;
+
   margin-top: 4%;
 }
-
 .nav.nav-scrolled .profile-img {
   margin-top: 0.5rem;
 }
-
 .profile-img {
   width: 45px;
   height: 25px;
@@ -189,6 +202,9 @@ body {
   color: #000;
   transition: transform 0.3s ease;
 }
+.dropdown-toggle.toggle-change::after {
+  transform: rotate(180deg);
+}
 
 .dropdown-toggle.toggle-change::after {
   transform: rotate(180deg);
@@ -220,6 +236,7 @@ body {
 .panier img {
   height: 1.8rem;
   width: 1.7rem;
+  /* margin-top: 5rem; */
 }
 
 .panier span {
@@ -227,7 +244,7 @@ body {
   font-size: 1rem;
   border-radius: 100%;
   height: 22%;
-  width: 18%;
+  width:18%;
   color: rgb(255, 255, 255);
   margin-left: 2.5rem;
   margin-top: -7rem;
@@ -279,7 +296,6 @@ body {
 .navTrigger.active .line {
   background-color: #e65d0d;
 }
-
 .mobile-search {
   display: none;
 }
@@ -291,7 +307,6 @@ body {
   .logo {
     margin-left: -8rem;
   }
-
   .navTrigger {
     display: none;
   }
@@ -311,13 +326,11 @@ body {
     right: 0;
     top: 100%;
   }
-
   .right-side {
     right: 10rem;
-    top: 2%;
+       top: 2%;
     position: fixed;
   }
-
   .nav.nav-scrolled .right-side {
     top: 0rem;
   }
@@ -348,11 +361,9 @@ body {
   .main_list.show_list {
     display: flex;
   }
-
   .nav.nav-scrolled .navTrigger {
     top: 0.5rem;
   }
-
   .navTrigger {
     position: fixed;
     top: 1.63rem;
@@ -361,7 +372,6 @@ body {
     cursor: pointer;
     z-index: 1001;
   }
-
   .search-container {
     width: 20%;
     position: fixed;
@@ -371,285 +381,88 @@ body {
   }
 
   .right-side {
+    /* flex-direction: column; */
+    /* align-items: flex-start; */
+    /* left: 43rem; */
     top: 1.3rem;
+    /* position: relative; */
     position: fixed;
     top: 1.5rem;
     right: 2rem;
     z-index: 1000;
   }
-
   .panier {
     left: 5rem;
   }
-
   .nav.nav-scrolled .right-side {
     top: 0rem;
   }
 }
 
-/* 3. Téléphone - VERSION AMÉLIORÉE */
+/* 3. Téléphone */
 @media screen and (max-width: 767px) {
-  /* Nav principale */
-  .nav {
-    height: 70px;
-  }
-
-  .nav.nav-scrolled {
-    height: 60px;
-  }
-
   .container {
-    flex-direction: row;
-    align-items: center;
-    padding: 0 10px;
-    margin-top: 0;
+    flex-direction: column;
+    align-items: flex-start;
   }
 
-  /* Logo */
-  .logo {
-    margin-left: 0;
-    flex: 0 0 auto;
-  }
-
-  .logo img {
-    height: 60px;
-  }
-
-  .nav.nav-scrolled .logo img {
-    height: 50px;
-  }
-
-  /* Menu Hamburger */
   .navTrigger {
     display: flex;
+    align-self: flex-end;
+    top: 1.25rem;
     position: fixed;
-    top: 15px;
-    right: 10px;
-    z-index: 1002;
-    padding: 10px;
+    margin: 1rem;
+    right: 0;
+    cursor: pointer;
   }
 
-  .nav.nav-scrolled .navTrigger {
-    top: 10px;
-  }
-
-  .navTrigger .line {
-    width: 28px;
-    height: 3px;
-  }
-
-  /* Menu déroulant mobile */
   .main_list {
     display: none;
-    position: fixed;
-    top: 70px;
-    left: 0;
+    flex-direction: column;
     width: 100%;
-    height: auto;
-    max-height: calc(100vh - 70px);
-    background-color: rgba(187, 187, 187, 0.98);
-    padding: 20px;
-    overflow-y: auto;
-    z-index: 998;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-
-  .nav.nav-scrolled .main_list {
-    top: 60px;
-    max-height: calc(100vh - 60px);
+    top: 0;
+    padding: 1rem;
+    background-color: #bbbbbb;
   }
 
   .main_list.show_list {
     display: flex;
-    flex-direction: column;
   }
 
-  /* Navigation links */
   .navlinks {
     flex-direction: column;
-    width: 100%;
-    gap: 0;
-  }
-
-  .navlinks li {
-    margin-right: 0;
-    margin-bottom: 0;
-    width: 100%;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  }
-
-  .navlinks li:last-child {
-    border-bottom: none;
-  }
-
-  .navlinks li a {
-    font-size: 1.1rem;
-    padding: 15px 10px;
-    display: block;
-    width: 100%;
-  }
-
-  .navlinks li a:active {
-    background-color: rgba(230, 93, 13, 0.2);
-  }
-
-  /* Recherche mobile */
-  .search-container {
-    display: none;
+    gap: 1rem;
   }
 
   .mobile-search {
     display: flex;
     flex-direction: row;
     align-items: center;
-    width: 100%;
-    margin-top: 15px;
-    padding: 0 10px;
+    gap: 0px;
+    margin-top: 0 px;
+    margin-left: 30px;
   }
 
   .mobile-search .search-input {
     width: 100%;
-    padding: 10px 10px 10px 35px;
-    background-color: rgba(255, 255, 255, 0.9);
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 14px;
+    padding: 5px;
+    background-color: #d3d3d3;
+    width: 50%;
   }
 
   .mobile-search .search-icon {
-    position: absolute;
-    left: 20px;
-    top: auto;
-    margin-top: 0;
+    margin-right: 5px;
+    top: 7.6rem;
+  }
+  .search-container {
+    display: none;
   }
 
-  /* Right side (panier + profil) */
   .right-side {
-    position: fixed;
-    top: 10px;
-    right: 60px;
-    gap: 15px;
-    margin-top: 0;
-    z-index: 1000;
-  }
-
-  .nav.nav-scrolled .right-side {
-    top: 8px;
-  }
-
-  /* Profil */
-  .profile-container {
-    margin-top: 0;
-  }
-
-  .profile-img {
-    width: 35px;
-    height: 22px;
-  }
-
-  .profile-container .dropdown-menu {
-    right: 0;
-    top: 35px;
-    min-width: 120px;
-  }
-
-  .profile-container .dropdown-menu a {
-    font-size: 0.9rem;
-    padding: 8px 12px;
-  }
-
-  /* Panier */
-  .panier {
-    left: 0;
-    margin-top: 0;
-    position: relative;
-  }
-
-  .panier img {
-    height: 25px;
-    width: 23px;
-  }
-
-  .panier span {
-    position: absolute;
-    top: -8px;
-    right: -10px;
-    width: 20px;
-    height: 20px;
-    font-size: 0.75rem;
-    margin: 0;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    line-height: 1;
-  }
-
-  .nav.nav-scrolled .panier span {
-    margin-top: 0;
-    top: -8px;
-  }
-}
-
-/* 4. Très petit mobile (< 480px) */
-@media screen and (max-width: 480px) {
-  .nav {
-    height: 60px;
-  }
-
-  .nav.nav-scrolled {
-    height: 55px;
-  }
-
-  .logo img {
-    height: 50px;
-  }
-
-  .nav.nav-scrolled .logo img {
-    height: 45px;
-  }
-
-  .navTrigger {
-    top: 12px;
-    right: 8px;
-  }
-
-  .navTrigger .line {
-    width: 25px;
-  }
-
-  .main_list {
-    top: 60px;
-    padding: 15px;
-  }
-
-  .nav.nav-scrolled .main_list {
-    top: 55px;
-  }
-
-  .navlinks li a {
-    font-size: 1rem;
-    padding: 12px 8px;
-  }
-
-  .right-side {
-    right: 50px;
-    top: 8px;
-    gap: 10px;
-  }
-
-  .profile-img {
-    width: 30px;
-    height: 20px;
-  }
-
-  .panier img {
-    height: 22px;
-    width: 20px;
-  }
-
-  .panier span {
-    width: 18px;
-    height: 18px;
-    font-size: 0.7rem;
+    position: fixed;
+    top: 0.5rem;
+    right: 2.5rem;
+    gap: 0;
   }
 }
