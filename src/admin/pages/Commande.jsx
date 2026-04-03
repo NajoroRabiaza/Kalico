@@ -1,7 +1,7 @@
 import API_URL from "../../api";
 import { useEffect, useState } from 'react';
 import CustomTable from '../components/CustomTable';
-import { columns, formatCommandes } from '../data/CommandesData';
+import { columns, formatCommandes } from '../data/commandesData';
 
 export default function Commande() {
   const [commandes, setCommandes] = useState([]);

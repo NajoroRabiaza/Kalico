@@ -92,7 +92,6 @@ const ChangePassword = (props) => {
                                 borderRadius: "5px",
                                 border: "1px solid #ccc",
                                 outline: "none",
-                                border: "none",
                                 borderBottomColor: "black",
                                 background: "white",
 
