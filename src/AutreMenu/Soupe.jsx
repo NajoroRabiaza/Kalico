@@ -30,7 +30,7 @@ function Soupe({Userconnecte}) {
     <>
       <Navbar size={cart.length} UserConnect={Userconnecte}/>
       <section>
-        <img src="/image/font.png" alt="font" className="fonts" />
+        <img src="src/image/font.png" alt="font" className="fonts" />
         <div className="menus">Pâtes</div>
         <div className="All_Card">
           {produits.map((item) => (

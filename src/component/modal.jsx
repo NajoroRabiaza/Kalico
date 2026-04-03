@@ -183,14 +183,14 @@ function Modal({ oneclose, condition, totalCommande }) {
               className={`cashPay ${showCash === true ? "active" : ""}`}
             >
               {" "}
-              <img src="/image/imageMoney.png" alt="imageCash" /> | Cash
+              <img src="src/image/imageMoney.png" alt="imageCash" /> | Cash
             </button>
             <button
               onClick={() => setShowCash(false)}
               className={`MvolaPay ${showCash === false ? "active" : ""}`}
             >
               {" "}
-              <img src="/image/MvolaImage.png" alt="imageMvola" /> | Mvola
+              <img src="src/image/MvolaImage.png" alt="imageMvola" /> | Mvola
             </button>
             {showCash ? (
               /*  (conditionnameCash) ? <p>Enterer un nom</p> : */
@@ -285,7 +285,7 @@ function Modal({ oneclose, condition, totalCommande }) {
            <div className="verticalLineModal"></div>
           <div className="price">
             <div className="title">
-              <img src="/image/kalico.png" alt="logo" />
+              <img src="src/image/kalico.png" alt="logo" />
               {/* <h3>Kalico</h3> */}
             </div>
            

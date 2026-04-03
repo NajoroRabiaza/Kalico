@@ -34,7 +34,7 @@ function App() {
       location.pathname.startsWith("/ChangePassword")
     ) {
       // Syntaxe CSS correcte pour backgroundImage
-      document.body.style.backgroundImage = `url("/image/backgroundLogin.png")`;
+      document.body.style.backgroundImage = `url("src/image/backgroundLogin.png")`;
     } else {
       document.body.style.backgroundImage = "none";
     }

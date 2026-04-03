@@ -38,7 +38,7 @@ function Menu({ Userconnecte }) {
     <>
       <Navbar size={cart.length} UserConnect={Userconnecte}/>
       <section>
-        <img src="/image/font.png" alt="font" className="fonts" />
+        <img src="src/image/font.png" alt="font" className="fonts" />
         <div className="menus">Menu du jour</div>
         <div className="All_Card">
           {menuSpecial.map((item) => (
