@@ -33,8 +33,7 @@ dist-ssr
 /src/admin/pages/_statistique_food_backup/
 
 # Ne pas pusher les fichiers d’image
-backend/uploads/*
-!backend/uploads/.gitkeep
+# uploads inclus dans le repo
 
 # script unecessary
 backend/script_unecessary
