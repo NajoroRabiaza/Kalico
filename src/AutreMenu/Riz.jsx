@@ -29,7 +29,7 @@ function Riz({Userconnecte}) {
     <>
       <Navbar size={cart.length} UserConnect={Userconnecte}/>
       <section>
-        <img src="src/image/font.png" alt="font" className="fonts" />
+        <img src="/image/font.png" alt="font" className="fonts" />
         <div className="menus">Riz</div>
         <div className="All_Card">
           {produits.map((item) => (

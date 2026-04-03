@@ -34,7 +34,7 @@ function MenuBurger({Userconnecte}) {
     <>
       <Navbar size={cart.length} UserConnect={Userconnecte} />
       <section>
-        <img src="src/image/font.png" alt="font" className="fonts" />
+        <img src="/image/font.png" alt="font" className="fonts" />
         <div className="menus">Snack</div>
         <div className="All_Card">
           {produits.map((item) => (
