@@ -61,7 +61,7 @@ const CustomNavbar = ({ size, onSearchChange, UserConnect }) => {
     <nav className={`nav ${scrolled ? "nav-scrolled" : ""}`}>
       <div className="container">
         <div className="logo">
-          <img src="src/image/kalico.png" alt="logo" />
+          <img src="/image/kalico.png" alt="logo" />
         </div>
 
         <div className={`main_list ${menuOpen ? "show_list" : ""}`}>
@@ -103,7 +103,7 @@ const CustomNavbar = ({ size, onSearchChange, UserConnect }) => {
         <div className="right-side">
           <Nav className="panier">
             <Nav.Link as={Link} to="/panier">
-              <img src="src/image/panier.png" alt="panier" />
+              <img src="/image/panier.png" alt="panier" />
             </Nav.Link>
             <span>{size}</span>
           </Nav>
@@ -119,7 +119,7 @@ const CustomNavbar = ({ size, onSearchChange, UserConnect }) => {
               onClick={toggleProfileMenu}
             >
               <img
-                src="src/image/Profile.png"
+                src="/image/Profile.png"
                 alt="profil"
                 className="profile-img"
               />

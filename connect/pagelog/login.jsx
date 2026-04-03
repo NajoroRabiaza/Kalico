@@ -17,7 +17,7 @@ function Login() {
         <div className="log-cont">
             <form onSubmit={handleSubmit}>
                 <div>
-                    <img className="image" src="src/image/chef.jpg"/>
+                    <img className="image" src="/image/chef.jpg"/>
                 </div>
                 <div>
                     <input
