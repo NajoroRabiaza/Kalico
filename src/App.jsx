@@ -20,7 +20,7 @@ import { useState } from "react";
 function App() {
 
   const location = useLocation();
-  // ✅ On lit le localStorage au démarrage pour restaurer la session
+  //   On lit le localStorage au démarrage pour restaurer la session
   const [connecte, setConnecte] = useState(() => {
     const token = localStorage.getItem("token");
     return !!token;

@@ -4,7 +4,7 @@ Ce document détaille les étapes d'installation, de configuration de la base de
 
 ---
 
-## ✅ Installation
+##   Installation
 
 1. **Installer les dépendances**
    Depuis le dossier principal du projet, exécute :

@@ -79,7 +79,7 @@ async function resetAndSeed() {
     await Eleve.insertMany(eleves);
     await Commande.insertMany(commandes);
 
-    console.log("✅ Base GeIt correctement peuplée !");
+    console.log("  Base GeIt correctement peuplée !");
   } catch (err) {
     console.error("❌ Erreur :", err);
   } finally {

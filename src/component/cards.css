@@ -282,7 +282,7 @@
     flex: 1;
   }
 
-  /* CORRECTION CLÉ : position static pour que .prix
+  /* position static pour que .prix
      soit ancré sur .card et non sur .card_text */
   .card_text {
     position: static;

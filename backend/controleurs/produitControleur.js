@@ -78,7 +78,7 @@ const addProduit = async (req, res) => {
       description,
       img: imagePath,
       categorie,
-      menuSpecial: menuSpecial === 'true' || menuSpecial === true  // ✅ gère booléen correctement
+      menuSpecial: menuSpecial === 'true' || menuSpecial === true  //   gère booléen correctement
     });
 
     await nouveauProduit.save();
