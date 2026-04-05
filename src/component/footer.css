@@ -128,3 +128,114 @@
     margin-right: 100px;
   }
 }
+/* ==============================
+   MOBILE (≤ 767px)
+   ============================== */
+@media (max-width: 767px) {
+
+  .StyleFooter {
+    position: relative;
+    width: 100%;
+    height: auto;
+    margin-top: 40px;
+    padding: 0 0 20px 0;
+    background-color: #1c1c2e;
+  }
+
+  /* Card centrale : pleine largeur, colonne */
+  .footer_3D {
+    width: 100%;
+    height: auto;
+    margin: 0;
+    border-radius: 0;
+    box-shadow: none;
+    background: linear-gradient(160deg, #2a2a3e 0%, #1c1c2e 100%);
+    flex-direction: column;
+    align-items: center;
+    padding: 28px 20px 24px;
+    gap: 0;
+  }
+
+  /* Logo centré, taille adaptée */
+  .logo_ftr {
+    height: auto;
+    width: 90px;
+    margin: 0 auto 16px;
+    display: block;
+  }
+
+  /* Séparateur orange sous le titre */
+  .contact {
+    font-size: 16px;
+    font-family: "Lucida Sans", sans-serif;
+    color: #f0f0f0;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin: 0 0 6px 0;
+    text-align: center;
+  }
+
+  .contact::after {
+    content: "";
+    display: block;
+    width: 40px;
+    height: 2px;
+    background: #ee9045;
+    margin: 6px auto 18px;
+  }
+
+  /* Icônes : grille 4 en ligne, bien espacées */
+  .item_ftr {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .item_ftr a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 48px;
+    height: 48px;
+    background-color: rgba(255, 255, 255, 0.07);
+    border-radius: 12px;
+    border: 1px solid rgba(238, 144, 69, 0.25);
+    transition: all 0.25s ease;
+  }
+
+  .item_ftr a:hover {
+    background-color: rgba(238, 144, 69, 0.2);
+    border-color: #ee9045;
+    transform: translateY(-2px);
+  }
+
+  .icon_ftr {
+    width: 24px;
+    height: 24px;
+    margin: 0;
+    border-radius: 4px;
+  }
+
+  /* Ligne de crédit */
+  .txt_ftr {
+    text-align: center;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    margin: 0 20px;
+  }
+
+  .txt_ftr h1 {
+    font-size: 13px;
+    color: rgba(211, 211, 211, 0.6);
+    margin-top: 16px;
+    letter-spacing: 0.5px;
+  }
+
+  .txt_ftr h1 span {
+    color: #ee9045;
+    font-weight: bold;
+  }
+}
