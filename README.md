@@ -1,126 +1,106 @@
-# 🛠️ Tâche Mini-projet
-
-Ce document détaille les étapes d'installation, de configuration de la base de données MongoDB, et les tâches à réaliser pour le mini-projet.
+Voici une version restructurée, professionnelle et détaillée de votre fichier README. J'ai clarifié les instructions techniques, organisé la hiérarchie des informations et adopté un ton plus formel tout en conservant l'essentiel de vos consignes.
 
 ---
 
-##   Installation
+# GeIt - Système de Gestion de Commandes Alimentaires
 
-1. **Installer les dépendances**
-   Depuis le dossier principal du projet, exécute :
-
-   ```bash
-   npm install
-   ```
-
-2. **Installer React Bootstrap**
-   Toujours dans le terminal :
-
-   ```bash
-   npm install react-bootstrap bootstrap
-   ```
-
-3. **Lancer le projet frontend**
-
-   ```bash
-   npm run dev
-   ```
-
-4. **Lancer le backend**
-
-   ```bash
-   cd backend
-   npm start
-   ```
+**GeIt** est une application Full-Stack conçue pour la gestion et la commande de plats en ligne. Ce projet repose sur une architecture découplée (Frontend en React et Backend en Node.js) avec une persistance des données sous MongoDB.
 
 ---
 
-## 📦 Gestion des images (avec Multer)
+## 🛠️ Stack Technique
 
-Les images sont gérées avec la librairie [`multer`](https://www.npmjs.com/package/multer).
-Elle permet de sauvegarder les images uploadées dans le dossier `uploads/`.
+* **Frontend :** React, React Bootstrap, FontAwesome.
+* **Backend :** Node.js, Express.
+* **Base de données :** MongoDB.
+* **Gestion de fichiers :** Multer (Stockage local des images).
 
-Installez-la (si ce n’est pas déjà fait, Toujours depuis `backend/`) :
-
-```bash
-npm install multer
-```
 ---
-## 🧩 Initialisation de la base de données (MongoDB)
 
-### 1. Lancer MongoDB
+## 🚀 Installation et Configuration
 
-Assurez-vous que MongoDB est bien installé et que le serveur est démarré :
+### 1. Prérequis
+Assurez-vous d'avoir installé [Node.js](https://nodejs.org/) et [MongoDB](https://www.mongodb.com/try/download/community) sur votre machine.
 
+### 2. Installation des dépendances
+Depuis la racine du projet, installez les modules nécessaires pour le frontend :
 ```bash
-mongod
+# Installation des dépendances générales
+npm install
+
+# Installation des bibliothèques UI
+npm install react-bootstrap bootstrap @fortawesome/fontawesome-free
 ```
 
-### 2. Base de données utilisée
-
-> `GeIt` (c’est le nom de la base MongoDB utilisée donc vous devrez le créer avec ce nom pour que l'interaction soit sync)
-
-### 3. Créer les collections et tout les donnees nécessaires avec ce script
-
-Depuis le dossier `backend/`, exécutez :
-
-```bash
-node resetAndSeed.js
-```
-(Vous devez vous placez sur le dossier backend)
-
-Donc vous devrez faire ceci plus précisement :
+Puis, installez les dépendances du serveur :
 ```bash
 cd backend
-node resetAndSeed.js
+npm install
+npm install multer
 ```
-
-> 📌 Ce script va vider les anciennes données (reset), puis insèrer des données fraîches (seed), et enfin pour redémarrer ton app sur une base propre.
 
 ---
 
+## 🗄️ Configuration de la Base de Données
 
-## faite ca dans terminal pour le navbar
+Le projet utilise une base de données MongoDB nommée **GeIt**.
 
+1.  **Démarrage du service :** Assurez-vous que votre instance MongoDB est active.
+    ```bash
+    mongod
+    ```
+2.  **Initialisation des données :** Un script de réinitialisation est disponible pour configurer l'environnement de développement. Il vide les collections existantes et injecte des données de test (seeding).
+    ```bash
+    cd backend
+    node resetAndSeed.js
+    ```
+
+---
+
+## 📁 Gestion des médias
+Le téléchargement des images est géré par la bibliothèque **Multer**. Les fichiers sont stockés localement dans le répertoire `backend/uploads/`. Veillez à ce que ce dossier dispose des droits d'écriture nécessaires.
+
+---
+
+## 💻 Exécution de l'application
+
+Pour faire fonctionner le projet, vous devez lancer deux terminaux distincts :
+
+**Terminal 1 : Frontend**
 ```bash
-npm install @fortawesome/fontawesome-free
+npm run dev
 ```
----
 
-## 🚧 Répartition des tâches
-
-Les tâches sont réparties entre les équipes suivantes :
-
-### 🧑‍🤝‍🧑 Équipe 1 : Danilo & Princia
-
-* Écriture et gestion des images.
-
-### 🎨 Équipe 2 : Hyacinthe & Victorio
-
-* Conception et design de l'application.
-
-### 🧮 Équipe 3 : Azaria & Najoro
-
-* Création des boutons et intégration du système de paiement.
-
----
-
-## 📌 Consignes supplémentaires
-
-* Chaque équipe est responsable de sa tâche.
-* En cas de difficulté, entraide entre équipes autorisée.
-* Une fois les tâches terminées, vérifiez leur bon fonctionnement.
-
----
-
-## 💡 Suggestions UX côté utilisateur
-
-* Il n’est **pas obligatoire** de s’inscrire ou se connecter pour consulter les menus.
-* On peut mettre en place un **formulaire de commande anonyme**, où un client peut :
-
-  * passer une commande,
-  * être livré ou récupérer ses plats à un lieu/heure précis,
-  * sans être un utilisateur enregistré.
-
----
+**Terminal 2 : Backend**
+```bash
+cd backend
+npm start
 ```
+
+---
+
+## 👥 Organisation de l'équipe et Tâches
+
+Le développement est réparti en trois pôles de compétences :
+
+| Équipe | Membres | Responsabilités |
+| :--- | :--- | :--- |
+| **Équipe 1** | Danilo & Princia | Gestion du système de fichiers et logique d'upload des images. |
+| **Équipe 2** | Hyacinthe & Victorio | UI/UX Design et intégration des interfaces utilisateur. |
+| **Équipe 3** | Azaria & Najoro | Logique métier des boutons et intégration du tunnel de paiement. |
+
+---
+
+## 📝 Directives de Développement
+
+* **Autonomie & Entraide :** Chaque équipe est responsable de ses livrables, mais la communication inter-équipes est encouragée pour garantir la cohérence globale.
+* **Validation :** Avant chaque fin de session, assurez-vous de tester l'intégration de vos fonctionnalités avec le reste de l'application.
+
+### Focus sur l'Expérience Utilisateur (UX)
+Pour maximiser le taux de conversion, l'application supporte le **mode invité** :
+* La consultation du catalogue est libre et ne nécessite pas de compte.
+* Le **formulaire de commande anonyme** permet aux clients de passer commande en renseignant simplement leurs informations de livraison et de contact, sans obligation d'inscription préalable.
+
+---
+
+> **Note :** En cas de modification du schéma de données, pensez à mettre à jour le script `resetAndSeed.js` pour maintenir la synchronisation entre les membres de l'équipe.
