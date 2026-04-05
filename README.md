@@ -1,10 +1,6 @@
-Voici une version restructurée, professionnelle et détaillée de votre fichier README. J'ai clarifié les instructions techniques, organisé la hiérarchie des informations et adopté un ton plus formel tout en conservant l'essentiel de vos consignes.
+# Kalico - Un système de Gestion de Commandes Alimentaires
 
----
-
-# GeIt - Système de Gestion de Commandes Alimentaires
-
-**GeIt** est une application Full-Stack conçue pour la gestion et la commande de plats en ligne. Ce projet repose sur une architecture découplée (Frontend en React et Backend en Node.js) avec une persistance des données sous MongoDB.
+**Kalico** est une application Full-Stack conçue pour la gestion et la commande de plats en ligne. Ce projet repose sur une architecture découplée (Frontend en React et Backend en Node.js) avec une persistance des données sous MongoDB.
 
 ---
 
