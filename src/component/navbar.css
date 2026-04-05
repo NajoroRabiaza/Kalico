@@ -401,6 +401,15 @@ body {
 
 /* 3. Téléphone */
 @media screen and (max-width: 767px) {
+  .logo img {
+    height: 4.5rem;
+  }
+
+  .nav.nav-scrolled .logo img {
+    height: 3.5rem;
+    margin-top: 0;
+  }
+
   .container {
     flex-direction: column;
     align-items: flex-start;

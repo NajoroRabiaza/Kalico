@@ -499,9 +499,15 @@ body {
 }
 
 @media (max-width: 767px) {
-  body {
+  html, body {
     overflow-x: hidden;
     position: relative;
+  }
+
+  /* Bootstrap Row a des marges negatives qui debordent */
+  .row {
+    margin-left: 0;
+    margin-right: 0;
   }
   .carouselContainer {
     margin-top: 70%;

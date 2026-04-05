@@ -239,21 +239,24 @@
   .All_Cards {
     grid-template-columns: repeat(1, 1fr);
     gap: 20px;
-    max-width: 92%;
+    max-width: 96%;
     margin: 4% auto;
   }
 
   .cards_container {
     margin-top: 0;
+    display: block;
+    width: 100%;
   }
 
-  /* Card : position relative pour ancrer .prix, colonne */
+  /* Card : pleine largeur */
   .card {
     position: relative;
     display: flex;
     flex-direction: column;
+    align-items: stretch;
     height: 20rem;
-    width: 96%;
+    width: 100%;
     margin: 0 auto 1rem;
     border-radius: 25px;
     overflow: hidden;
@@ -261,19 +264,25 @@
     transition: none;
   }
 
-  /* Wrapper image */
+  /* Wrapper image : force pleine largeur */
   .tete {
+    display: block;
+    width: 100%;
     flex-shrink: 0;
+    margin: 0;
+    padding: 0;
+    line-height: 0;
   }
 
-  /* Image : style identique desktop */
+  /* Image : couvre tout sans espace */
   .carteimage {
     display: block;
-    width: 84%;
-    height: 195px;
-    margin-left: 8%;
-    margin-top: 8px;
-    border-radius: 25px;
+    width: 100%;
+    min-width: 100%;
+    height: 200px;
+    margin: 0;
+    padding: 0;
+    border-radius: 0;
     object-fit: cover;
   }
 
@@ -282,7 +291,7 @@
     flex: 1;
   }
 
-  /* position static pour que .prix
+  /* CORRECTION CLÉ : position static pour que .prix
      soit ancré sur .card et non sur .card_text */
   .card_text {
     position: static;
@@ -301,7 +310,7 @@
   /* Prix : overlaid sur l'image, relatif à .card */
   .prix {
     position: absolute;
-    top: 163px;
+    top: 170px;
     left: 0;
     margin-top: 0;
     font-size: 0.9rem;
@@ -360,7 +369,7 @@
   .card:hover .stock_restant { display: none; }
   .card:hover .prix {
     position: absolute;
-    top: 163px;
+    top: 170px;
     left: 0;
     margin-top: 0;
     width: auto;
@@ -381,19 +390,19 @@
    TRÈS PETITS ÉCRANS (≤ 420px)
    ============================== */
 @media (max-width: 420px) {
-  .All_Cards { max-width: 90%; gap: 16px; }
+  .All_Cards { max-width: 96%; gap: 16px; }
 
-  .card { width: 96%; height: 20rem; }
+  .card { width: 100%; height: 20rem; }
 
-  .carteimage { height: 185px; }
+  .carteimage {width:120%; height: 200px; }
 
-  .prix { top: 153px; }
+  .prix { top: 170px; }
 
   .titre_card { font-size: 1rem; }
 
   .ajouter { width: calc(100% - 120px); height: 34px; }
 
   .card:hover { height: 20rem; }
-  .card:hover .prix { top: 153px; }
+  .card:hover .prix { top: 170px; }
   .card:hover .ajouter { width: calc(100% - 120px); height: 34px; }
 }
