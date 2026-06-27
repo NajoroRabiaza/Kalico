@@ -3,7 +3,6 @@ import frite from "../image/frite.png";
 import image2 from "../image/image2.png";
 import SoupeSpecial from "../image/SoupeSpecial.png";
 import Carousel from "react-bootstrap/Carousel";
-import "bootstrap/dist/css/bootstrap.min.css";
 import Bolonaise from "../image/Bolonaise.jpg";
 import C1 from "../image/C1.jpg";
 import C2 from "../image/C2.jpg";

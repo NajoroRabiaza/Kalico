@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
 import "./cards.css";
-import "bootstrap/dist/css/bootstrap.min.css";
 import Panier from "../page/Panier";
 import produitContext from "../page/home";
 
