@@ -22,7 +22,7 @@ const Cartes = ({ item, handleClick }) => {
 
   return (
     <div className='cartes_container'>
-      <img src="src\image\font.png" alt="font" className="fonts" />
+      <img src="src\image\font.webp" alt="font" className="fonts" />
       <div className='menus'></div>
       <div className='cartes'>
 

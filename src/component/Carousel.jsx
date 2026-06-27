@@ -1,16 +1,16 @@
 import React from "react";
-import frite from "../image/frite.png";
-import image2 from "../image/image2.png";
-import SoupeSpecial from "../image/SoupeSpecial.png";
+import frite from "../image/frite.webp";
+import image2 from "../image/image2.webp";
+import SoupeSpecial from "../image/SoupeSpecial.webp";
 import Carousel from "react-bootstrap/Carousel";
-import Bolonaise from "../image/Bolonaise.jpg";
-import C1 from "../image/C1.jpg";
-import C2 from "../image/C2.jpg";
-import C3 from "../image/C3.jpg";
-import plats from "../image/plats.png";
-import street from "../image/street.png";
-import viande from "../image/viande.png";
-import back from "../image/back.png";
+import Bolonaise from "../image/Bolonaise.webp";
+import C1 from "../image/C1.webp";
+import C2 from "../image/C2.webp";
+import C3 from "../image/C3.webp";
+import plats from "../image/plats.webp";
+import street from "../image/street.webp";
+import viande from "../image/viande.webp";
+import back from "../image/back.webp";
 
 function SystemeCrousel() {
   return (

@@ -115,7 +115,7 @@ useEffect(() => {
                       {item.prix * item.quantity} Ar
                     </span>
                     <img
-                      src="/image/remove.png"
+                      src="/image/remove.webp"
                       alt="supp"
                       className="remove"
                       onClick={() => removeItem(item._id)}

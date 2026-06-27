@@ -1,10 +1,10 @@
 import React from "react";
 import "./footer.css";
-import icon_Facebook from "../image/icon_facebook.png";
-import icon_mail from "../image/icon_mail.png";
-import icon_lieu from "../image/icon_lieu.png";
-import icon_contact from "../image/icon_contact.png";
-import logo from "../image/kalico.png";
+import icon_Facebook from "../image/icon_facebook.webp";
+import icon_mail from "../image/icon_mail.webp";
+import icon_lieu from "../image/icon_lieu.webp";
+import icon_contact from "../image/icon_contact.webp";
+import logo from "../image/kalico.webp";
 
 function Foot() {
   return (

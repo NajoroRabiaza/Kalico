@@ -64,7 +64,7 @@ function Home() {
     <>
       <div className="HomePage">
         <div class="multi-image">
-          <img src="/image/boribory.png" alt="rond" className="im1" />
+          <img src="/image/boribory.webp" alt="rond" className="im1" />
         </div>
 
         <CustomNavbar size={cart.length} onSearchChange={handleSearchSubmit} />
@@ -92,37 +92,37 @@ function Home() {
 
                   <div className="contenairMenu">
                     <div className="menu">
-                      <Image className="imagemenu" src="/image/pates.png"
-                        onMouseOver={(e) => (e.currentTarget.src = "/image/pates1.png")}
-                        onMouseOut={(e) => (e.currentTarget.src = "/image/pates.png")}
+                      <Image className="imagemenu" src="/image/pates.webp"
+                        onMouseOver={(e) => (e.currentTarget.src = "/image/pates1.webp")}
+                        onMouseOut={(e) => (e.currentTarget.src = "/image/pates.webp")}
                         onClick={() => handleClic("/Soupe")} roundedCircle />
                       <span className="SousTitre">Pâtes</span>
                     </div>
                     <div className="menu">
-                      <Image className="imagemenu" src="/image/snack.png"
-                        onMouseOver={(e) => (e.currentTarget.src = "/image/snack1.png")}
-                        onMouseOut={(e) => (e.currentTarget.src = "/image/snack.png")}
+                      <Image className="imagemenu" src="/image/snack.webp"
+                        onMouseOver={(e) => (e.currentTarget.src = "/image/snack1.webp")}
+                        onMouseOut={(e) => (e.currentTarget.src = "/image/snack.webp")}
                         onClick={() => handleClic("/Burger")} roundedCircle />
                       <span className="SousTitre">Snack</span>
                     </div>
                     <div className="menu">
-                      <Image className="imagemenu" src="/image/riz.png"
-                        onMouseOver={(e) => (e.currentTarget.src = "/image/riz1.png")}
-                        onMouseOut={(e) => (e.currentTarget.src = "/image/riz.png")}
+                      <Image className="imagemenu" src="/image/riz.webp"
+                        onMouseOver={(e) => (e.currentTarget.src = "/image/riz1.webp")}
+                        onMouseOut={(e) => (e.currentTarget.src = "/image/riz.webp")}
                         onClick={() => handleClic("/Riz")} roundedCircle />
                       <span className="SousTitre">Riz</span>
                     </div>
                     <div className="menu">
-                      <Image className="imagemenu" src="/image/dessert.png"
-                        onMouseOver={(e) => (e.currentTarget.src = "/image/dessert1.png")}
-                        onMouseOut={(e) => (e.currentTarget.src = "/image/dessert.png")}
+                      <Image className="imagemenu" src="/image/dessert.webp"
+                        onMouseOver={(e) => (e.currentTarget.src = "/image/dessert1.webp")}
+                        onMouseOut={(e) => (e.currentTarget.src = "/image/dessert.webp")}
                         onClick={() => handleClic("/Dessert")} roundedCircle />
                       <span className="SousTitre">Dessert</span>
                     </div>
                     <div className="menu">
-                      <Image className="imagemenu" src="/image/boisson.png"
-                        onMouseOver={(e) => (e.currentTarget.src = "/image/boisson1.png")}
-                        onMouseOut={(e) => (e.currentTarget.src = "/image/boisson.png")}
+                      <Image className="imagemenu" src="/image/boisson.webp"
+                        onMouseOver={(e) => (e.currentTarget.src = "/image/boisson1.webp")}
+                        onMouseOut={(e) => (e.currentTarget.src = "/image/boisson.webp")}
                         onClick={() => handleClic("/Jus")} roundedCircle />
                       <span className="SousTitre">Boisson</span>
                     </div>
