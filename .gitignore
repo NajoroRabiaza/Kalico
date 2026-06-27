@@ -40,3 +40,4 @@ backend/.env
 
 # script unecessary
 backend/script_unecessarysrc/image/original/
+src/image/original/
