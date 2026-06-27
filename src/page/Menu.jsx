@@ -28,10 +28,8 @@ function Menu({ Userconnecte }) {
     fetchMenuSpecial();
   
     // Rafraîchir toutes les 15 secondes
-    const intervalId = setInterval(fetchMenuSpecial, 15000);
   
     // Nettoyage de l'intervalle à la fin
-    return () => clearInterval(intervalId);
   }, []);
 
   return (

@@ -21,8 +21,6 @@ function Riz({Userconnecte}) {
       .catch((err) => console.error("Erreur chargement Riz :", err));
     };
     fetchRiz();
-    const intervalId = setInterval(fetchRiz, 15000);
-    return () => clearInterval(intervalId);
   }, []);
 
   return (

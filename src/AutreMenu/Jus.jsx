@@ -22,8 +22,6 @@ function Jus({Userconnecte}) {
     };
 
     fetchJus();
-    const intervalId = setInterval(fetchJus, 15000);
-    return () => clearInterval(intervalId);
   }, []);
 
   return (

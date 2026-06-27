@@ -22,8 +22,6 @@ function Dessert({Userconnecte}) {
     };
     
     fetchDessert();
-    const intervalId = setInterval(fetchDessert, 15000);
-    return () => clearInterval(intervalId);
     }, []);
 
   return (

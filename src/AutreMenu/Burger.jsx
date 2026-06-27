@@ -24,10 +24,8 @@ function MenuBurger({Userconnecte}) {
   // Appel initial
   fetchBurger();
   // Rafraîchir toutes les 15 secondes
-  const intervalId = setInterval(fetchBurger, 15000);
 
   // Nettoyage de l'intervalle à la fin
-  return () => clearInterval(intervalId);
   }, []);
 
   return (

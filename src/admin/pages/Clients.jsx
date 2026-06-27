@@ -53,7 +53,7 @@ export default function Clients() {
   
     const intervalId = setInterval(() => {
       fetchClients();
-    }, 10000); // toutes les 10 secondes
+    }, 60000); // toutes les 60 secondes
   
     return () => clearInterval(intervalId);
   }, []);  

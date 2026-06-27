@@ -25,7 +25,7 @@ export default function Commande() {
   
     const intervalId = setInterval(() => {
       fetchCommandes();
-    }, 10000); // toutes les 10 secondes
+    }, 60000); // toutes les 10 secondes
   
     return () => clearInterval(intervalId); // nettoyage à la destruction du composant
   }, []);

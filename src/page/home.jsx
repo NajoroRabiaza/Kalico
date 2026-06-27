@@ -42,8 +42,6 @@ function Home() {
 
   useEffect(() => {
     fetchProduits();
-    const intervalId = setInterval(fetchProduits, 8000);
-    return () => clearInterval(intervalId);
   }, []);
 
   const handleClic = (path) => {

@@ -22,8 +22,6 @@ function Soupe({Userconnecte}) {
     };
 
     fetchSoupe();
-    const intervalId = setInterval(fetchSoupe, 15000);
-    return () => clearInterval(intervalId);
   }, []);
 
   return (
