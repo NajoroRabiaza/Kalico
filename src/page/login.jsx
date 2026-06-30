@@ -5,179 +5,82 @@ import "./SignIn.css";
 
 function Loginpage({ setUserConnecte }) {
   const [name, setName] = useState("");
-  const [loginUser, setLoginUser] = useState("");
   const [password, setPassword] = useState("");
-  const [loginPassword, setLoginPassword] = useState("");
   const [email, setEmail] = useState("");
-  const [loginemail, SetLoginemail] = useState("");
   const [connecte, setConnecte] = useState(false);
-  const [data, setData] = useState([]);
   const [existename, setExistname] = useState(false);
-
-  //Eto no nataoko ilay erreur rehetra
   const [erreur, setErreur] = useState(false);
   const [erreunom, setErreurnom] = useState(false);
   const [errEmail, setErrEmail] = useState(false);
   const [errpassword, setErreurpassword] = useState(false);
-  //Eto indray erreur an' ilay hoe ts misy @gmail.com
   const [emailmissing, setEmailmissing] = useState(false);
   const [missingpass, setMissingpass] = useState(false);
   const [incorrectemail, setIncorrectemail] = useState(false);
   const [succesConnect, setSuccesConnect] = useState(false);
-
-  //Staten' le maso @ password iny
   const [eye, setEye] = useState(false);
 
-
-  //Eto no mi naviguer ilay izy
-
   const navigate = useNavigate();
-  function navigation(path) {
-    navigate(path);
-  }
-
-  useEffect(() => {
-    const dataComparing = async () => {
-      try {
-        const datafetching = await fetch(`${API_URL}/dataUser`, {
-          method: "GET",
-        });
-        const donnefetch = await datafetching.json();
-        //console.log(donnefetch[0].name);
-        setData(donnefetch);
-      } catch (error) {
-        console.log("Une erreur c' est produit!");
-      }
-    };
-    dataComparing();
-    //console.log(data[0].email);
-  }, [data]);
 
   function handleclicLogin() {
-    console.log(data);
-    //console.log(data[1].email);
-
-    //Eto no manao condition de login
-    let j = 0;
-
     if (name.trim() === "" && email.trim() === "" && password.trim() === "") {
-      /* alert("Entrer les champs") */
       setErreur(true);
-    } else if (name.trim() == "") {
-      setErreurnom(true);
-    } else if (email.trim() == "") {
-      /* alert("Entrer votre email") */
-      setErrEmail(true);
-    } else if (password.trim() == "") {
-      /*  alert("Entrer votre mot de passe!") */
-      setErreurpassword(true);
-    } else if (!email.trim().includes("@gmail.com")) {
-      setEmailmissing(true);
-    } else {
-      for (let i = 0; i < data.length; i++) {
-        if (data[i].name === name) {
-          setExistname(false);
-          j = i;
-          break;
-        } else {
-          setExistname(true)
-        }
-      }
+      return;
     }
-    if (existename == false) {
-      /*  alert("Votre compte existe!"); */
-      if (data[j].email === email) {
+    if (name.trim() === "") { setErreurnom(true); return; }
+    if (email.trim() === "") { setErrEmail(true); return; }
+    if (password.trim() === "") { setErreurpassword(true); return; }
+    if (!email.trim().includes("@gmail.com")) { setEmailmissing(true); return; }
 
-        if (data[j].password === password) {
-          /* alert("Votre mot de passe est correcte vous ete connecte") */
+    // On envoie directement au backend, plus de fetch de tous les users
+    fetch(`${API_URL}/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, password, email }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.token) {
+          // Stockage du token et du level pour la protection des routes
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("userLevel", data.user.level);
+          localStorage.setItem("userName", data.user.name);
+
           setConnecte(true);
           setUserConnecte(true);
+          setSuccesConnect(true);
+
+          setTimeout(() => {
+            // Redirection admin si level === "admin", sinon accueil
+            if (data.user.level === "admin") {
+              navigate("/admin");
+            } else {
+              navigate("/");
+            }
+          }, 1000);
         } else {
-          /* alert("Votre mot de passe est incorrecte!") */
-          setMissingpass(true)
+          // Le backend a répondu sans token : credentials incorrects
+          setMissingpass(true);
         }
-      } else {
-
-        setIncorrectemail(true)
-      }
-    }
-
-    else {
-      /* alert("compte innexistant creer un compte") */
-      setExistname(true)
-      setUserConnecte(false);
-    }
-    console.log(j);
-  }
-  /*  j++; */
-
-
-
-
-  function handlchangename(event) {
-    setName(event.target.value);
+      })
+      .catch(() => setErreur(true));
   }
 
-  function handlchangepassword(event) {
-    setPassword(event.target.value);
-  }
-
-  function handlechangeEmail(event) {
-    setEmail(event.target.value);
-  }
-  function eyefunc() {
-    setEye(true);
-  }
-
-  setTimeout(() => {
-    /*    setExistname(false); */
-    setErreur(false);
-    setErrEmail(false);
-    setErreurpassword(false);
-    setEmailmissing(false);
-    setConnecte(false);
-    setIncorrectemail(false);
-
-  }, 8000);
+  const togglePassword = () => setEye((prev) => !prev);
 
   useEffect(() => {
-    if (connecte === true) {
-      setLoginUser(name);
-      setLoginPassword(password);
-      SetLoginemail(email);
-      const loginBackend = async () => {
-        try {
-          const fetchDatalogin = await fetch(`${API_URL}/login`, {
-            method: "POST",
-            mode: "cors",
-            headers: {
-              "content-type": "application/json",
-            },
-            body: JSON.stringify({
-              name: name,
-              password: password,
-              email: email,
-            }),
-          });
-        } catch (error) { }
-      };
-      loginBackend();
-      setSuccesConnect(true);
+    const timer = setTimeout(() => {
+      setErreur(false);
+      setErrEmail(false);
+      setErreurpassword(false);
+      setEmailmissing(false);
+      setConnecte(false);
+      setIncorrectemail(false);
+      setMissingpass(false);
+      setExistname(false);
+    }, 8000);
+    return () => clearTimeout(timer); // cleanup pour eviter les fuites memoire
+  }, [erreur, errEmail, errpassword, emailmissing, incorrectemail, missingpass, existename]);
 
-      /* alert("Connexion reussit") */
-      setTimeout(() => {
-        navigation("/");
-      }, 1000);
-    }
-  }, [connecte]);
-
-  const togglePassword = () => {
-    setEye(prev => !prev);
-  
-  };
-
-
-  // Export du state 'connecte' vers le composant Navbar via props
   return (
     <>
       <div className="SignIn_container">
@@ -199,7 +102,7 @@ function Loginpage({ setUserConnecte }) {
                 type="text"
                 className="nom"
                 value={name}
-                onChange={handlchangename}
+                onChange={(e) => setName(e.target.value)}
                 required
                 size={500}
               />
@@ -209,93 +112,51 @@ function Loginpage({ setUserConnecte }) {
               ) : succesConnect ? (
                 <p className="SuccesConnexion"> Connexion reussit</p>
               ) : erreur ? (
-                <p className="error" title="champ obligatoire ">
-                  champ obligatoire !
-                </p>
+                <p className="error">champ obligatoire !</p>
               ) : (
-                erreunom && (
-                  <p className="error" title="Entrer votre nom">
-                    Entrer votre nom!
-                  </p>
-                )
+                erreunom && <p className="error">Entrer votre nom!</p>
               )}
               <label htmlFor="nom">Enter your name</label>
             </div>
             <br />
             <div className="inputName">
               <input
-                type="text   "
+                type="text"
                 className="emailLogin"
                 required
                 value={email}
-                onChange={handlechangeEmail}
+                onChange={(e) => setEmail(e.target.value)}
                 size={700}
               />
-
               <div className="underline"></div>
               {erreur ? (
-                <p className="error" title="champ obligatoire ">
-                  champ obligatoire !
-                </p>
+                <p className="error">champ obligatoire !</p>
               ) : errEmail ? (
-                <p className="error" title="Entrer votre email!">
-                  Entrer votre email!
-                </p>
+                <p className="error">Entrer votre email!</p>
               ) : emailmissing ? (
-                <p
-                  className="error"
-                  title="Votre adresse email doit etre suivis d' un @gmail.com"
-                >
-                  @gmail.com obligatoire  !
-                </p>
+                <p className="error">@gmail.com obligatoire !</p>
               ) : (
-                incorrectemail && (
-                  <p
-                    className="error"
-                    title="Votre adresse email doit etre suivis d' un @gmail.com"
-                  >
-                    @gmail.com obligatoire !
-                  </p>
-                )
+                incorrectemail && <p className="error">@gmail.com obligatoire !</p>
               )}
               <label htmlFor="email">Enter your email</label>
             </div>
-
             <br />
             <div className="inputName">
-              {/*    <button onClick={eyefunc}><img src="#" alt="" /></button>  */}
               <input
-                type={(eye) ? 'text' : 'password'}
+                type={eye ? "text" : "password"}
                 className="passwordLogin"
                 required
                 value={password}
-                onChange={handlchangepassword}
+                onChange={(e) => setPassword(e.target.value)}
                 size={700}
               />
-
-
-
               <div className="underline"></div>
-
-              <div className="underline"></div>
-
               {erreur ? (
-                <p className="error" title="champ obligatoire ">
-                  champ obligatoire !
-                </p>
+                <p className="error">champ obligatoire !</p>
               ) : errpassword ? (
-                <p className="error" title="Votre mot de passe est incorrecte">
-                  Entrer votre mot de passe!
-                </p>
+                <p className="error">Entrer votre mot de passe!</p>
               ) : (
-                missingpass && (
-                  <p
-                    className="error"
-                    title="Votre mot de passe est incorrecte"
-                  >
-                    mot de passe incorrecte!
-                  </p>
-                )
+                missingpass && <p className="error">mot de passe incorrecte!</p>
               )}
               <label htmlFor="email">Enter your password</label>
             </div>
@@ -303,27 +164,26 @@ function Loginpage({ setUserConnecte }) {
               type="button"
               onClick={togglePassword}
               style={{
-                height:"30px",
-                width:"50px",
-                backgroundColor: '#f3f4f66b',
-                border: '1px solid #ccc',
-                borderRadius: '4px',
-                padding: '8px 12px',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
+                height: "30px",
+                width: "50px",
+                backgroundColor: "#f3f4f66b",
+                border: "1px solid #ccc",
+                borderRadius: "4px",
+                padding: "8px 12px",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
               }}
             >
-              {eye ? (
-                <span style={{ color: 'white', fontWeight: 'bold',fontSize:"10px" }}>hide</span>
-              ) : (
-                <span style={{ color: 'white', fontWeight: 'bold',fontSize:"10px" }}>show</span>
-              )}
-            </button><br />
+              <span style={{ color: "white", fontWeight: "bold", fontSize: "10px" }}>
+                {eye ? "hide" : "show"}
+              </span>
+            </button>
+            <br />
             <div className="paragraphe">
               <p>
-                Forgot password? <Link to={"/forgotPassword"}> click here</Link>
+                Forgot password? <Link to={"/forgotPassword"}>click here</Link>
               </p>
             </div>
             <button onClick={handleclicLogin} className="btnLogin">
@@ -338,11 +198,7 @@ function Loginpage({ setUserConnecte }) {
         </div>
         <div className="divImage">
           <div>
-            <img
-              src="/image/image_chef.webp"
-              alt="imageDechef"
-              id="imgeLogin"
-            />
+            <img src="/image/image_chef.webp" alt="imageDechef" id="imgeLogin" />
           </div>
           <h2
             style={{
@@ -367,4 +223,5 @@ function Loginpage({ setUserConnecte }) {
     </>
   );
 }
+
 export default Loginpage;
