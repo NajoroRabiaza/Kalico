@@ -1,10 +1,61 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { Nav } from "react-bootstrap";
-/* import "@fortawesome/fontawesome-free/css/all.min.css";   */
 
 import "./navbar.css";
 
+const IconSearch = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+    fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+  </svg>
+);
+
+const IconUser = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+    fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+  </svg>
+);
+
+const IconSettings = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+    fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="3"/>
+    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+  </svg>
+);
+
+const IconLogout = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+    fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+    <polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+  </svg>
+);
+
+const IconLogin = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+    fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+    <polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/>
+  </svg>
+);
+
+const IconBars = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+    fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="3" y1="12" x2="21" y2="12"/>
+    <line x1="3" y1="6" x2="21" y2="6"/>
+    <line x1="3" y1="18" x2="21" y2="18"/>
+  </svg>
+);
+
+const IconTimes = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+    fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+  </svg>
+);
 
 const CustomNavbar = ({ size, onSearchChange, UserConnect }) => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -15,9 +66,7 @@ const CustomNavbar = ({ size, onSearchChange, UserConnect }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
+    const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
 
     const handleClickOutside = (event) => {
@@ -25,7 +74,6 @@ const CustomNavbar = ({ size, onSearchChange, UserConnect }) => {
         setProfileMenuOpen(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
 
     return () => {
@@ -34,9 +82,9 @@ const CustomNavbar = ({ size, onSearchChange, UserConnect }) => {
     };
   }, []);
 
-  const toggleMenu = () => {
-    setMenuOpen(!menuOpen);
-  };
+  const toggleMenu = () => setMenuOpen(!menuOpen);
+  const toggleProfileMenu = () => setProfileMenuOpen(!profileMenuOpen);
+  const handleNavLinkClick = () => setMenuOpen(false);
 
   const handleInputChange = (e) => {
     const value = e.target.value;
@@ -44,18 +92,10 @@ const CustomNavbar = ({ size, onSearchChange, UserConnect }) => {
     onSearchChange(value);
   };
 
-  const toggleProfileMenu = () => {
-    setProfileMenuOpen(!profileMenuOpen);
-  };
-
   const handleLogout = () => {
-    navigate("/"); // mideconecte
+    localStorage.removeItem("token");
+    navigate("/");
   };
-  const handleNavLinkClick = () => {
-    setMenuOpen(false);
-  };
-
-  /*   console.log("UserConnect:", UserConnect); */
 
   return (
     <nav className={`nav ${scrolled ? "nav-scrolled" : ""}`}>
@@ -67,18 +107,13 @@ const CustomNavbar = ({ size, onSearchChange, UserConnect }) => {
         <div className={`main_list ${menuOpen ? "show_list" : ""}`}>
           <ul className="navlinks">
             <li>
-              <NavLink to="/" onClick={handleNavLinkClick}>
-                Accueil
-              </NavLink>
+              <NavLink to="/" onClick={handleNavLinkClick}>Accueil</NavLink>
             </li>
-
             <li>
-              <NavLink to="/menu" onClick={handleNavLinkClick}>
-                Menu du jour
-              </NavLink>
+              <NavLink to="/menu" onClick={handleNavLinkClick}>Menu du jour</NavLink>
             </li>
             <li className="mobile-search">
-              <i className="fas fa-search search-icon"></i>
+              <IconSearch />
               <input
                 type="text"
                 placeholder="Rechercher..."
@@ -91,7 +126,7 @@ const CustomNavbar = ({ size, onSearchChange, UserConnect }) => {
         </div>
 
         <div className="search-container">
-          <i className="fas fa-search search-icon"></i>
+          <IconSearch />
           <input
             type="text"
             placeholder="Rechercher..."
@@ -100,81 +135,66 @@ const CustomNavbar = ({ size, onSearchChange, UserConnect }) => {
             onChange={handleInputChange}
           />
         </div>
+
         <div className="right-side">
-          <Nav className="panier">
-            <Nav.Link as={Link} to="/panier">
+          <div className="panier">
+            <Link to="/panier" className="panier-link">
               <img src="/image/panier.webp" alt="panier" />
-            </Nav.Link>
+            </Link>
             <span>{size}</span>
-          </Nav>
+          </div>
 
           <div className="profile-container" ref={profileRef}>
             <a
-              className={`nav-link dropdown-toggle ${profileMenuOpen ? "toggle-change" : ""
-                }`}
+              className={`nav-link dropdown-toggle ${profileMenuOpen ? "toggle-change" : ""}`}
               href="#"
               id="navbarDropdown"
               role="button"
               aria-expanded={profileMenuOpen ? "true" : "false"}
               onClick={toggleProfileMenu}
             >
-              <img
-                src="/image/Profile.webp"
-                alt="profil"
-                className="profile-img"
-              />
+              <img src="/image/Profile.webp" alt="profil" className="profile-img" />
             </a>
 
             {profileMenuOpen && (
-  <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
-    {UserConnect ? (
-      <>
-        <li>
-          <a className="dropdown-item" href="#">
-            <i className="fas fa-user fa-fw"></i> Account
-          </a>
-        </li>
-        <li>
-          <a className="dropdown-item" href="#">
-            <i className="fas fa-cogs fa-fw"></i> Settings
-          </a>
-        </li>
-        <li>
-          <hr className="dropdown-divider" />
-        </li>
-        <li>
-          <a className="dropdown-item" href="/" onClick={handleLogout}>
-            <i className="fas fa-sign-out-alt fa-fw"></i> Log Out
-          </a>
-        </li>
-      </>
-    ) : (
-      <li>
-  <Link
-    className="dropdown-item"
-    to="/login"
-    onClick={() => {
-      setProfileMenuOpen(false);
-      setTimeout(() => window.location.reload(), 50); // petit délai la redirection
-    }}
-  >
-    <i className="fas fa-sign-in-alt fa-fw"></i> Login
-  </Link>
-</li>
-
-    )}
-  </ul>
-)}
-
+              <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
+                {UserConnect ? (
+                  <>
+                    <li>
+                      <a className="dropdown-item" href="#">
+                        <IconUser /> Account
+                      </a>
+                    </li>
+                    <li>
+                      <a className="dropdown-item" href="#">
+                        <IconSettings /> Settings
+                      </a>
+                    </li>
+                    <li><hr className="dropdown-divider" /></li>
+                    <li>
+                      <a className="dropdown-item" href="/" onClick={handleLogout}>
+                        <IconLogout /> Log Out
+                      </a>
+                    </li>
+                  </>
+                ) : (
+                  <li>
+                    <Link
+                      className="dropdown-item"
+                      to="/login"
+                      onClick={() => setProfileMenuOpen(false)}
+                    >
+                      <IconLogin /> Login
+                    </Link>
+                  </li>
+                )}
+              </ul>
+            )}
           </div>
         </div>
 
-        <span
-          className={`navTrigger ${menuOpen ? "active" : ""}`}
-          onClick={toggleMenu}
-        >
-          {" "}
-          <i className={`fas ${menuOpen ? "fa-times" : "fa-bars"}`}></i>
+        <span className={`navTrigger ${menuOpen ? "active" : ""}`} onClick={toggleMenu}>
+          {menuOpen ? <IconTimes /> : <IconBars />}
         </span>
       </div>
     </nav>
