@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect, useState } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
+import ProtectedAdminRoute from "./component/ProtectedAdminRoute";
 
 const Home = lazy(() => import("./page/home"));
 const Inscription = lazy(() => import("./page/Singin"));
@@ -50,7 +51,16 @@ function App() {
         <Route path="/Jus" element={<Jus Userconnecte={connecte} />} />
         <Route path="/Menu" element={<Menu Userconnecte={connecte} />} />
         <Route path="/Soupe" element={<Soupe Userconnecte={connecte} />} />
-        <Route path="/admin/*" element={<AppAdmin />} />
+
+        {/* Route protegee : seul un utilisateur avec level "admin" y a acces */}
+        <Route
+          path="/admin/*"
+          element={
+            <ProtectedAdminRoute>
+              <AppAdmin />
+            </ProtectedAdminRoute>
+          }
+        />
       </Routes>
     </Suspense>
   );
