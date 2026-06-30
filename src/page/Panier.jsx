@@ -43,7 +43,6 @@ function Panier({ Userconnecte }) {
   const removeItem = (_id) => {
     setCart((prev) => prev.filter((item) => item._id !== _id));
   };
-  console.log(Userconnecte);
 
   const ConditionalFunc = () => {
     if (cart.length !== 0) {
