@@ -5,11 +5,12 @@ import "./sidebar.css";
 const Sidebar = () => {
   const navigate = useNavigate();
   const handleLogout = () => {
-    setTimeout(() => {
-      navigate("/");
-      window.location.reload();
-    }, 1000);
-  };
+    // Nettoyage complet de la session admin dans le localStorage
+    localStorage.removeItem("token");
+    localStorage.removeItem("userLevel");
+    localStorage.removeItem("userName");
+    navigate("/");
+};
   return (
     <div className="sidebar">
       <div className="sidebar__top">
