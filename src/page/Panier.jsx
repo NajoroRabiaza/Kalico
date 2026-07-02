@@ -14,7 +14,9 @@ function Panier({ Userconnecte }) {
   const [showError, setshowError] = useState(false);
   const { showToast } = useToast();
   const [back, setBack] = useState(false);
-  const [redirect,setRedirect] = useState(false);
+  const [redirect, setRedirect] = useState(false);
+
+  const navigate = useNavigate();
 
   const increase = (_id) => {
     setCart((prev) =>
@@ -34,49 +36,49 @@ function Panier({ Userconnecte }) {
     );
   };
 
-  const navigate = useNavigate();
-
-  function navigation(path) {
-    navigate(path);
-  }
-
   const removeItem = (_id) => {
     setCart((prev) => prev.filter((item) => item._id !== _id));
   };
 
   const ConditionalFunc = () => {
     if (cart.length !== 0) {
-
       if (!Userconnecte) {
         setBack(true);
       } else {
-        setshow(true)
+        setshow(true);
       }
     } else {
-      showToast("Vous n'avez pas faim? veuiller choisir quelque chose à manger 😊😊😊", "warning");
+      showToast("Vous n'avez pas faim? veuiller choisir quelque chose à manger", "warning");
       setshow(false);
-      setshowError(true)
+      setshowError(true);
     }
   };
 
-  const DisplayAllOrder = () => {
-    alert("helloooo");
-  }
-useEffect(() => {
-  if (back) {
-    setRedirect(true);
-    setTimeout(() => {
-       navigation("/login");
-       window.location.reload();
-    }, 5000);
-   
-  }
-}, [back]);
+  // Redirection vers login si utilisateur non connecte
+  // navigate est inclus dans les dependances car il est utilise dans l'effet
+  useEffect(() => {
+    if (back) {
+      setRedirect(true);
+      const timer = setTimeout(() => {
+        navigate("/login");
+      }, 5000);
+      // Cleanup : annule le timer si le composant est demonte avant les 5s
+      return () => clearTimeout(timer);
+    }
+  }, [back, navigate]);
+
+  // Cache le message d'erreur panier vide apres 8 secondes
+  // Encapsule dans useEffect pour eviter de relancer le timer a chaque re-render
+  useEffect(() => {
+    if (!showError) return;
+    const timer = setTimeout(() => {
+      setshowError(false);
+    }, 8000);
+    // Cleanup : annule le timer si showError redevient false avant les 8s
+    return () => clearTimeout(timer);
+  }, [showError]);
 
   const total = cart.reduce((acc, item) => acc + item.prix * item.quantity, 0);
-  setTimeout(() => {
-    setshowError(false);
-  }, 8000);
 
   return (
     <>
@@ -143,10 +145,9 @@ useEffect(() => {
             >
               Commander
             </button>
-
-
           </div>
-          {(show) ? (
+
+          {show ? (
             createPortal(
               <Modal
                 oneclose={() => setshow(false)}
@@ -156,16 +157,16 @@ useEffect(() => {
                 SetConditionShow={setshow}
               />,
               document.body
-            )) : (redirect) &&
-          <div className="return" >
-            
-            <p>⚠️ Connectez vous d'abord </p>
-            <br />
-            <p>Redirection vers la page login </p>
-            <br />
-            <p>Veuillez patintez!😊</p>
-           </div>}
-
+            )
+          ) : redirect ? (
+            <div className="return">
+              <p>Connectez vous d'abord</p>
+              <br />
+              <p>Redirection vers la page login</p>
+              <br />
+              <p>Veuillez patienter!</p>
+            </div>
+          ) : null}
         </div>
       </div>
     </>
@@ -173,7 +174,3 @@ useEffect(() => {
 }
 
 export default Panier;
-
-/**
- * className="alert-error"> <strong>Error!</strong> Entrer des produits .
- */
