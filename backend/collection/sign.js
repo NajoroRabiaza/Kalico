@@ -49,7 +49,7 @@ const login = (req, res) => {
 
             const token = jwt.sign(
                 { id: user._id, name: user.name, level: user.level },
-                'UneValeursecrete',
+                process.env.JWT_SECRET,
                 { expiresIn: "1h" }
             );
 
