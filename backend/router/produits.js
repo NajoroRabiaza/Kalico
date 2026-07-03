@@ -1,22 +1,32 @@
 const express = require("express");
 const multer = require("multer");
 const router = express.Router();
-const { getProduits, addProduit, deleteProduit, updateProduit, getProduitsParCategorie, getMenuSpecial, rechercheProduits } = require("../controleurs/produitControleur");
+const verifyToken = require("../middleware/verifyToken");
+const {
+  getProduits,
+  addProduit,
+  deleteProduit,
+  updateProduit,
+  getProduitsParCategorie,
+  getMenuSpecial,
+  rechercheProduits,
+} = require("../controleurs/produitControleur");
 
-// Configuration Multer pour inserer les images dans mongo et en creer un lien
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, "uploads/"),
   filename: (req, file, cb) => cb(null, Date.now() + "-" + file.originalname),
 });
 const upload = multer({ storage });
 
-// Routes
+// Routes publiques : tout visiteur peut consulter le menu
 router.get("/", getProduits);
 router.get("/categorie/:categorie", getProduitsParCategorie);
 router.get("/menuSpecial", getMenuSpecial);
-router.get('/searchProducts', rechercheProduits);
-router.post("/", upload.single("img"), addProduit); // ajout avec image
-router.put("/:id", upload.single("img"), updateProduit);
-router.delete("/:id", deleteProduit);
+router.get("/searchProducts", rechercheProduits);
+
+// Routes protegees : seul un admin connecte peut modifier le catalogue
+router.post("/", verifyToken, upload.single("img"), addProduit);
+router.put("/:id", verifyToken, upload.single("img"), updateProduit);
+router.delete("/:id", verifyToken, deleteProduit);
 
 module.exports = router;
