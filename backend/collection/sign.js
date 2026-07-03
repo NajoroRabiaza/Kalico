@@ -1,124 +1,104 @@
-const mongoose = require("mongoose");
 const student = require("../model/client");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 
-const signup = (req, res, next) => {
-    //console.log(req.body);
+const signup = async (req, res) => {
+  try {
+    // On verifie si un compte existe deja avec ce nom ou cet email
+    const existing = await student.findOne({
+      $or: [{ name: req.body.name }, { email: req.body.email }]
+    });
 
-    let Client = new student(
-        {
-            name: req.body.name,
-            email: req.body.email,
-            level: req.body.level,
-            password: req.body.password
-        }
-    )
+    if (existing) {
+      return res.status(409).json({ message: "Compte deja existant" });
+    }
 
-    Client.save()
+    // Le salt definit le cout du hashage (10 = standard recommande en production)
+    // Plus le nombre est eleve, plus le hash est lent a calculer, donc difficile a bruteforcer
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(req.body.password, salt);
 
-        .then(response => {
-            res.json({
-                message: "Donne enregistrer avec succes !"
-            })
+    const Client = new student({
+      name: req.body.name,
+      email: req.body.email,
+      level: req.body.level,
+      password: hashedPassword,
+    });
 
-        })
+    await Client.save();
+    res.json({ message: "Compte cree avec succes !" });
 
-        .catch(error => {
-            res.json({
-                message: "Une erreur c' est produit durrant l' enregistrement de donne!"
-            })
-        })
-    //console.log(Client);
-
-}
-
-const login = (req, res) => {
-    let name = req.body.name;
-    let password = req.body.password;
-    let email = req.body.email;
-
-    student.findOne({ $or: [{ name: name }, { email: email }] })
-        .then(user => {
-            if (!user) {
-                return res.status(404).json({ message: "Compte introuvable" });
-            }
-
-            if (user.password !== password) {
-                return res.status(401).json({ message: "Mot de passe incorrect" });
-            }
-
-            const token = jwt.sign(
-                { id: user._id, name: user.name, level: user.level },
-                process.env.JWT_SECRET,
-                { expiresIn: "1h" }
-            );
-
-            res.json({
-                message: "Connexion réussie",
-                token,
-                user: {
-                    id: user._id,
-                    name: user.name,
-                    email: user.email,
-                    level: user.level,
-                }
-            });
-        })
-        .catch(error => {
-            console.log("Erreur login:", error);
-            res.status(500).json({ message: "Erreur de connexion" });
-        });
+  } catch (error) {
+    res.status(500).json({ message: "Erreur lors de la creation du compte" });
+  }
 };
 
+const login = async (req, res) => {
+  try {
+    const { name, password, email } = req.body;
 
+    const user = await student.findOne({ $or: [{ name }, { email }] });
 
+    if (!user) {
+      return res.status(404).json({ message: "Compte introuvable" });
+    }
 
-const dataUser = (requete, response) => {
-    student.find({})
-        .then(user => {
-            //console.log("Voici les donnes de l' utilisateur :",);
-            response.send(user);
+    // bcrypt.compare compare le mot de passe en clair avec le hash stocke en base
+    // Il est impossible de retrouver le mot de passe original a partir du hash
+    const isMatch = await bcrypt.compare(password, user.password);
 
-        })
-        .catch(err => {
-            console.log(err);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Mot de passe incorrect" });
+    }
 
-        })
+    const token = jwt.sign(
+      { id: user._id, name: user.name, level: user.level },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
 
-}
+    res.json({
+      message: "Connexion reussie",
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        level: user.level,
+      },
+    });
 
-const ChangePass = (requeste, response) => {
-    console.log(requeste.body);
-    const getid = requeste.params.id;
-    console.log(getid);
+  } catch (error) {
+    res.status(500).json({ message: "Erreur de connexion" });
+  }
+};
 
-    let passChange = requeste.body.passChange;
+const dataUser = async (req, res) => {
+  try {
+    const users = await student.find({}).select("-password");
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ message: "Erreur lors de la recuperation des utilisateurs" });
+  }
+};
 
-    student.findByIdAndUpdate(getid, { $set: { password: passChange } })
-        .then(change => {
-            response.json({
-                message: "Password updating"
-            })
-            console.log("Password updating");
+const ChangePass = async (req, res) => {
+  try {
+    const getid = req.params.id;
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(req.body.passChange, salt);
 
-        }
+    await student.findByIdAndUpdate(getid, { $set: { password: hashedPassword } });
+    res.json({ message: "Mot de passe mis a jour" });
 
-        )
-        .catch(err => {
-            response.json(
-                { message: "Une erreur c' est produit" }
-            )
-            console.log(err);
+  } catch (err) {
+    res.status(500).json({ message: "Erreur lors du changement de mot de passe" });
+  }
+};
 
-        }
-            /* console.log("Une erreur c' est produit") */
-
-        )
-
-}
 module.exports = {
-    signup,
-    login,
-    dataUser,
-    ChangePass,
+  signup,
+  login,
+  dataUser,
+  ChangePass,
 };
