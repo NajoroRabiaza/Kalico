@@ -1,11 +1,12 @@
 import API_URL from "../../api";
-import { useEffect, useState } from 'react';
-import CustomTable from '../components/CustomTable';
-import { productsColumns as originalColumns } from '../data/productsData';
+import authFetch from "../../utils/authFetch";
+import { useEffect, useState } from "react";
+import CustomTable from "../components/CustomTable";
+import { productsColumns as originalColumns } from "../data/productsData";
 import {
   Modal, Box, Typography, TextField,
   Button, FormControlLabel, Checkbox
-} from '@mui/material';
+} from "@mui/material";
 
 export default function Products() {
   const [rows, setRows] = useState([]);
@@ -15,15 +16,16 @@ export default function Products() {
 
   const fetchProduits = () => {
     setLoading(true);
+    // GET public : pas besoin de token pour consulter le catalogue
     fetch(`${API_URL}/produits`)
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         const produitsAvecTri = data.sort(
           (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
         );
         setRows(produitsAvecTri);
       })
-      .catch(err => console.error("Erreur de chargement :", err))
+      .catch((err) => console.error("Erreur de chargement :", err))
       .finally(() => setLoading(false));
   };
 
@@ -33,18 +35,14 @@ export default function Products() {
 
   const handleOpenCreate = () => {
     setEditingProduct({
-      nom: '', prix: '', quantite: '', description: '',
-      categorie: '', menuSpecial: false, imgFile: null
+      nom: "", prix: "", quantite: "", description: "",
+      categorie: "", menuSpecial: false, imgFile: null,
     });
     setOpenModal(true);
   };
 
   const handleEdit = (product) => {
-    setEditingProduct({
-      ...product,
-      imgFile: null,
-      menuSpecial: product.menuSpecial || false
-    });
+    setEditingProduct({ ...product, imgFile: null, menuSpecial: product.menuSpecial || false });
     setOpenModal(true);
   };
 
@@ -55,9 +53,8 @@ export default function Products() {
 
   const handleDelete = async (id) => {
     try {
-      const res = await fetch(`${API_URL}/produits/${id}`, {
-        method: "DELETE",
-      });
+      // authFetch injecte le token : route protegee par verifyToken
+      const res = await authFetch(`${API_URL}/produits/${id}`, { method: "DELETE" });
       if (!res.ok) throw new Error("Erreur suppression");
       fetchProduits();
     } catch (err) {
@@ -67,9 +64,9 @@ export default function Products() {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setEditingProduct(prev => ({
+    setEditingProduct((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
@@ -92,13 +89,16 @@ export default function Products() {
         : `${API_URL}/produits`;
       const method = isEdit ? "PUT" : "POST";
 
+      // authFetch injecte le token : routes POST et PUT protegees par verifyToken
+      // Pour FormData on ne met pas Content-Type, le navigateur le gere avec le boundary
+      const token = localStorage.getItem("token");
       const res = await fetch(url, {
         method,
+        headers: { Authorization: `Bearer ${token}` },
         body: formData,
       });
 
       if (!res.ok) throw new Error("Erreur lors de la sauvegarde du produit");
-
       await fetchProduits();
       handleClose();
     } catch (err) {
@@ -108,16 +108,15 @@ export default function Products() {
 
   return (
     <>
-      <Box sx={{ mb: 2, mt: 2, mr: 4, ml: 4, display: 'flex', justifyContent: 'space-between' }}>
+      <Box sx={{ mb: 2, mt: 2, mr: 4, ml: 4, display: "flex", justifyContent: "space-between" }}>
         <button
           onClick={fetchProduits}
           style={{
             padding: "6px 12px", backgroundColor: "#007bff",
-            color: "white", border: "none", borderRadius: "4px",
-            cursor: "pointer"
+            color: "white", border: "none", borderRadius: "4px", cursor: "pointer",
           }}
         >
-          🔄 Actualiser
+          Actualiser
         </button>
         <Button variant="contained" color="primary" onClick={handleOpenCreate}>
           Nouveau produit
@@ -134,66 +133,38 @@ export default function Products() {
 
       <Modal open={openModal} onClose={handleClose}>
         <Box sx={{
-          position: 'absolute',
-          top: '50%', left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: 430, bgcolor: 'background.paper',
+          position: "absolute", top: "50%", left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: 430, bgcolor: "background.paper",
           boxShadow: 24, p: 4, borderRadius: 2,
         }}>
           <Typography variant="h6" gutterBottom>
-            {editingProduct?._id ? 'Modifier un produit' : 'Créer un produit'}
+            {editingProduct?._id ? "Modifier un produit" : "Créer un produit"}
           </Typography>
-
-          <TextField
-            fullWidth label="Nom" name="nom" margin="normal"
-            value={editingProduct?.nom || ''}
-            onChange={handleChange}
-          />
-          <TextField
-            fullWidth label="Prix" name="prix" margin="normal" type="number"
-            value={editingProduct?.prix || ''}
-            onChange={handleChange}
-          />
-          <TextField
-            fullWidth label="Quantité" name="quantite" margin="normal" type="number"
-            value={editingProduct?.quantite || ''}
-            onChange={handleChange}
-          />
-          <TextField
-            fullWidth label="Description" name="description" margin="normal"
-            multiline rows={2}
-            value={editingProduct?.description || ''}
-            onChange={handleChange}
-          />
-          <TextField
-            fullWidth label="Catégorie" name="categorie" margin="normal"
-            value={editingProduct?.categorie || ''}
-            onChange={handleChange}
-          />
-
+          <TextField fullWidth label="Nom" name="nom" margin="normal"
+            value={editingProduct?.nom || ""} onChange={handleChange} />
+          <TextField fullWidth label="Prix" name="prix" margin="normal" type="number"
+            value={editingProduct?.prix || ""} onChange={handleChange} />
+          <TextField fullWidth label="Quantité" name="quantite" margin="normal" type="number"
+            value={editingProduct?.quantite || ""} onChange={handleChange} />
+          <TextField fullWidth label="Description" name="description" margin="normal"
+            multiline rows={2} value={editingProduct?.description || ""} onChange={handleChange} />
+          <TextField fullWidth label="Catégorie" name="categorie" margin="normal"
+            value={editingProduct?.categorie || ""} onChange={handleChange} />
           <FormControlLabel
             control={
-              <Checkbox
-                name="menuSpecial"
+              <Checkbox name="menuSpecial"
                 checked={editingProduct?.menuSpecial || false}
-                onChange={handleChange}
-              />
+                onChange={handleChange} />
             }
             label="Menu Spécial"
           />
-
-          <input
-            type="file"
-            accept="image/*"
+          <input type="file" accept="image/*"
             onChange={(e) =>
-              setEditingProduct((prev) => ({
-                ...prev,
-                imgFile: e.target.files[0],
-              }))
+              setEditingProduct((prev) => ({ ...prev, imgFile: e.target.files[0] }))
             }
           />
-
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+          <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
             <Button onClick={handleClose} sx={{ mr: 1 }}>Annuler</Button>
             <Button variant="contained" onClick={handleSave}>
               {editingProduct?._id ? "Mettre à jour" : "Créer"}
