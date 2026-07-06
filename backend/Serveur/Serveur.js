@@ -13,7 +13,10 @@ const clientsRoute = require("../router/clients");
 const produitsRoute = require("../router/produits");
 const commandesRoute = require("../router/commandes");
 
-app.use(cors({ origin: "*" }));
+// CORS restreint a l'URL du frontend definie en variable d'environnement
+// En developpement local, FRONTEND_URL=http://localhost:5173
+app.use(cors({ origin: process.env.FRONTEND_URL }));
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));
