@@ -24,15 +24,34 @@ function Inscription() {
 
   const navigate = useNavigate();
 
-  function navigation(params) {
-    navigate(params);
-  }
-  function handlchange(event) {
-    setNom(event.target.value);
-  }
+  const hasError = erreur || errlevel || errEmailVide || errEmail || erreurpassword || errpasswordchar;
+
+  // Cache tous les messages d'erreur apres 8 secondes
+  // Encapsule dans useEffect pour eviter de relancer le timer a chaque re-render
+  useEffect(() => {
+    if (!hasError) return;
+    const timer = setTimeout(() => {
+      setErreur(false);
+      setErrlevel(false);
+      setErrEmailvide(false);
+      setErrEmail(false);
+      setErreurpassword(false);
+      setErrpasschar(false);
+    }, 8000);
+    return () => clearTimeout(timer);
+  }, [hasError]);
+
+  // Redirige vers login apres inscription reussie
+  // Le cleanup annule la redirection si le composant est demonte avant 1s
+  useEffect(() => {
+    if (!connecte) return;
+    const timer = setTimeout(() => {
+      navigate("/login");
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [connecte, navigate]);
 
   function handleAdd() {
-    //Condition de fonctionnemnet du mot de passe
     if (
       nom.trim() === "" &&
       email.trim() === "" &&
@@ -52,10 +71,7 @@ function Inscription() {
       if (nom.trim() === "") {
         setErrnom(true);
       } else if (email.trim() === "") {
-        /* alert("Entrer une adresse email"); */
         setErrEmailvide(true);
-      } else if (password.trim() === "") {
-        alert("Entrer un mot de passe");
       } else if (level.trim() === "") {
         setErrlevel(true);
       } else if (
@@ -75,65 +91,42 @@ function Inscription() {
         setConnecte(true);
       }
     } else {
-      /*     alert("Veuillez mettre un caractere specifique au mot de passe"); */
       setErreur(false);
       setErrpasschar(true);
     }
+  }
 
-    //Eto no miala ilay erreur apres 10 000s 😁😁
-    setTimeout(() => {
-      setErreur(false);
-      setErrlevel(false);
-      setErrEmailvide(false);
-      setErrEmail(false);
-      setErreurpassword(false);
-      setErrpasschar(false);
-    }, 8000);
-  }
-  function handlchangeemail(event) {
-    setEmail(event.target.value);
-  }
-  function handlchangepassword(event) {
-    setPassword(event.target.value);
-  }
-  const handlchangeLevel = (event) => {
-    setLevel(event.target.value);
-  };
+  function handlchange(event) { setNom(event.target.value); }
+  function handlchangeemail(event) { setEmail(event.target.value); }
+  function handlchangepassword(event) { setPassword(event.target.value); }
+  const handlchangeLevel = (event) => { setLevel(event.target.value); };
+  const togglePassword = () => setEye((prev) => !prev);
 
+  // Envoi des donnees d'inscription au backend
+  // Se declenche uniquement quand newnom change, c'est-a-dire apres validation complete
   useEffect(() => {
+    if (!newnom) return;
     const inputData = async () => {
-      const dataSend = await fetch(`${API_URL}/signup`, {
-        method: "POST",
-        mode: "cors",
-        headers: {
-          "content-type": "application/json",
-        },
-        body: JSON.stringify({
-          name: newnom,
-          email: newemail,
-          level: newlevel,
-          password: newpassword,
-        }),
-      });
-      const result = await dataSend.json();
-      //console.log("Donne enregistrer : ", result);
+      try {
+        const dataSend = await fetch(`${API_URL}/signup`, {
+          method: "POST",
+          mode: "cors",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            name: newnom,
+            email: newemail,
+            level: newlevel,
+            password: newpassword,
+          }),
+        });
+        await dataSend.json();
+      } catch (error) {
+        console.error("Erreur inscription :", error);
+      }
     };
     inputData();
   }, [newnom]);
 
-  useEffect(() => {
-    connecte &&
-      setTimeout(() => {
-     
-        navigation("/login");
-      }, 1000);
-  }, [connecte]);
-
-
-  const togglePassword = () => {
-    setEye(prev => !prev);
-  
-  };
   return (
     <>
       <div className="SignIn_container">
@@ -160,23 +153,16 @@ function Inscription() {
                 size={800}
               />
               {erreur ? (
-                <p className="error" title="champ obligatoire ">
-                  champ obligatoire
-                </p>
+                <p className="error" title="champ obligatoire">champ obligatoire</p>
               ) : connecte ? (
-                <p className="SuccesConnexion"> Compte creer avec succes</p>
+                <p className="SuccesConnexion">Compte creer avec succes</p>
               ) : (
-                errnom && (
-                  <p className="error" title="Entrer un nom">
-                    Entrer un nom
-                  </p>
-                )
+                errnom && <p className="error" title="Entrer un nom">Entrer un nom</p>
               )}
               <div className="underline"></div>
               <label htmlFor="nom">Entrer votre nom</label>
             </div>
             <br />
-
             <div className="inputName">
               <input
                 type="email"
@@ -186,19 +172,11 @@ function Inscription() {
                 required
               />
               {erreur ? (
-                <p className="error" title="champ obligatoire ">
-                  Champ obligatoire
-                </p>
+                <p className="error" title="champ obligatoire">Champ obligatoire</p>
               ) : errEmail ? (
-                <p className="error" title="il manque @gmail.com ">
-                  il manque @gmail.com
-                </p>
+                <p className="error" title="il manque @gmail.com">il manque @gmail.com</p>
               ) : (
-                errEmailVide && (
-                  <p className="error" title="entrer votre email">
-                    entrer votre email
-                  </p>
-                )
+                errEmailVide && <p className="error" title="entrer votre email">entrer votre email</p>
               )}
               <div className="underline"></div>
               <label htmlFor="email">Entrer votre email</label>
@@ -206,31 +184,23 @@ function Inscription() {
             <br />
             <div className="inputName">
               <input
-                type={eye?'text':'password'}
+                type={eye ? "text" : "password"}
                 id="password"
                 required
                 value={password}
                 onChange={handlchangepassword}
               />
               {erreur ? (
-                <p className="error" title="champ obligatoire">
-                  Champ obligatoires
-                </p>
+                <p className="error" title="champ obligatoire">Champ obligatoires</p>
               ) : erreurpassword ? (
-                <p className="error" title="mot de passe incorrecte">
-                  mot de passe incorrecte!
-                </p>
+                <p className="error" title="mot de passe incorrecte">mot de passe incorrecte!</p>
               ) : (
                 errpasswordchar && (
-                  <p
-                    className="error"
-                    title="caractere specifique requis :@ ou # ou $ ou & ou *"
-                  >
+                  <p className="error" title="caractere specifique requis">
                     Entrer au moin 1:@ ou # ou $ ou & ou *
                   </p>
                 )
               )}
-
               <div className="underline"></div>
               <label htmlFor="password">Crée votre mot de passe</label>
             </div>
@@ -238,23 +208,21 @@ function Inscription() {
               type="button"
               onClick={togglePassword}
               style={{
-                height:"30px",
-                width:"50px",
-                backgroundColor: '#f3f4f657',
-                border: '1px solid #ccc',
-                borderRadius: '4px',
-                padding: '8px 12px',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
+                height: "30px",
+                width: "50px",
+                backgroundColor: "#f3f4f657",
+                border: "1px solid #ccc",
+                borderRadius: "4px",
+                padding: "8px 12px",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
               }}
             >
-              {eye ? (
-                <span style={{ color: 'white', fontWeight: 'bold',fontSize:"10px" }}>hide</span>
-              ) : (
-                <span style={{ color: 'white', fontWeight: 'bold',fontSize:"10px" }}>show</span>
-              )}
+              <span style={{ color: "white", fontWeight: "bold", fontSize: "10px" }}>
+                {eye ? "hide" : "show"}
+              </span>
             </button>
             <br />
             <div className="inputName">
@@ -266,24 +234,21 @@ function Inscription() {
                 onChange={handlchangeLevel}
               />
               {erreur ? (
-                <p className="error" title="champ obligatoire ">
-                  Champ obligatoire
-                </p>
+                <p className="error" title="champ obligatoire">Champ obligatoire</p>
               ) : (
                 errlevel && (
-                  <p className="error" title="Enter un niveau L1,L2 or L3 ">
-                    "Enter one level with L1,L2 or L3!
+                  <p className="error" title="Enter un niveau L1,L2 or L3">
+                    Enter one level with L1, L2 or L3!
                   </p>
                 )
               )}
               <div className="underline"></div>
-              <label htmlFor="email">Entrer votre niveau</label>
+              <label htmlFor="level">Entrer votre niveau</label>
             </div>
             <br />
             <button className="btnLogin" onClick={handleAdd}>
-              <h5 style={{ fontSize: "35pxs" }}>Sign up </h5>
+              <h5 style={{ fontSize: "35px" }}>Sign up</h5>
             </button>
-
             <div className="paragraphe">
               <p>
                 Do you have an account? <Link to={"/login"}>clic here</Link>
@@ -291,14 +256,9 @@ function Inscription() {
             </div>
           </div>
         </div>
-
         <div className="divImage">
           <div>
-            <img
-              src="/image/image_chef.webp"
-              alt="imageDechef"
-              id="imgeLogin"
-            />
+            <img src="/image/image_chef.webp" alt="imageDechef" id="imgeLogin" />
           </div>
           <h2
             style={{
@@ -308,7 +268,6 @@ function Inscription() {
               fontSize: "50px",
             }}
           >
-            {" "}
             <strong>Kalⁱco</strong>
           </h2>
         </div>
