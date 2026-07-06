@@ -36,7 +36,7 @@ export default function Clients() {
 
   useEffect(() => {
     const fetchClients = () => {
-      fetch('${API_URL}/dataUser')
+      fetch(`${API_URL}/dataUser`)
         .then(res => res.json())
         .then(data => {
           if (Array.isArray(data)) {

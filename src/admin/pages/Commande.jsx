@@ -7,7 +7,7 @@ export default function Commande() {
   const [commandes, setCommandes] = useState([]);
 
   const fetchCommandes = () => {
-    fetch('${API_URL}/commandes')
+    fetch(`${API_URL}/commandes`)
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) {
