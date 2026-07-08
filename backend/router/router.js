@@ -1,5 +1,5 @@
 const express = require("express");
-const AllController = require("../collection/sign");
+const AllController = require('../collection/sign');
 const fandoavamBola = require("../collection/paye");
 const verifyToken = require("../middleware/verifyToken");
 const router = express.Router();
@@ -7,6 +7,7 @@ const router = express.Router();
 // Route proteger : seul un utilisateur avec un token valide peut acceder aux donnees users
 router.get("/dataUser", verifyToken, AllController.dataUser);
 router.post("/signup", AllController.signup);
+router.post("/forgotPassword", AllController.forgotPassword);
 router.post("/login", AllController.login);
 router.post("/payement", fandoavamBola.payement);
 router.post("/payementMvola", fandoavamBola.payementMvola);

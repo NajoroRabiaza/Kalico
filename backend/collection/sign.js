@@ -97,8 +97,33 @@ const ChangePass = async (req, res) => {
 };
 
 module.exports = {
+  forgotPassword,
   signup,
   login,
   dataUser,
   ChangePass,
+};
+
+
+const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ message: "Email requis" });
+    }
+
+    // On cherche l'utilisateur par email sans exposer son mot de passe
+    const user = await student.findOne({ email }).select("-password");
+
+    if (!user) {
+      return res.status(404).json({ message: "Email introuvable" });
+    }
+
+    // On retourne uniquement l'id pour construire le lien de reinitialisation
+    res.json({ id: user._id });
+
+  } catch (error) {
+    res.status(500).json({ message: "Erreur serveur" });
+  }
 };
