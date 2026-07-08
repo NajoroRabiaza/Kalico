@@ -1,4 +1,5 @@
 import API_URL from "../../api";
+import authFetch from "../../utils/authFetch";
 import { useEffect, useState } from 'react';
 import CustomTable from '../components/CustomTable';
 import { columns, formatCommandes } from '../data/commandesData';
@@ -7,7 +8,8 @@ export default function Commande() {
   const [commandes, setCommandes] = useState([]);
 
   const fetchCommandes = () => {
-    fetch(`${API_URL}/commandes`)
+    // authFetch injecte le token : route protegee par verifyToken
+    authFetch(`${API_URL}/commandes`)
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) {
@@ -21,36 +23,25 @@ export default function Commande() {
   };
 
   useEffect(() => {
-    fetchCommandes(); // appel initial du fetch
-  
-    const intervalId = setInterval(() => {
-      fetchCommandes();
-    }, 60000); // toutes les 10 secondes
-  
-    return () => clearInterval(intervalId); // nettoyage à la destruction du composant
+    fetchCommandes();
+    const intervalId = setInterval(fetchCommandes, 60000);
+    return () => clearInterval(intervalId);
   }, []);
-  
 
   const handleDeleteCommande = (id) => {
-    fetch(`${API_URL}/commandes/${id}`, {
-      method: "DELETE",
-    })
+    // authFetch injecte le token : route protegee par verifyToken
+    authFetch(`${API_URL}/commandes/${id}`, { method: "DELETE" })
       .then((res) => {
         if (!res.ok) throw new Error("Erreur de suppression");
         fetchCommandes();
       })
-      .catch((err) => {
-        console.error("Erreur suppression commande :", err);
-        alert("Échec de la suppression");
-      });
+      .catch((err) => console.error("Erreur suppression commande :", err));
   };
 
   const handleStatutChange = (commandeId, newStatut) => {
-    fetch(`${API_URL}/commandes/${commandeId}`, {
+    // authFetch injecte le token : route protegee par verifyToken
+    authFetch(`${API_URL}/commandes/${commandeId}`, {
       method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
       body: JSON.stringify({ statut: newStatut }),
     })
       .then(res => {

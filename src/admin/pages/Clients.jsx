@@ -1,4 +1,5 @@
 import API_URL from "../../api";
+import authFetch from "../../utils/authFetch";
 import { useEffect, useState } from 'react';
 import CustomTable from '../components/CustomTable';
 
@@ -8,7 +9,6 @@ const columns = [
   { id: 'createdAt', label: 'Date', minWidth: 150 },
 ];
 
-// Fonction pour formater les dates
 function formatClients(clients) {
   return clients.map(client => {
     const dateObj = new Date(client.createdAt);
@@ -23,11 +23,7 @@ function formatClients(clients) {
       hour: '2-digit',
       minute: '2-digit',
     });
-
-    return {
-      ...client,
-      createdAt: `${datePart} à ${timePart}`,
-    };
+    return { ...client, createdAt: `${datePart} à ${timePart}` };
   });
 }
 
@@ -36,27 +32,24 @@ export default function Clients() {
 
   useEffect(() => {
     const fetchClients = () => {
-      fetch(`${API_URL}/dataUser`)
+      // authFetch injecte le token : route protegee par verifyToken
+      authFetch(`${API_URL}/dataUser`)
         .then(res => res.json())
         .then(data => {
           if (Array.isArray(data)) {
-            const formatted = formatClients(data);
-            setClients(formatted);
+            setClients(formatClients(data));
           } else {
             console.error('Format inattendu', data);
           }
         })
         .catch(err => console.error('Erreur fetch clients:', err));
     };
-  
-    fetchClients(); // appel initial
-  
-    const intervalId = setInterval(() => {
-      fetchClients();
-    }, 60000); // toutes les 60 secondes
-  
+
+    fetchClients();
+
+    const intervalId = setInterval(fetchClients, 60000);
     return () => clearInterval(intervalId);
-  }, []);  
+  }, []);
 
   return (
     <CustomTable
