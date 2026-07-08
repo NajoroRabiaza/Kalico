@@ -1,149 +1,103 @@
 import API_URL from "../api";
-import React, { useEffect } from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import "./forgotPassword.css";
 import { Link, useNavigate } from "react-router-dom";
-import ChangePassword from "./forgotPassword2";
-
 
 const ForgotPassword = () => {
-    const [email, setEmail] = useState("");
-    const [message, setMessage] = useState("");
-    const [data, setData] = useState([]);
-    const show = false;
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
-    //Eto no mi naviger ny olona a
-    const naviger = useNavigate()
-    const navigate = (path) => {
-        naviger(path)
+  // On envoie uniquement l'email au backend qui fait la recherche
+  // Le backend retourne l'id si l'email existe, sans exposer les autres utilisateurs
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (email.trim() === "") {
+      setMessage("Entrer votre email");
+      return;
     }
 
-    
+    try {
+      const res = await fetch(`${API_URL}/forgotPassword`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
 
-    useEffect(() => {
-        const findPass = async () => {
-            try {
-                const findUpdating = await fetch(`${API_URL}/dataUser`, {
-                    method: 'GET'
-                })
-                const donneFetcher = await findUpdating.json();
+      const data = await res.json();
 
-                setData(donneFetcher);
-                /* console.log(data); */
+      if (!res.ok) {
+        setMessage(data.message || "Email introuvable");
+        return;
+      }
 
-            } catch (error) {
-                console.log(error);
+      // Redirection vers la page de changement de mot de passe avec l'id
+      navigate(`/ChangePassword/${data.id}`);
 
-            }
-        }
-        findPass();
-
-    }, [email]);
-
-    //Condition andefasana an' le olona makany @ le fanovana pswd
-    const handleSubmit = (e) => {
-        e.preventDefault();
-
-        // Simulación de envío de correo
-        if (email == "") {
-            setMessage(`Entrer votre email`); 
-            setEmail("");
-
-
-        } 
-        else if (email !== "") {
-        for (let index = 0; index < data.length; index++) {
-            console.log(index);
-
-            if (data[index].email !== email) {
-                console.log("Votre email est introuvable");
-            }
-            else {
-                console.log("Votre email est correcte");
-                let idData = data[index]._id;
-                /* console.log(idData); */
-               /*  <ChangePassword dataId={idData} /> */
-
-                navigate(`/ChangePassword/${idData}`);
-                break;
-            }
-        }
-
-
+    } catch (error) {
+      setMessage("Erreur serveur, veuillez reessayer");
     }
-    };
-    
+  };
 
-    return (
-        <>
-            
-                    <div className="ContainerForgot">
-                        <div style={{
-                            maxWidth: "400px", margin: "0 auto", height: "400px",
-                            width: "500px", border: "0.3px solid black", display: "flex",
-                            alignItems: "center", justifyContent: "center", boxShadow: "0px 0px 1px black",
-                            backgroundColor: ""
-                        }}>
-                            <div style={{ height: "200px" }}>
-
-
-                                <h2 style={{ color: "white", position: "relative", bottom: "30px" }}>Mot de passe oubllier ?</h2>
-                                <br />
-                                {/* <form onSubmit={handleSubmit}> */}
-                                    <div style={{ marginBottom: "15px" }}>
-                                        {/* <label htmlFor="email">Correo Electrónico:</label> */}
-                                        <input
-                                            type="email"
-                                            id="email"
-                                            value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
-                                            placeholder="Entrer votre email"
-                                            style={{
-                                                width: "100%",
-                                                padding: "10px",
-                                                marginTop: "5px",
-                                                borderRadius: "5px",
-                                                border: "1px solid #ccc",
-                                                outline: "none",
-                                                /*   border:"none", */
-                                                borderBottomColor: "black",
-                                                background: "white",
-
-                                            }}
-                                        />
-                                    </div>
-                                    <button
-                                        onClick={handleSubmit}
-                                        style={{
-
-                                            backgroundColor: "rgb(149, 11, 255, 1)",
-                                            color: "white",
-                                            padding: "10px 20px",
-                                            marginTop: "20px",
-                                            border: "none",
-                                            borderRadius: "5px",
-                                            cursor: "pointer",
-                                            width: "100%"
-                                        }}
-
-                                    >
-                                        Submite
-                                    </button>
-                                    <p></p><Link to={"/login"} style={{ color: "white" }}>⬅️Retour</Link>
-                                {/* </form> */}
-                                {message && <p style={{ marginTop: "15px", color: "green" }}>{message}</p>}
-                            </div>
-                        </div>
-
-
-                    </div>
-            
-
-        </>
-    );
+  return (
+    <>
+      <div className="ContainerForgot">
+        <div style={{
+          maxWidth: "400px", margin: "0 auto", height: "400px",
+          width: "500px", border: "0.3px solid black", display: "flex",
+          alignItems: "center", justifyContent: "center",
+          boxShadow: "0px 0px 1px black",
+        }}>
+          <div style={{ height: "200px" }}>
+            <h2 style={{ color: "white", position: "relative", bottom: "30px" }}>
+              Mot de passe oublier ?
+            </h2>
+            <br />
+            <div style={{ marginBottom: "15px" }}>
+              <input
+                type="email"
+                id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Entrer votre email"
+                style={{
+                  width: "100%",
+                  padding: "10px",
+                  marginTop: "5px",
+                  borderRadius: "5px",
+                  border: "1px solid #ccc",
+                  outline: "none",
+                  borderBottomColor: "black",
+                  background: "white",
+                }}
+              />
+            </div>
+            <button
+              onClick={handleSubmit}
+              style={{
+                backgroundColor: "rgb(149, 11, 255, 1)",
+                color: "white",
+                padding: "10px 20px",
+                marginTop: "20px",
+                border: "none",
+                borderRadius: "5px",
+                cursor: "pointer",
+                width: "100%",
+              }}
+            >
+              Soumettre
+            </button>
+            <p></p>
+            <Link to={"/login"} style={{ color: "white" }}>Retour</Link>
+            {message && (
+              <p style={{ marginTop: "15px", color: "green" }}>{message}</p>
+            )}
+          </div>
+        </div>
+      </div>
+    </>
+  );
 };
 
 export default ForgotPassword;
-
-
-
