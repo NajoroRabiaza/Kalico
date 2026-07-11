@@ -1,37 +1,36 @@
-import API_URL from "../api";
 import { useEffect, useRef, useState, useContext } from "react";
 import { CartContext } from "../context/CartContext";
 import CommandeDetailModal from "./CommandeDetailModal";
+import authFetch from "../utils/authFetch";
+import API_URL from "../api";
 import "./dropdown.css";
 
 export default function SimpleDropdown() {
   const [open, setOpen] = useState(false);
   const [selectedCommande, setSelectedCommande] = useState(null);
-  const [isLoading, setIsLoading] = useState(false); // etat de chargement
+  const [isLoading, setIsLoading] = useState(false);
   const wrapperRef = useRef(null);
   const { orderHistory, setOrderHistory } = useContext(CartContext);
 
   const fetchCommandes = () => {
     setIsLoading(true);
     setTimeout(() => {
-      fetch(`${API_URL}/commandes`)
+      // authFetch injecte le token : route /commandes proteger par verifyToken
+      authFetch(`${API_URL}/commandes`)
         .then((res) => res.json())
         .then((data) => {
           if (Array.isArray(data)) {
-            // Trier par date decroissante (plus recent en premier)
             const sorted = data.sort((a, b) => new Date(b.date) - new Date(a.date));
             setOrderHistory(sorted);
           }
         })
-        .catch((err) =>
-          console.error("Erreur récupération commandes :", err)
-        )
+        .catch((err) => console.error("Erreur récupération commandes :", err))
         .finally(() => {
           setIsLoading(false);
           setOpen(true);
         });
     }, 1000);
-  };  
+  };
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -39,26 +38,20 @@ export default function SimpleDropdown() {
         setOpen(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const handleToggleDropdown = () => {
     if (!open) {
-      fetchCommandes(); // lancer fetch avec délai 1000ms si il est fermé
+      fetchCommandes();
     } else {
-      setOpen(false); // fermer normalement
+      setOpen(false);
     }
   };
 
-  const handleCommandeClick = (commande) => {
-    setSelectedCommande(commande);
-  };
-
-  const closeModal = () => {
-    setSelectedCommande(null);
-  };
+  const handleCommandeClick = (commande) => setSelectedCommande(commande);
+  const closeModal = () => setSelectedCommande(null);
 
   return (
     <div className="dropdown-wrapper" ref={wrapperRef}>
@@ -74,10 +67,10 @@ export default function SimpleDropdown() {
             key={commande._id || index}
             onClick={() => handleCommandeClick(commande)}
             style={{ cursor: "pointer" }}
-          title="cliquez pour plus de details">
-            Votre Commande #{index + 1} est {" "} 
-            {commande.statut || "en attente"}
-          </li> // retriage
+            title="cliquez pour plus de details"
+          >
+            Votre Commande #{index + 1} est {commande.statut || "en attente"}
+          </li>
         ))}
       </ul>
 
