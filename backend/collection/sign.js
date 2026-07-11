@@ -4,7 +4,6 @@ const bcrypt = require("bcryptjs");
 
 const signup = async (req, res) => {
   try {
-    // On verifie si un compte existe deja avec ce nom ou cet email
     const existing = await student.findOne({
       $or: [{ name: req.body.name }, { email: req.body.email }]
     });
@@ -14,7 +13,6 @@ const signup = async (req, res) => {
     }
 
     // Le salt definit le cout du hashage (10 = standard recommande en production)
-    // Plus le nombre est eleve, plus le hash est lent a calculer, donc difficile a bruteforcer
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
 
@@ -96,15 +94,8 @@ const ChangePass = async (req, res) => {
   }
 };
 
-module.exports = {
-  forgotPassword,
-  signup,
-  login,
-  dataUser,
-  ChangePass,
-};
-
-
+// forgotPassword doit etre declare avant module.exports
+// Le placer apres provoquait une ReferenceError au demarrage du serveur
 const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
@@ -113,17 +104,23 @@ const forgotPassword = async (req, res) => {
       return res.status(400).json({ message: "Email requis" });
     }
 
-    // On cherche l'utilisateur par email sans exposer son mot de passe
     const user = await student.findOne({ email }).select("-password");
 
     if (!user) {
       return res.status(404).json({ message: "Email introuvable" });
     }
 
-    // On retourne uniquement l'id pour construire le lien de reinitialisation
     res.json({ id: user._id });
 
   } catch (error) {
     res.status(500).json({ message: "Erreur serveur" });
   }
+};
+
+module.exports = {
+  signup,
+  login,
+  dataUser,
+  ChangePass,
+  forgotPassword,
 };
