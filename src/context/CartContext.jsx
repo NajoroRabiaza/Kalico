@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useRef, useState } from "react";
 import { useToast } from "../context/ToastContext";
 
 export const CartContext = createContext();
@@ -12,30 +12,43 @@ export function CartProvider({ children }) {
   const [orderHistory, setOrderHistory] = useState(() => {
     const saved = localStorage.getItem("historique_commandes");
     if (!saved) return [];
-
-    // On verifie si chaque commande a un champ status, sinon on ajoute en attente
     return JSON.parse(saved).map((cmd) =>
       cmd.status ? cmd : { ...cmd, status: "en attente" }
     );
   });
 
   const { showToast } = useToast();
+
+  // On utilise une ref pour lire orderHistory dans l'interval sans en faire une dependance
+  // Si on mettait orderHistory dans les deps du useEffect, chaque setOrderHistory
+  // redeclencherait l'effet, creant une boucle infinie quand une commande expire
+  const orderHistoryRef = useRef(orderHistory);
   useEffect(() => {
-    const now = new Date();
-    const updatedHistory = orderHistory.filter((cmd) => {
-      if (cmd.methodePaiement === "Cash") {
-        const elapsed = (now - new Date(cmd.date)) / 1000; // en secondes
-        if (elapsed >= 600) {
-          showToast("Commande expirée après 10mn ! 😢", "alert");
-          return false; // on l'enlève du frontend
-        }
-      }
-      return true;
-    });
-    if (updatedHistory.length !== orderHistory.length) {
-      setOrderHistory(updatedHistory);
-    }
+    orderHistoryRef.current = orderHistory;
   }, [orderHistory]);
+
+  // Verifie toutes les 60 secondes si des commandes Cash ont expirer
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = new Date();
+      const updated = orderHistoryRef.current.filter((cmd) => {
+        if (cmd.methodePaiement === "Cash") {
+          const elapsed = (now - new Date(cmd.date)) / 1000;
+          if (elapsed >= 600) {
+            showToast("Commande expiree apres 10mn !", "alert");
+            return false;
+          }
+        }
+        return true;
+      });
+
+      if (updated.length !== orderHistoryRef.current.length) {
+        setOrderHistory(updated);
+      }
+    }, 60000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     localStorage.setItem("mon_panier", JSON.stringify(cart));
@@ -46,9 +59,9 @@ export function CartProvider({ children }) {
   }, [orderHistory]);
 
   const handleClick = (item, toastFn) => {
-    const existItem = cart.find(produit => produit._id === item._id);
+    const existItem = cart.find((produit) => produit._id === item._id);
     if (existItem) {
-      setCart(cart.map(produit =>
+      setCart(cart.map((produit) =>
         produit._id === item._id
           ? { ...produit, quantity: produit.quantity + item.quantity }
           : produit
@@ -56,9 +69,8 @@ export function CartProvider({ children }) {
     } else {
       setCart([...cart, { ...item, quantity: item.quantity || 1 }]);
     }
-  
-    if (toastFn) toastFn("Produit ajouté 😋", "success");
-  };  
+    if (toastFn) toastFn("Produit ajoute", "success");
+  };
 
   return (
     <CartContext.Provider
