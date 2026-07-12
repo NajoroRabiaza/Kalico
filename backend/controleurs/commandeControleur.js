@@ -1,65 +1,64 @@
 const Commande = require("../model/commande");
 
-//cree comande
 const ajouterCommande = async (req, res) => {
   try {
     const { methodePaiement, niveau, numero } = req.body;
 
-    // Vérifie les champs en fonction de la méthode de paiement
-    if (methodePaiement === "Cash" && (!niveau || numero)) {
-      return res.status(400).json({ message: "Pour un paiement en espèces, seul le niveau est requis." });
+    // Validation selon la methode de paiement
+    // Pour Cash : niveau obligatoire, numero interdit
+    // Pour Mvola : numero obligatoire, niveau interdit
+    if (methodePaiement === "Cash" && !niveau) {
+      return res.status(400).json({ message: "Le niveau est requis pour un paiement Cash" });
     }
 
-    if (methodePaiement === "Mvola" && (!numero || niveau)) {
-      return res.status(400).json({ message: "Pour un paiement par Mvola, seul le numéro est requis." });
+    if (methodePaiement === "Mvola" && !numero) {
+      return res.status(400).json({ message: "Le numero est requis pour un paiement Mvola" });
     }
 
     const nouvelleCommande = new Commande(req.body);
     await nouvelleCommande.save();
     res.status(201).json(nouvelleCommande);
+
   } catch (err) {
-    console.error("Erreur lors de l’enregistrement :", err);
+    console.error("Erreur lors de l'enregistrement :", err);
     res.status(500).json({ message: err.message });
   }
 };
 
-//obtenir toutes les commandes et supprimer celles expirées (cash > 10mn)
 const getCommandes = async (req, res) => {
   try {
     const maintenant = new Date();
-    const limiteExpiration = new Date(maintenant.getTime() - 10 * 60 * 1000); // 10 minutes
+    const limiteExpiration = new Date(maintenant.getTime() - 10 * 60 * 1000);
 
-    // Supprimer automatiquement les commandes "Cash" expirées
+    // Suppression automatique des commandes Cash expirees depuis plus de 10 minutes
     const result = await Commande.deleteMany({
       methodePaiement: "Cash",
       date: { $lte: limiteExpiration }
     });
 
     if (result.deletedCount > 0) {
-      console.log(`${result.deletedCount} commande(s) Cash expirée(s) supprimée(s) automatiquement`);
+      console.log(`${result.deletedCount} commande(s) Cash expiree(s) supprimee(s)`);
     }
 
-    // Ensuite, récupérer les commandes restantes
-    const commandes = await Commande.find();
+    const commandes = await Commande.find().sort({ date: -1 });
     res.status(200).json(commandes);
+
   } catch (err) {
-    console.error("Erreur lors de la récupération des commandes :", err);
+    console.error("Erreur lors de la recuperation des commandes :", err);
     res.status(500).json({ message: "Erreur serveur" });
   }
 };
 
-//obtenir commande by Id
 const getCommandeById = async (req, res) => {
   try {
     const commande = await Commande.findById(req.params.id);
-    if (!commande) return res.status(404).json({ error: "non trouve" });
+    if (!commande) return res.status(404).json({ error: "Commande non trouvee" });
     res.status(200).json(commande);
   } catch (error) {
-    res.status(500).json({ error: "Erreur server" });
+    res.status(500).json({ error: "Erreur serveur" });
   }
 };
 
-//mofidier une commande
 const updateCommande = async (req, res) => {
   try {
     const updated = await Commande.findByIdAndUpdate(
@@ -67,23 +66,21 @@ const updateCommande = async (req, res) => {
       req.body,
       { new: true }
     );
+    if (!updated) return res.status(404).json({ message: "Commande non trouvee" });
     res.json(updated);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
 
-// Supprimer un commande par Id
 const deleteCommandeById = async (req, res) => {
-  const { id } = req.params;
   try {
-    const deleted = await Commande.findByIdAndDelete(id);
+    const deleted = await Commande.findByIdAndDelete(req.params.id);
     if (!deleted) {
-      return res.status(404).json({ message: "Commande non trouvée" });
+      return res.status(404).json({ message: "Commande non trouvee" });
     }
-    res.status(200).json({ message: "Commande supprimée avec succès" });
+    res.status(200).json({ message: "Commande supprimee avec succes" });
   } catch (err) {
-    console.error(err);
     res.status(500).json({ message: "Erreur serveur" });
   }
 };
