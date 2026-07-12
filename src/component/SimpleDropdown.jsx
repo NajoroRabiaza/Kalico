@@ -14,22 +14,21 @@ export default function SimpleDropdown() {
 
   const fetchCommandes = () => {
     setIsLoading(true);
-    setTimeout(() => {
-      // authFetch injecte le token : route /commandes proteger par verifyToken
-      authFetch(`${API_URL}/commandes`)
-        .then((res) => res.json())
-        .then((data) => {
-          if (Array.isArray(data)) {
-            const sorted = data.sort((a, b) => new Date(b.date) - new Date(a.date));
-            setOrderHistory(sorted);
-          }
-        })
-        .catch((err) => console.error("Erreur récupération commandes :", err))
-        .finally(() => {
-          setIsLoading(false);
-          setOpen(true);
-        });
-    }, 1000);
+    // Le setTimeout artificiel de 1000ms a ete supprimer
+    // Il n'avait aucun role technique et degradait l'user experience
+    authFetch(`${API_URL}/commandes`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data)) {
+          const sorted = data.sort((a, b) => new Date(b.date) - new Date(a.date));
+          setOrderHistory(sorted);
+        }
+      })
+      .catch((err) => console.error("Erreur récupération commandes :", err))
+      .finally(() => {
+        setIsLoading(false);
+        setOpen(true);
+      });
   };
 
   useEffect(() => {

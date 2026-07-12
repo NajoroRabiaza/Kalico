@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import CustomNavbar from "../component/navbar.jsx";
 import "./home.css";
 import Col from "react-bootstrap/Col";
@@ -13,9 +13,8 @@ import { CartContext } from "../context/CartContext.jsx";
 import { useToast } from "../context/ToastContext";
 import API_URL from "../api";
 
-export const produitContext = createContext();
-
-function Home() {
+// produitContext supprimer : il etait exporter mais jamais utiliser nulle part
+function Home({ Userconnecte }) {
   const navigate = useNavigate();
   const { cart, handleClick } = useContext(CartContext);
   const { showToast } = useToast();
@@ -61,11 +60,17 @@ function Home() {
   return (
     <>
       <div className="HomePage">
-        <div class="multi-image">
+        {/* class corriger en className */}
+        <div className="multi-image">
           <img src="/image/boribory.webp" alt="rond" className="im1" />
         </div>
 
-        <CustomNavbar size={cart.length} onSearchChange={handleSearchSubmit} />
+        {/* Userconnecte transmis a la navbar pour distinguer visiteur et utilisateur connecte */}
+        <CustomNavbar
+          size={cart.length}
+          onSearchChange={handleSearchSubmit}
+          UserConnect={Userconnecte}
+        />
 
         <header>
           <section className={`animated-section ${isSearching ? "slide-up" : "slide-down"}`}>
