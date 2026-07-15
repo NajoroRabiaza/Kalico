@@ -8,10 +8,10 @@ const {
   deleteCommandeById,
 } = require("../controleurs/commandeControleur");
 
-// Route protegee : seul un utilisateur connecte peut passer une commande
+// Route proteger : seul un user connecte peut passer une commande
 router.post("/", verifyToken, ajouterCommande);
 
-// Routes protegees : seul un admin connecte peut consulter et gerer les commandes
+// Routes proteger : seul un admin connecte peut consulter et gerer les commandes
 router.get("/", verifyToken, getCommandes);
 router.put("/:id", verifyToken, updateCommande);
 router.delete("/:id", verifyToken, deleteCommandeById);
