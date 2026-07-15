@@ -6,26 +6,18 @@ import { useToast } from "../context/ToastContext";
 import Cartes from "../component/cartes";
 import Foot from "../component/footer";
 
-function MenuBurger({Userconnecte}) {
+function MenuBurger({ Userconnecte }) {
   const { cart, handleClick } = useContext(CartContext);
   const { showToast } = useToast();
   const [produits, setProduits] = useState([]);
 
   useEffect(() => {
-    const fetchBurger = () =>{
     fetch(`${API_URL}/produits/categorie/burger`)
       .then((res) => res.json())
       .then((data) =>
         setProduits(data.map((p) => ({ ...p, img: `${API_URL}/${p.img}` })))
       )
       .catch((err) => console.error("Erreur chargement Burger :", err));
-    };
-
-  // Appel initial
-  fetchBurger();
-  // Rafraîchir toutes les 15 secondes
-
-  // Nettoyage de l'intervalle à la fin
   }, []);
 
   return (

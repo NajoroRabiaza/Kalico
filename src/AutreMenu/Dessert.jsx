@@ -6,27 +6,23 @@ import { useToast } from "../context/ToastContext";
 import Cartes from "../component/cartes";
 import Foot from "../component/footer";
 
-function Dessert({Userconnecte}) {
+function Dessert({ Userconnecte }) {
   const { cart, handleClick } = useContext(CartContext);
   const { showToast } = useToast();
   const [produits, setProduits] = useState([]);
 
   useEffect(() => {
-    const fetchDessert = () => {
     fetch(`${API_URL}/produits/categorie/dessert`)
       .then((res) => res.json())
       .then((data) =>
         setProduits(data.map((p) => ({ ...p, img: `${API_URL}/${p.img}` })))
       )
       .catch((err) => console.error("Erreur chargement Dessert :", err));
-    };
-    
-    fetchDessert();
-    }, []);
+  }, []);
 
   return (
     <>
-      <Navbar size={cart.length} UserConnect={Userconnecte}/>
+      <Navbar size={cart.length} UserConnect={Userconnecte} />
       <section>
         <img src="/image/font.webp" alt="font" className="fonts" />
         <div className="menus">Dessert</div>
