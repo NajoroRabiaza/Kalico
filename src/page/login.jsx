@@ -18,6 +18,7 @@ function Loginpage({ setUserConnecte }) {
   const [incorrectemail, setIncorrectemail] = useState(false);
   const [succesConnect, setSuccesConnect] = useState(false);
   const [eye, setEye] = useState(false);
+  const [redirectData, setRedirectData] = useState(null);
 
   const navigate = useNavigate();
 
@@ -31,7 +32,6 @@ function Loginpage({ setUserConnecte }) {
     if (password.trim() === "") { setErreurpassword(true); return; }
     if (!email.trim().includes("@gmail.com")) { setEmailmissing(true); return; }
 
-    // On envoie directement au backend, plus de fetch de tous les users
     fetch(`${API_URL}/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -40,7 +40,6 @@ function Loginpage({ setUserConnecte }) {
       .then((res) => res.json())
       .then((data) => {
         if (data.token) {
-          // Stockage du token et du level pour la protection des routes
           localStorage.setItem("token", data.token);
           localStorage.setItem("userLevel", data.user.level);
           localStorage.setItem("userName", data.user.name);
@@ -49,24 +48,31 @@ function Loginpage({ setUserConnecte }) {
           setUserConnecte(true);
           setSuccesConnect(true);
 
-          setTimeout(() => {
-            // Redirection admin si level === "admin", sinon accueil
-            if (data.user.level === "admin") {
-              navigate("/admin");
-            } else {
-              navigate("/");
-            }
-          }, 1000);
+          // On stocke les donnees de redirection dans un state
+          // pour les utiliser dans un useEffect avec cleanup propre
+          setRedirectData(data.user.level);
         } else {
-          // Le backend a répondu sans token : credentials incorrects
           setMissingpass(true);
         }
       })
       .catch(() => setErreur(true));
   }
 
-  const togglePassword = () => setEye((prev) => !prev);
+  // Redirection apres login reussi avec cleanup pour eviter
+  // de naviguer sur un composant demonte si l'utilisateur part avant 1s
+  useEffect(() => {
+    if (!redirectData) return;
+    const timer = setTimeout(() => {
+      if (redirectData === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/");
+      }
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [redirectData, navigate]);
 
+  // Cache les messages d'erreur apres 8 secondes avec cleanup
   useEffect(() => {
     const timer = setTimeout(() => {
       setErreur(false);
@@ -78,8 +84,10 @@ function Loginpage({ setUserConnecte }) {
       setMissingpass(false);
       setExistname(false);
     }, 8000);
-    return () => clearTimeout(timer); // cleanup pour eviter les fuites memoire
+    return () => clearTimeout(timer);
   }, [erreur, errEmail, errpassword, emailmissing, incorrectemail, missingpass, existename]);
+
+  const togglePassword = () => setEye((prev) => !prev);
 
   return (
     <>
@@ -108,9 +116,9 @@ function Loginpage({ setUserConnecte }) {
               />
               <div className="underline"></div>
               {existename ? (
-                <p className="compte_introuvable"> creer un compte</p>
+                <p className="compte_introuvable">creer un compte</p>
               ) : succesConnect ? (
-                <p className="SuccesConnexion"> Connexion reussit</p>
+                <p className="SuccesConnexion">Connexion reussit</p>
               ) : erreur ? (
                 <p className="error">champ obligatoire !</p>
               ) : (
