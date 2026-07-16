@@ -72,7 +72,7 @@ function Modal({ oneclose, condition, totalCommande }) {
       produits: cart,
       total: totalCommande,
       date: new Date(),
-      status: "en attente",
+      statut: "en attente",
     };
     authFetch(`${API_URL}/commandes`, {
       method: "POST",
@@ -103,7 +103,7 @@ function Modal({ oneclose, condition, totalCommande }) {
       produits: cart,
       total: totalCommande,
       date: new Date(),
-      status: "en attente",
+      statut: "en attente",
     };
     authFetch(`${API_URL}/commandes`, {
       method: "POST",
