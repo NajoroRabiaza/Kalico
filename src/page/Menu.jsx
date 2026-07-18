@@ -12,29 +12,20 @@ function Menu({ Userconnecte }) {
   const [menuSpecial, setMenuSpecial] = useState([]);
 
   useEffect(() => {
-    const fetchMenuSpecial = () => {
-      fetch(`${API_URL}/produits/menuSpecial`)
-        .then((res) => res.json())
-        .then((data) =>
-          setMenuSpecial(data.map((p) => ({
-            ...p,
-            img: `${API_URL}/${p.img}`,
-          })))
-        )
-        .catch((err) => console.error("Erreur fetch menu spécial:", err));
-    };
-  
-    // Appel initial
-    fetchMenuSpecial();
-  
-    // Rafraîchir toutes les 15 secondes
-  
-    // Nettoyage de l'intervalle à la fin
+    fetch(`${API_URL}/produits/menuSpecial`)
+      .then((res) => res.json())
+      .then((data) =>
+        setMenuSpecial(data.map((p) => ({
+          ...p,
+          img: `${API_URL}/${p.img}`,
+        })))
+      )
+      .catch((err) => console.error("Erreur fetch menu spécial:", err));
   }, []);
 
   return (
     <>
-      <Navbar size={cart.length} UserConnect={Userconnecte}/>
+      <Navbar size={cart.length} UserConnect={Userconnecte} />
       <section>
         <img src="/image/font.webp" alt="font" className="fonts" />
         <div className="menus">Menu du jour</div>
