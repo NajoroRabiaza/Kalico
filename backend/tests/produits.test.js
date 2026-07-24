@@ -75,6 +75,7 @@ describe("GET /produits/menuSpecial", () => {
 
 describe("DELETE /produits/:id", () => {
     it("devrait supprimer un produit existant", async () => {
+        const token = genererTokenAdmin();
         const produit = await Produit.create(produitDeBase);
 
         const res = await request(app)
@@ -82,7 +83,7 @@ describe("DELETE /produits/:id", () => {
             .set("Authorization", `Bearer ${token}`);
 
         expect(res.status).toBe(200);
-        expect(res.body.message).toBe("Produit supprimer");
+        expect(res.body.message).toBe("Produit supprimé");
 
         // verifier que le produit n'existe plus en base
         const deleted = await Produit.findById(produit._id);
