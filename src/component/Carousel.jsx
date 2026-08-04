@@ -23,7 +23,7 @@ function SystemeCrousel() {
           <img className="Carousel_background" src={C1} alt="snack" />
           <Carousel.Caption className="caroussel_text_1">
             <img src={street} alt="snack" className="img_car1" />
-            <h3 className="titre">Snack et Street Food</h3>
+            <h3 className="titre">Street Food</h3>
             <p className="titre_bas">Princi Burger , Christo Tacos</p>
           </Carousel.Caption>
         </Carousel.Item>
