@@ -625,3 +625,52 @@ html, body {
     padding: 0.5rem;
   }
 }
+/* MODERNISATION ICONES CATEGORIE */
+
+/* Remplacement de la bordure noire epaisse par une bordure fine grise
+   Ajout d'un fond blanc doux et d'une ombre legere pour un look moderne
+   L'effet hover ajoute une bordure orange et un leger agrandissement */
+.menu {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  border: 1.5px solid #e0e0e0;
+  background-color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin: 10px;
+  position: relative;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+  cursor: pointer;
+}
+
+.menu:hover {
+  border-color: #e65d0d;
+  box-shadow: 0 4px 16px rgba(230, 93, 13, 0.2);
+  transform: translateY(-3px);
+}
+
+@media screen and (min-width: 1025px) {
+  .menu {
+    width: 150px;
+    height: 150px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .menu {
+    width: 100px;
+    height: 100px;
+  }
+}
+
+@media (max-width: 767px) {
+  .menu {
+    width: 80px;
+    height: 80px;
+  }
+}
