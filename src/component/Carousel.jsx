@@ -10,14 +10,10 @@ import C3 from "../image/C3.webp";
 import plats from "../image/plats.webp";
 import street from "../image/street.webp";
 import viande from "../image/viande.webp";
-import back from "../image/back.webp";
 
 function SystemeCrousel() {
   return (
     <div className="carouselContainer">
-      <div className="backcaroussel">
-        <img src={back} alt="back" className="backimage" />
-      </div>
       <Carousel className="Carousel">
         <Carousel.Item className="Les_Carousel">
           <img className="Carousel_background" src={C1} alt="snack" />

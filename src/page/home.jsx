@@ -60,10 +60,6 @@ function Home({ Userconnecte }) {
   return (
     <>
       <div className="HomePage">
-        {/* class corriger en className */}
-        <div className="multi-image">
-          <img src="/image/boribory.webp" alt="rond" className="im1" />
-        </div>
 
         {/* Userconnecte transmis a la navbar pour distinguer visiteur et utilisateur connecte */}
         <CustomNavbar
