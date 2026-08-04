@@ -30,8 +30,8 @@ function SystemeCrousel() {
 
         <Carousel.Item className="Les_Carousel">
           <img className="Carousel_background" src={C2} alt="image2" />
-          <Carousel.Caption className="caroussel_text">
-            <img src={viande} alt="viandes" className="img_car" />
+          <Carousel.Caption className="caroussel_text_1">
+            <img src={viande} alt="viandes" className="img_car1" />
             <h3 className="titre">Specialites Viandes</h3>
             <p className="titre_bas">Brochette Lito , Kebab Bunny</p>
           </Carousel.Caption>
