@@ -547,3 +547,81 @@ html, body {
     font-size: 0.9rem;
   }
 }
+/* AERATION DE TITRE  */
+
+/* Correction du titre "re menu" tronque par la forme decorative gauche
+   On donne un padding-left suffisant pour que le texte soit toujours visible */
+.texte {
+  padding-left: 12%;
+  padding-right: 5%;
+}
+
+.text {
+  margin-left: 0;
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.texts {
+  margin-left: 0;
+  left: 0;
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 1.5rem;
+}
+
+/* Aeration verticale entre les grandes sections de la page */
+.HomePage > header {
+  margin-bottom: 2rem;
+}
+
+.BarreDemenu {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  padding-bottom: 2rem;
+}
+
+.contenairMenu {
+  margin-top: 1.5rem;
+  gap: 40px;
+  padding: 1rem 2rem;
+}
+
+/* Aeration sur tablette */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .texte {
+    padding-left: 8%;
+  }
+  .text {
+    margin-left: 0;
+    font-size: 1.2rem;
+  }
+  .texts {
+    margin-left: 0;
+    left: 0;
+    font-size: 0.9rem;
+  }
+}
+
+/* Aeration sur mobile */
+@media (max-width: 767px) {
+  .texte {
+    padding-left: 5%;
+    padding-right: 5%;
+  }
+  .text {
+    margin-left: 0;
+    font-size: 1rem;
+  }
+  .texts {
+    margin-left: 0;
+    left: 0;
+    font-size: 0.85rem;
+  }
+  .contenairMenu {
+    gap: 15px;
+    padding: 0.5rem;
+  }
+}
