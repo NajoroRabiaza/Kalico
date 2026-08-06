@@ -1,241 +1,144 @@
-@font-face {
-  font-family: "comic";
-  src: url(../fonts/COMIC.TTF);
-}
+/* Footer restructure : suppression du positionnement absolu et du margin-top negatif
+   qui causaient le chevauchement de la carte grise sur la bande noire */
+
 .StyleFooter {
-  position: absolute;
   width: 100%;
-  height: 22%;
-  background-color: #393939;
-  margin-top: 20%;
-  padding-top: 10%;
-  margin-left: 0px;
-  z-index: 10;
-}
-.logo_ftr {
-  height: 60%;
-  margin-left: 2%;
-  margin-top: 0%;
-  width: auto;
-  margin-right: auto;
-  margin-bottom: auto;
-}
-.contact {
-  font-size: 25px;
-  margin-right: 100px;
-}
-.contact:hover {
-  color: rgb(255, 255, 255);
-}
-.contact::after {
-  content: "";
-  height: 2px;
-  display: block;
-  background: #000000;
-}
-.contact:hover::after {
-  background: white;
-}
-.icon_ftr:hover {
-  transform: scale(1.1);
+  background-color: #1c1c2e;
+  padding: 3rem 2rem 1.5rem;
+  margin-top: 4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
 }
 
-.icon_ftr {
-  width: 50px;
-  height: auto;
-  border-radius: 10px;
-  margin-right: 100px;
-  transition: 0.3s ease-in-out;
-}
-.texte_ftr {
-  padding-inline: 2%;
-  padding-block: 2%;
-  font-family: Georgia, "Times New Roman", Times, serif;
-  font-size: 17px;
-  color: #6d3132;
-}
-.bouton_ftr:hover {
-  border-color: #c4c3c3;
-  color: #cf1111;
-  box-shadow: 20xp beige;
-  background-color: #948979;
-}
-.StyleFooter p {
-  margin-top: -200px;
-  margin-right: 50px;
-  /* line-height: 1.2; */
-  /* margin-left: 10px; */
-  /* color: #FBCFD0; */
-  background: none;
-  /* font-size: 17px; */
-  font-family: Georgia, "Times New Roman", Times, serif;
-  /* margin: 200px; */
-  margin-left: auto;
-  margin-right: auto;
-}
+/* La carte centrale n'a plus de margin-top negatif
+   Elle flotte proprement sur le fond uni sans chevauchement */
 .footer_3D {
   width: 80%;
-  height: 212px;
+  max-width: 900px;
   background: linear-gradient(80deg, #858a89, #333446);
-  border-radius: 10px;
-  box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.4);
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  padding: 2rem;
+  gap: 2rem;
+}
+
+.logo_ftr {
+  height: 70px;
+  width: auto;
+}
+
+.contact {
+  font-size: 1.1rem;
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  color: #f0f0f0;
+  letter-spacing: 0.5px;
+  margin: 0 0 0.5rem 0;
+}
+
+/* Soulignement propre sous Contactez Nous sans fleche parasite */
+.contact::after {
+  content: "";
+  display: block;
+  width: 40px;
+  height: 2px;
+  background: #ee9045;
+  margin-top: 6px;
+}
+
+.contact:hover { color: #ffffff; }
+.contact:hover::after { background: white; }
+
+.item_ftr {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.item_ftr a {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: -13%;
-  margin-left: auto;
-  margin-right: auto;
-  backface-visibility: hidden;
-  transform-style: preserve-3d;
-  border: 5px orange;
+  width: 48px;
+  height: 48px;
+  background-color: rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  border: 1px solid rgba(238, 144, 69, 0.25);
+  transition: all 0.25s ease;
 }
 
-.item_ftr {
-  text-align: center;
+.item_ftr a:hover {
+  background-color: rgba(238, 144, 69, 0.2);
+  border-color: #ee9045;
+  transform: translateY(-2px);
 }
+
+.icon_ftr {
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  border-radius: 4px;
+  transition: 0.3s ease-in-out;
+}
+
+.icon_ftr:hover { transform: scale(1.1); }
+
 .txt_ftr {
-  /* margin-top: 220px; */
   text-align: center;
-  align-items: center;
-  font-size: 0px;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  width: 80%;
+  max-width: 900px;
 }
+
 .txt_ftr h1 {
-  font-size: 20px;
-  margin-top: 20px;
-  font-family: "comic";
-  color: #d3d3d3;
+  font-size: 0.85rem;
+  font-family: "Inter", sans-serif;
+  color: rgba(211, 211, 211, 0.6);
+  margin: 0;
+  letter-spacing: 0.5px;
 }
+
 .txt_ftr h1 span {
-  color: #ff9d2a;
-  margin-left: 0.5%;
-  /* font-family:  */
+  color: #ee9045;
+  font-weight: 700;
+  margin-left: 0.3rem;
 }
+
 @media (min-width: 768px) and (max-width: 1024px) {
-  .StyleFooter {
-    height: 30%;
-    margin-top: 10%;
+  .footer_3D {
+    width: 90%;
+    flex-direction: column;
+    text-align: center;
+    gap: 1.5rem;
   }
-  .logo_ftr {
-    height: 50%;
-    width: auto;
-    margin-left: 2%;
-    margin-top: 0%;
-    margin-right: auto;
-    margin-bottom: auto;
-  }
-  .contact {
-    font-size: 20px;
-    margin-right: 100px;
-  }
+  .txt_ftr { width: 90%; }
 }
-/* ==============================
-   MOBILE (≤ 767px)
-   ============================== */
+
 @media (max-width: 767px) {
-
   .StyleFooter {
-    position: relative;
-    width: 100%;
-    height: auto;
-    margin-top: 40px;
-    padding: 0 0 20px 0;
-    background-color: #1c1c2e;
+    padding: 2rem 1rem 1rem;
+    margin-top: 2rem;
   }
-
-  /* Card centrale : pleine largeur, colonne */
   .footer_3D {
     width: 100%;
-    height: auto;
-    margin: 0;
-    border-radius: 0;
-    box-shadow: none;
-    background: linear-gradient(160deg, #2a2a3e 0%, #1c1c2e 100%);
     flex-direction: column;
     align-items: center;
-    padding: 28px 20px 24px;
-    gap: 0;
-  }
-
-  /* Logo centré, taille adaptée */
-  .logo_ftr {
-    height: auto;
-    width: 90px;
-    margin: 0 auto 16px;
-    display: block;
-  }
-
-  /* Séparateur orange sous le titre */
-  .contact {
-    font-size: 16px;
-    font-family: "Lucida Sans", sans-serif;
-    color: #f0f0f0;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    margin: 0 0 6px 0;
-    text-align: center;
-  }
-
-  .contact::after {
-    content: "";
-    display: block;
-    width: 40px;
-    height: 2px;
-    background: #ee9045;
-    margin: 6px auto 18px;
-  }
-
-  /* Icônes : grille 4 en ligne, bien espacées */
-  .item_ftr {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
-    flex-wrap: wrap;
-  }
-
-  .item_ftr a {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 48px;
-    height: 48px;
-    background-color: rgba(255, 255, 255, 0.07);
+    padding: 1.5rem 1rem;
+    gap: 1rem;
     border-radius: 12px;
-    border: 1px solid rgba(238, 144, 69, 0.25);
-    transition: all 0.25s ease;
   }
-
-  .item_ftr a:hover {
-    background-color: rgba(238, 144, 69, 0.2);
-    border-color: #ee9045;
-    transform: translateY(-2px);
-  }
-
-  .icon_ftr {
-    width: 24px;
-    height: 24px;
-    margin: 0;
-    border-radius: 4px;
-  }
-
-  /* Ligne de crédit */
-  .txt_ftr {
-    text-align: center;
-    padding-top: 16px;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-    margin: 0 20px;
-  }
-
-  .txt_ftr h1 {
-    font-size: 13px;
-    color: rgba(211, 211, 211, 0.6);
-    margin-top: 16px;
-    letter-spacing: 0.5px;
-  }
-
-  .txt_ftr h1 span {
-    color: #ee9045;
-    font-weight: bold;
-  }
+  .logo_ftr { height: 50px; }
+  .contact { font-size: 0.95rem; text-align: center; }
+  .txt_ftr { width: 100%; }
+  .txt_ftr h1 { font-size: 0.75rem; }
 }
