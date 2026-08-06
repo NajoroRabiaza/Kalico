@@ -391,3 +391,35 @@ body {
     gap: 1rem;
   }
 }
+
+
+/* Logo reduit pour rentrer proprement dans la navbar de 75px
+   La police Quicksand est remplacee par Inter pour la coherence globale */
+body {
+  font-family: "Inter", sans-serif;
+}
+
+.logo img {
+  height: 56px;
+  width: auto;
+  display: block;
+  transition: height 0.3s ease;
+}
+
+.nav.nav-scrolled .logo img {
+  height: 48px;
+}
+
+/* Liens de navigation : Inter pour la coherence avec le reste */
+.navlinks li a {
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+/* Barre de recherche : ring focus orange pour la coherence de la marque */
+.search-input:focus {
+  outline: none;
+  border-color: #e65d0d;
+  box-shadow: 0 0 0 3px rgba(230, 93, 13, 0.15);
+}
