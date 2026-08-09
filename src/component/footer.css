@@ -1,66 +1,70 @@
-/* Footer restructure : suppression du positionnement absolu et du margin-top negatif
-   qui causaient le chevauchement de la carte grise sur la bande noire */
+/* un seul conteneur bg sombre sans carte flottante interne
+   Suppression de footer_3D flottant qui causait le chevauchement visuel */
 
 .StyleFooter {
   width: 100%;
   background-color: #1c1c2e;
-  padding: 3rem 2rem 1.5rem;
-  margin-top: 4rem;
+  padding: 2.5rem 2rem 1.5rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.5rem;
-}
-
-/* La carte centrale n'a plus de margin-top negatif
-   Elle flotte proprement sur le fond uni sans chevauchement */
-.footer_3D {
-  width: 80%;
-  max-width: 900px;
-  background: linear-gradient(80deg, #858a89, #333446);
-  border-radius: 16px;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  align-items: center;
-  padding: 2rem;
   gap: 2rem;
 }
 
+/* Contenu principal du footer en ligne sur desktop */
+.footer_3D {
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  background: none;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 0;
+  margin: 0;
+}
+
 .logo_ftr {
-  height: 70px;
+  height: 60px;
   width: auto;
 }
 
+/* Bloc contact : titre + icones en colonne */
+.footer-contact-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
 .contact {
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-family: "Inter", sans-serif;
   font-weight: 600;
   color: #f0f0f0;
   letter-spacing: 0.5px;
-  margin: 0 0 0.5rem 0;
+  margin: 0;
+  text-align: center;
 }
 
-/* Soulignement propre sous Contactez Nous sans fleche parasite */
 .contact::after {
   content: "";
   display: block;
-  width: 40px;
+  width: 32px;
   height: 2px;
-  background: #ee9045;
-  margin-top: 6px;
+  background: #e65d0d;
+  margin: 6px auto 0;
 }
-
-.contact:hover { color: #ffffff; }
-.contact:hover::after { background: white; }
 
 .item_ftr {
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  gap: 1rem;
+  gap: 0.75rem;
   flex-wrap: wrap;
 }
 
@@ -68,77 +72,65 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   background-color: rgba(255, 255, 255, 0.07);
-  border-radius: 12px;
-  border: 1px solid rgba(238, 144, 69, 0.25);
+  border-radius: 10px;
+  border: 1px solid rgba(230, 93, 13, 0.25);
   transition: all 0.25s ease;
 }
 
 .item_ftr a:hover {
-  background-color: rgba(238, 144, 69, 0.2);
-  border-color: #ee9045;
+  background-color: rgba(230, 93, 13, 0.2);
+  border-color: #e65d0d;
   transform: translateY(-2px);
 }
 
 .icon_ftr {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   margin: 0;
   border-radius: 4px;
-  transition: 0.3s ease-in-out;
 }
 
-.icon_ftr:hover { transform: scale(1.1); }
-
+/* Ligne de separation et copyright */
 .txt_ftr {
   text-align: center;
-  padding-top: 1rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  width: 80%;
+  width: 100%;
   max-width: 900px;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .txt_ftr h1 {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-family: "Inter", sans-serif;
-  color: rgba(211, 211, 211, 0.6);
+  font-weight: 400;
+  color: rgba(211, 211, 211, 0.5);
   margin: 0;
   letter-spacing: 0.5px;
 }
 
 .txt_ftr h1 span {
-  color: #ee9045;
+  color: #e65d0d;
   font-weight: 700;
   margin-left: 0.3rem;
 }
 
-@media (min-width: 768px) and (max-width: 1024px) {
+@media (max-width: 767px) {
   .footer_3D {
-    width: 90%;
     flex-direction: column;
+    align-items: center;
     text-align: center;
     gap: 1.5rem;
   }
-  .txt_ftr { width: 90%; }
+  .logo_ftr { height: 48px; }
 }
 
-@media (max-width: 767px) {
-  .StyleFooter {
-    padding: 2rem 1rem 1rem;
-    margin-top: 2rem;
-  }
+@media (min-width: 768px) and (max-width: 1024px) {
   .footer_3D {
-    width: 100%;
     flex-direction: column;
     align-items: center;
-    padding: 1.5rem 1rem;
-    gap: 1rem;
-    border-radius: 12px;
+    gap: 1.5rem;
   }
-  .logo_ftr { height: 50px; }
-  .contact { font-size: 0.95rem; text-align: center; }
-  .txt_ftr { width: 100%; }
-  .txt_ftr h1 { font-size: 0.75rem; }
 }
