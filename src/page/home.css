@@ -361,3 +361,43 @@ html, body {
 
 /* Titre long specifique : reduit pour eviter trop de retours a la ligne */
 .titre-long { font-size: 4rem; }
+/* LAYOUT GLOBAL PROPRE */
+
+/* page-wrapper : flex-col + min-h-screen garantit que le footer
+   reste colle en bas meme si le contenu est court */
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f8fafc;
+}
+
+/* page-main : flex-grow pousse le footer vers le bas
+   padding-top compense exactement la hauteur de la navbar fixe (75px) */
+.page-main {
+  flex: 1;
+  padding-top: 75px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* carousel-wrapper : centrage propre du carrousel sans marges en pourcentage
+   qui causaient le chevauchement avec la section suivante */
+.carousel-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem 1rem;
+  width: 100%;
+}
+
+/* Suppression des anciennes marges instables */
+.HomePage {
+  background-color: #f8fafc;
+  margin-top: 0;
+}
+
+.carouselContainer {
+  margin-top: 0;
+  width: 100%;
+}

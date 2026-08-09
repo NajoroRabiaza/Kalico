@@ -13,7 +13,6 @@ import { CartContext } from "../context/CartContext.jsx";
 import { useToast } from "../context/ToastContext";
 import API_URL from "../api";
 
-// produitContext supprimer : il etait exporter mais jamais utiliser nulle part
 function Home({ Userconnecte }) {
   const navigate = useNavigate();
   const { cart, handleClick } = useContext(CartContext);
@@ -27,25 +26,16 @@ function Home({ Userconnecte }) {
       .then((res) => res.json())
       .then((data) => {
         const produitsAvecImageUrl = data
-          .map((p) => ({
-            ...p,
-            img: `${API_URL}/${p.img}`,
-          }))
+          .map((p) => ({ ...p, img: `${API_URL}/${p.img}` }))
           .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         setProduits(produitsAvecImageUrl);
       })
-      .catch((err) =>
-        console.error("Erreur de chargement des produits :", err)
-      );
+      .catch((err) => console.error("Erreur de chargement des produits :", err));
   };
 
-  useEffect(() => {
-    fetchProduits();
-  }, []);
+  useEffect(() => { fetchProduits(); }, []);
 
-  const handleClic = (path) => {
-    navigate(path);
-  };
+  const handleClic = (path) => navigate(path);
 
   const handleSearchSubmit = (query) => {
     setSearchQuery(query.trim().toLowerCase());
@@ -58,85 +48,87 @@ function Home({ Userconnecte }) {
   );
 
   return (
-    <>
-      <div className="HomePage">
+    /* page-wrapper : min-h-screen + flex-col pour que le footer reste en bas
+       meme quand le contenu est court */
+    <div className="page-wrapper">
+      <CustomNavbar
+        size={cart.length}
+        onSearchChange={handleSearchSubmit}
+        UserConnect={Userconnecte}
+      />
 
-        {/* Userconnecte transmis a la navbar pour distinguer visiteur et utilisateur connecte */}
-        <CustomNavbar
-          size={cart.length}
-          onSearchChange={handleSearchSubmit}
-          UserConnect={Userconnecte}
-        />
-
+      {/* padding-top compense la navbar fixe de 75px */}
+      <main className="page-main">
         <header>
           <section className={`animated-section ${isSearching ? "slide-up" : "slide-down"}`}>
-            <div className="carousel">
+            <div className="carousel-wrapper">
               <SystemeCrousel />
             </div>
           </section>
         </header>
 
-        <section className="mt-4">
-          <section className={`animated-section ${isSearching ? "slide-up" : "slide-down"}`}>
-            <div className="BarreDemenu">
-              <Container>
-                <Row>
-                  <div className="texte">
-                    <p className="text">Explorer notre menu</p>
-                    <p className="texts">
-                      Choisissez parmi notre menu varié, composé d'une sélection
-                      de plats savoureux.
-                    </p>
+        <section className={`animated-section ${isSearching ? "slide-up" : "slide-down"}`}>
+          <div className="BarreDemenu" id="menu-section">
+            <Container>
+              <Row>
+                <div className="texte">
+                  <p className="text">Explorer notre menu</p>
+                  <p className="texts">
+                    Choisissez parmi notre menu varié, composé d'une selection
+                    de plats savoureux.
+                  </p>
+                </div>
+                <div className="contenairMenu">
+                  <div className="menu">
+                    <Image className="imagemenu" src="/image/pates.webp"
+                      onMouseOver={(e) => (e.currentTarget.src = "/image/pates1.webp")}
+                      onMouseOut={(e) => (e.currentTarget.src = "/image/pates.webp")}
+                      onClick={() => handleClic("/Soupe")} roundedCircle />
+                    <span className="SousTitre">Pâtes</span>
                   </div>
-
-                  <div className="contenairMenu">
-                    <div className="menu">
-                      <Image className="imagemenu" src="/image/pates.webp"
-                        onMouseOver={(e) => (e.currentTarget.src = "/image/pates1.webp")}
-                        onMouseOut={(e) => (e.currentTarget.src = "/image/pates.webp")}
-                        onClick={() => handleClic("/Soupe")} roundedCircle />
-                      <span className="SousTitre">Pâtes</span>
-                    </div>
-                    <div className="menu">
-                      <Image className="imagemenu" src="/image/snack.webp"
-                        onMouseOver={(e) => (e.currentTarget.src = "/image/snack1.webp")}
-                        onMouseOut={(e) => (e.currentTarget.src = "/image/snack.webp")}
-                        onClick={() => handleClic("/Burger")} roundedCircle />
-                      <span className="SousTitre">Snack</span>
-                    </div>
-                    <div className="menu">
-                      <Image className="imagemenu" src="/image/riz.webp"
-                        onMouseOver={(e) => (e.currentTarget.src = "/image/riz1.webp")}
-                        onMouseOut={(e) => (e.currentTarget.src = "/image/riz.webp")}
-                        onClick={() => handleClic("/Riz")} roundedCircle />
-                      <span className="SousTitre">Riz</span>
-                    </div>
-                    <div className="menu">
-                      <Image className="imagemenu" src="/image/dessert.webp"
-                        onMouseOver={(e) => (e.currentTarget.src = "/image/dessert1.webp")}
-                        onMouseOut={(e) => (e.currentTarget.src = "/image/dessert.webp")}
-                        onClick={() => handleClic("/Dessert")} roundedCircle />
-                      <span className="SousTitre">Dessert</span>
-                    </div>
-                    <div className="menu">
-                      <Image className="imagemenu" src="/image/boisson.webp"
-                        onMouseOver={(e) => (e.currentTarget.src = "/image/boisson1.webp")}
-                        onMouseOut={(e) => (e.currentTarget.src = "/image/boisson.webp")}
-                        onClick={() => handleClic("/Jus")} roundedCircle />
-                      <span className="SousTitre">Boisson</span>
-                    </div>
+                  <div className="menu">
+                    <Image className="imagemenu" src="/image/snack.webp"
+                      onMouseOver={(e) => (e.currentTarget.src = "/image/snack1.webp")}
+                      onMouseOut={(e) => (e.currentTarget.src = "/image/snack.webp")}
+                      onClick={() => handleClic("/Burger")} roundedCircle />
+                    <span className="SousTitre">Snack</span>
                   </div>
-                </Row>
-                <hr />
-              </Container>
-            </div>
-          </section>
+                  <div className="menu">
+                    <Image className="imagemenu" src="/image/riz.webp"
+                      onMouseOver={(e) => (e.currentTarget.src = "/image/riz1.webp")}
+                      onMouseOut={(e) => (e.currentTarget.src = "/image/riz.webp")}
+                      onClick={() => handleClic("/Riz")} roundedCircle />
+                    <span className="SousTitre">Riz</span>
+                  </div>
+                  <div className="menu">
+                    <Image className="imagemenu" src="/image/dessert.webp"
+                      onMouseOver={(e) => (e.currentTarget.src = "/image/dessert1.webp")}
+                      onMouseOut={(e) => (e.currentTarget.src = "/image/dessert.webp")}
+                      onClick={() => handleClic("/Dessert")} roundedCircle />
+                    <span className="SousTitre">Dessert</span>
+                  </div>
+                  <div className="menu">
+                    <Image className="imagemenu" src="/image/boisson.webp"
+                      onMouseOver={(e) => (e.currentTarget.src = "/image/boisson1.webp")}
+                      onMouseOut={(e) => (e.currentTarget.src = "/image/boisson.webp")}
+                      onClick={() => handleClic("/Jus")} roundedCircle />
+                    <span className="SousTitre">Boisson</span>
+                  </div>
+                </div>
+              </Row>
+              <hr />
+            </Container>
+          </div>
         </section>
 
         <div className={`All_Cards ${isSearching ? "active-search" : ""}`}>
           {produitsFiltres.length > 0 ? (
             produitsFiltres.map((item) => (
-              <Cards handleClick={(item) => handleClick(item, showToast)} item={item} key={item._id} />
+              <Cards
+                handleClick={(item) => handleClick(item, showToast)}
+                item={item}
+                key={item._id}
+              />
             ))
           ) : (
             <p style={{ textAlign: "center", marginTop: "2rem" }}>
@@ -144,12 +136,10 @@ function Home({ Userconnecte }) {
             </p>
           )}
         </div>
+      </main>
 
-        <footer>
-          <Footer />
-        </footer>
-      </div>
-    </>
+      <Footer />
+    </div>
   );
 }
 
