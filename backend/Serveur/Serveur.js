@@ -15,7 +15,23 @@ const commandesRoute = require("../router/commandes");
 
 // CORS restreint a l'URL du frontend definie en variable d'environnement
 // En developpement local, FRONTEND_URL=http://localhost:5173
-app.use(cors({ origin: process.env.FRONTEND_URL }));
+
+// Liste blanche des origines autorisees
+// Permet d'accepter plusieurs domaines frontend simultanement
+const originesAutorisees = [
+  process.env.FRONTEND_URL,
+  process.env.FRONTEND_URL_2,
+].filter(Boolean);
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || originesAutorisees.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Non autorise par CORS"));
+    }
+  }
+}));
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
