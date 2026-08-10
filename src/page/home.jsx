@@ -12,6 +12,7 @@ import Cards from "../component/Card";
 import { CartContext } from "../context/CartContext.jsx";
 import { useToast } from "../context/ToastContext";
 import API_URL from "../api";
+import EmptyState from "../component/EmptyState";
 
 function Home({ Userconnecte }) {
   const navigate = useNavigate();
@@ -131,9 +132,10 @@ function Home({ Userconnecte }) {
               />
             ))
           ) : (
-            <p style={{ textAlign: "center", marginTop: "2rem" }}>
-              Aucun produit trouvé pour l'instant « {searchQuery} ».
-            </p>
+            <EmptyState
+              query={searchQuery}
+              onReset={() => handleSearchSubmit("")}
+            />
           )}
         </div>
       </main>
