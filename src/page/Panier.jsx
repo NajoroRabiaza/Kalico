@@ -7,6 +7,7 @@ import { createPortal } from "react-dom";
 import SimpleDropdown from "../component/SimpleDropdown";
 import { useToast } from "../context/ToastContext";
 import { useNavigate } from "react-router";
+import ConfirmDeleteModal from "../component/ConfirmDeleteModal";
 
 function Panier({ Userconnecte }) {
   const { cart, setCart } = useContext(CartContext);
@@ -16,6 +17,7 @@ function Panier({ Userconnecte }) {
   const [back, setBack] = useState(false);
   const [redirect, setRedirect] = useState(false);
   const navigate = useNavigate();
+  const [itemToDelete, setItemToDelete] = useState(null);
 
   const increase = (_id) => {
     setCart((prev) =>
@@ -37,6 +39,7 @@ function Panier({ Userconnecte }) {
 
   const removeItem = (_id) => {
     setCart((prev) => prev.filter((item) => item._id !== _id));
+    setItemToDelete(null);
   };
 
   const ConditionalFunc = () => {
@@ -138,7 +141,7 @@ function Panier({ Userconnecte }) {
                         src="/image/remove.webp"
                         alt="supprimer"
                         className="remove"
-                        onClick={() => removeItem(item._id)}
+                        onClick={() => setItemToDelete(item)}
                       />
                     </div>
                   </div>
@@ -202,8 +205,17 @@ function Panier({ Userconnecte }) {
           />,
           document.body
         )}
+        {itemToDelete && (
+          <ConfirmDeleteModal
+            itemName={itemToDelete.nom}
+            onConfirm={() => removeItem(itemToDelete._id)}
+            onCancel={() => setItemToDelete(null)}
+          />
+        )}
     </div>
+    
   );
+  
 }
 
 export default Panier;
