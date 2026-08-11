@@ -101,7 +101,9 @@ const CustomNavbar = ({ size, onSearchChange, UserConnect }) => {
     <nav className={`nav ${scrolled ? "nav-scrolled" : ""}`}>
       <div className="container">
         <div className="logo">
-          <img src="/image/kalico.webp" alt="logo" />
+          <Link to="/" onClick={handleNavLinkClick}>
+            <img src="/image/kalico.webp" alt="logo" />
+          </Link>
         </div>
 
         <div className={`main_list ${menuOpen ? "show_list" : ""}`}>
