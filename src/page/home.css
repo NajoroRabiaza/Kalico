@@ -240,18 +240,6 @@
   font-weight: 500;
 }
 
-.carteimage {
-  width: 300px;
-  height: 250px;
-  object-fit: cover;
-  object-position: center;
-  margin-top: -210px;
-  transform: translateX(-30px);
-  overflow: hidden;
-  transition: 0.3s;
-}
-
-.carteimage:hover { transform: translateX(-30px) scale(1.1); }
 
 html, body {
   width: 100%;

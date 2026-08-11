@@ -11,26 +11,26 @@ const Cards = ({ item, handleClick }) => {
   return (
     <div className="cards_container">
       <div className="card">
-        <div className="tete">
+
+        {/* Zone image avec hauteur fixe et overflow hidden
+            Le badge prix est positionne en absolu sur l'image
+            pour ne pas chevaucher le titre en dessous */}
+        <div className="card-image-wrapper">
           <img className="carteimage" src={item.img} alt={nom} />
+          <span className="prix-badge">{prix} Ar</span>
         </div>
-        <div className="body">
-          <div className="card_text">
-            <p className="titre_card">{nom}</p>
-            <p className="prix">
-              <b>{prix} Ar</b>
-            </p>
+
+        {/* Zone contenu en flex-col pour empiler proprement */}
+        <div className="card-body">
+          <p className="titre_card">{nom}</p>
+          <p className="description">{description}</p>
+
+          <div className="card-footer">
             <div className="quantity-controls">
               <button className="quantity-controls1" onClick={decrement}>-</button>
               <span className="qtt">{quantity}</span>
               <button className="quantity-controls2" onClick={increment}>+</button>
             </div>
-            <p className="stock_restant">
-              <b>Dispo :</b> {quantite}
-            </p>
-            <p className="description">
-              <b>Ingredient: </b>{description}
-            </p>
             <button
               onClick={() => handleClick({ ...item, quantity })}
               className="ajouter"
@@ -39,6 +39,7 @@ const Cards = ({ item, handleClick }) => {
             </button>
           </div>
         </div>
+
       </div>
     </div>
   );
