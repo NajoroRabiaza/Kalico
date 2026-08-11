@@ -401,6 +401,7 @@ body {
 
 .logo img {
   height: 56px;
+  cursor: pointer;
   width: auto;
   display: block;
   transition: height 0.3s ease;
