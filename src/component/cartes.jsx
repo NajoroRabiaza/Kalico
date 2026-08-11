@@ -2,35 +2,40 @@ import React, { useState } from 'react';
 import './cartes.css';
 
 const Cartes = ({ item, handleClick }) => {
-  const { nom, description, prix, img } = item;
+  const { nom, description, prix } = item;
   const [quantity, setQuantity] = useState(1);
 
   const increment = () => setQuantity((prev) => prev + 1);
   const decrement = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
 
   return (
-    <div className='cartes_container'>
-      <div className='cartes'>
-        <img className="cartesimage" src={img} alt={nom} />
-        <div className='cartes_text'>
-          <p className='titles_card'>{nom}</p>
-          <p className='descriptions'><b>Ingredient:</b> {description}</p>
-          <p className='price'>Prix : <b style={{ color: 'green' }}>{prix} Ar</b></p>
-          <p className="stock_rest">
-            <b>Dispo :</b> {item.quantite}
-          </p>
-          <div className="quantite-controls">
-            <button className='quantite-controls1' onClick={decrement}>-</button>
-            <span>{quantity}</span>
-            <button className='quantite-controls2' onClick={increment}>+</button>
-          </div>
-          <button
-            onClick={() => handleClick({ ...item, quantity })}
-            className='boutton'
-          >
-            Ajouter au panier
-          </button>
+    <div className="cartes_container">
+      <div className="cartes">
+
+        <div className="cartes-image-wrapper">
+          <img className="cartesimage" src={item.img} alt={nom} />
+          <span className="cartes-prix-badge">{prix} Ar</span>
         </div>
+
+        <div className="cartes-body">
+          <p className="cartes-titre">{nom}</p>
+          <p className="cartes-description">{description}</p>
+
+          <div className="cartes-footer">
+            <div className="cartes-quantity-controls">
+              <button className="cartes-qty-btn" onClick={decrement}>-</button>
+              <span className="cartes-qty-value">{quantity}</span>
+              <button className="cartes-qty-btn" onClick={increment}>+</button>
+            </div>
+            <button
+              onClick={() => handleClick({ ...item, quantity })}
+              className="cartes-ajouter"
+            >
+              Ajouter
+            </button>
+          </div>
+        </div>
+
       </div>
     </div>
   );
