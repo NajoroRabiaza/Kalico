@@ -43,13 +43,9 @@ function Loginpage({ setUserConnecte }) {
           localStorage.setItem("token", data.token);
           localStorage.setItem("userLevel", data.user.level);
           localStorage.setItem("userName", data.user.name);
-
           setConnecte(true);
           setUserConnecte(true);
           setSuccesConnect(true);
-
-          // On stocke les donnees de redirection dans un state
-          // pour les utiliser dans un useEffect avec cleanup propre
           setRedirectData(data.user.level);
         } else {
           setMissingpass(true);
@@ -58,8 +54,6 @@ function Loginpage({ setUserConnecte }) {
       .catch(() => setErreur(true));
   }
 
-  // Redirection apres login reussi avec cleanup pour eviter
-  // de naviguer sur un composant demonte si l'utilisateur part avant 1s
   useEffect(() => {
     if (!redirectData) return;
     const timer = setTimeout(() => {
@@ -72,7 +66,6 @@ function Loginpage({ setUserConnecte }) {
     return () => clearTimeout(timer);
   }, [redirectData, navigate]);
 
-  // Cache les messages d'erreur apres 8 secondes avec cleanup
   useEffect(() => {
     const timer = setTimeout(() => {
       setErreur(false);
@@ -92,135 +85,111 @@ function Loginpage({ setUserConnecte }) {
   return (
     <>
       <div className="SignIn_container">
-        <div>
-          <div className="inputLogin">
-            <h2
-              style={{
-                color: "white",
-                fontSize: "60px",
-                textAlign: "center",
-                marginLeft: "70px",
-                marginBottom: "30px",
-              }}
-            >
-              <strong>Login</strong>
-            </h2>
-            <div className="inputName">
+
+        {/* Colonne gauche : formulaire dans une carte glassmorphism */}
+        <div className="login-form-col">
+          <div className="login-glass-card">
+            <h2 className="login-titre">Login</h2>
+
+            {/* Message succes */}
+            {succesConnect && (
+              <div className="login-succes">Connexion réussie !</div>
+            )}
+
+            {/* Champ Nom */}
+            <div className="login-field">
+              <label className="login-label">Nom</label>
               <input
                 type="text"
-                className="nom"
+                className="login-input"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                required
-                size={500}
+                placeholder="Votre nom"
               />
-              <div className="underline"></div>
-              {existename ? (
-                <p className="compte_introuvable">creer un compte</p>
-              ) : succesConnect ? (
-                <p className="SuccesConnexion">Connexion reussit</p>
-              ) : erreur ? (
-                <p className="error">champ obligatoire !</p>
-              ) : (
-                erreunom && <p className="error">Entrer votre nom!</p>
-              )}
-              <label htmlFor="nom">Enter your name</label>
+              {erreunom && <p className="login-error">Entrez votre nom</p>}
+              {erreur && <p className="login-error">Champ obligatoire</p>}
             </div>
-            <br />
-            <div className="inputName">
+
+            {/* Champ Email */}
+            <div className="login-field">
+              <label className="login-label">Email</label>
               <input
                 type="text"
-                className="emailLogin"
-                required
+                className="login-input"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                size={700}
+                placeholder="exemple@gmail.com"
               />
-              <div className="underline"></div>
-              {erreur ? (
-                <p className="error">champ obligatoire !</p>
-              ) : errEmail ? (
-                <p className="error">Entrer votre email!</p>
-              ) : emailmissing ? (
-                <p className="error">@gmail.com obligatoire !</p>
-              ) : (
-                incorrectemail && <p className="error">@gmail.com obligatoire !</p>
-              )}
-              <label htmlFor="email">Enter your email</label>
+              {errEmail && <p className="login-error">Entrez votre email</p>}
+              {emailmissing && <p className="login-error">@gmail.com obligatoire</p>}
+              {erreur && <p className="login-error">Champ obligatoire</p>}
             </div>
-            <br />
-            <div className="inputName">
-              <input
-                type={eye ? "text" : "password"}
-                className="passwordLogin"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                size={700}
-              />
-              <div className="underline"></div>
-              {erreur ? (
-                <p className="error">champ obligatoire !</p>
-              ) : errpassword ? (
-                <p className="error">Entrer votre mot de passe!</p>
-              ) : (
-                missingpass && <p className="error">mot de passe incorrecte!</p>
-              )}
-              <label htmlFor="email">Enter your password</label>
+
+            {/* Champ Mot de passe avec icone oeil integree */}
+            <div className="login-field">
+              <label className="login-label">Mot de passe</label>
+              <div className="login-password-wrapper">
+                <input
+                  type={eye ? "text" : "password"}
+                  className="login-input login-input-password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Votre mot de passe"
+                />
+                {/* Icone oeil integrée dans le champ, pas de bouton externe */}
+                <button
+                  type="button"
+                  className="login-eye-btn"
+                  onClick={togglePassword}
+                  aria-label={eye ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+                >
+                  {eye ? (
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
+                    </svg>
+                  ) : (
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                    </svg>
+                  )}
+                </button>
+              </div>
+              {errpassword && <p className="login-error">Entrez votre mot de passe</p>}
+              {missingpass && <p className="login-error">Mot de passe incorrect</p>}
+              {erreur && <p className="login-error">Champ obligatoire</p>}
             </div>
-            <button
-              type="button"
-              onClick={togglePassword}
-              style={{
-                height: "30px",
-                width: "50px",
-                backgroundColor: "#f3f4f66b",
-                border: "1px solid #ccc",
-                borderRadius: "4px",
-                padding: "8px 12px",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-              }}
-            >
-              <span style={{ color: "white", fontWeight: "bold", fontSize: "10px" }}>
-                {eye ? "hide" : "show"}
-              </span>
+
+            {/* Lien mot de passe oublie */}
+            <div className="login-forgot">
+              <Link to="/forgotPassword">Mot de passe oublié ?</Link>
+            </div>
+
+            {/* Bouton Login */}
+            <button onClick={handleclicLogin} className="login-btn">
+              Se connecter
             </button>
-            <br />
-            <div className="paragraphe">
-              <p>
-                Forgot password? <Link to={"/forgotPassword"}>click here</Link>
-              </p>
-            </div>
-            <button onClick={handleclicLogin} className="btnLogin">
-              Login
-            </button>
-            <div className="paragraphe">
-              <p>
-                Not registered? <Link to={"/SignUp"}>Create an account</Link>
-              </p>
-            </div>
+
+            {/* Lien inscription */}
+            <p className="login-register">
+              Pas encore de compte ?{" "}
+              <Link to="/SignUp">Créer un compte</Link>
+            </p>
           </div>
         </div>
+
+        {/* Colonne droite : logo chef - non modifie */}
         <div className="divImage">
           <div>
             <img src="/image/image_chef.webp" alt="imageDechef" id="imgeLogin" />
           </div>
-          <h2
-            style={{
-              color: "white",
-              position: "relative",
-              right: "10px",
-              fontSize: "50px",
-            }}
-          >
-            {" "}
+          <h2 style={{ color: "white", position: "relative", right: "10px", fontSize: "50px" }}>
             <strong>Kalⁱco</strong>
           </h2>
         </div>
       </div>
+
+      {/* Ronds animés - non modifies */}
       <div className="Rcontener">
         <img src="/image/b.webp" alt="0" className="rond1" />
         <img src="/image/b (2).webp" alt="0" className="rond2" />
