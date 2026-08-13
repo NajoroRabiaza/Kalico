@@ -8,16 +8,14 @@ const mongoose = require("mongoose");
 const router = require("../router/router");
 const methodoverride = require("method-override");
 const cors = require("cors");
+const cron = require("node-cron");
+const { nettoyerCommandesExpires } = require("../controleurs/commandeControleur");
 
 const clientsRoute = require("../router/clients");
 const produitsRoute = require("../router/produits");
 const commandesRoute = require("../router/commandes");
 
-// CORS restreint a l'URL du frontend definie en variable d'environnement
-// En developpement local, FRONTEND_URL=http://localhost:5173
-
 // Liste blanche des origines autorisees
-// Permet d'accepter plusieurs domaines frontend simultanement
 const originesAutorisees = [
   process.env.FRONTEND_URL,
   process.env.FRONTEND_URL_2,
@@ -37,7 +35,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
 // methodoverride doit etre declare avant le montage des routes
-// pour que le middleware soit actif quand les routes sont evaluees
 app.use(methodoverride("_method"));
 
 app.use("/uploads", express.static("uploads"));
@@ -48,11 +45,25 @@ app.use("/commandes", commandesRoute);
 app.use(router);
 
 // La connexion MongoDB est etablie avant le demarrage du serveur
-// process.exit(1) en cas d'echec pour eviter un serveur sans base de donnees
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
     console.log("MongoDB connecte !");
+
+    // Job planifie : nettoie les commandes Cash expirees toutes les 5 minutes
+    // "*/5 * * * *" = toutes les 5 minutes
+    // Separe du GET /commandes pour respecter l'idempotence des requetes HTTP GET
+    cron.schedule("*/5 * * * *", async () => {
+      try {
+        const count = await nettoyerCommandesExpires();
+        if (count > 0) {
+          console.log(`[CRON] ${count} commande(s) Cash expiree(s) supprimee(s)`);
+        }
+      } catch (err) {
+        console.error("[CRON] Erreur nettoyage commandes:", err);
+      }
+    });
+
     app.listen(port, () => {
       console.log(`Serveur demarre au port ${port} !`);
     });
