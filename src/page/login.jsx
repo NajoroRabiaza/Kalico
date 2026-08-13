@@ -22,6 +22,10 @@ function Loginpage({ setUserConnecte }) {
 
   const navigate = useNavigate();
 
+  // Regex standard de validation d'email
+  // Accepte tous les domaines : gmail.com, yahoo.com, outlook.com, etc.
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
   function handleclicLogin() {
     if (name.trim() === "" && email.trim() === "" && password.trim() === "") {
       setErreur(true);
@@ -30,7 +34,7 @@ function Loginpage({ setUserConnecte }) {
     if (name.trim() === "") { setErreurnom(true); return; }
     if (email.trim() === "") { setErrEmail(true); return; }
     if (password.trim() === "") { setErreurpassword(true); return; }
-    if (!email.trim().includes("@gmail.com")) { setEmailmissing(true); return; }
+    if (!emailRegex.test(email.trim())) { setEmailmissing(true); return; }
 
     fetch(`${API_URL}/login`, {
       method: "POST",
@@ -118,10 +122,10 @@ function Loginpage({ setUserConnecte }) {
                 className="login-input"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="exemple@gmail.com"
+                placeholder="exemple@domaine.com"
               />
               {errEmail && <p className="login-error">Entrez votre email</p>}
-              {emailmissing && <p className="login-error">@gmail.com obligatoire</p>}
+              {emailmissing && <p className="login-error">Adresse email invalide</p>}
               {erreur && <p className="login-error">Champ obligatoire</p>}
             </div>
 
