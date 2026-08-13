@@ -31,7 +31,7 @@ const commandeDeBase = {
 };
 
 describe("POST /commandes", () => {
-    it("devait creer une commande Cash avec succes", async () => {
+    it("devrait creer une commande Cash avec succes", async () => {
         const token = genererToken();
         const res = await request(app)
             .post("/commandes")
@@ -50,12 +50,11 @@ describe("POST /commandes", () => {
             .set("Authorization", `Bearer ${token}`)
             .send({
                 ...commandeDeBase,
-                methodePaiement: "Mvola",
+                methodePaiement: "Cash",
                 niveau: undefined,
-                numero: "0341234567",
             });
-        expect(res.status).toBe(201);
-        expect(res.body.methodePaiement).toBe("Mvola");
+        expect(res.status).toBe(400);
+        expect(res.body.message).toBe("Le niveau est requis pour un paiement Cash");
     });
 
     it("devrait creer une commande Mvola avec succes", async () => {
@@ -78,7 +77,7 @@ describe("POST /commandes", () => {
         const res = await request(app)
             .post("/commandes")
             .set("Authorization", `Bearer ${token}`)
-            .send({...commandeDeBase, methodePaiement:"Mvola", niveau: undefined});
+            .send({...commandeDeBase, methodePaiement: "Mvola", niveau: undefined});
         expect(res.status).toBe(400);
         expect(res.body.message).toBe("Le numero est requis pour un paiement Mvola");
     });
@@ -143,7 +142,7 @@ describe("DELETE /commandes/:id", () => {
         const res = await request(app)
             .delete(`/commandes/${commande._id}`)
             .set("Authorization", `Bearer ${token}`);
-        
+
         expect(res.status).toBe(200);
         expect(res.body.message).toBe("Commande supprimee avec succes");
 
