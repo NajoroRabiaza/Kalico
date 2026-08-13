@@ -35,23 +35,29 @@ app.use(cors({
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
+
+// methodoverride doit etre declare avant le montage des routes
+// pour que le middleware soit actif quand les routes sont evaluees
+app.use(methodoverride("_method"));
+
 app.use("/uploads", express.static("uploads"));
 
 app.use("/clients", clientsRoute);
 app.use("/produits", produitsRoute);
 app.use("/commandes", commandesRoute);
+app.use(router);
 
+// La connexion MongoDB est etablie avant le demarrage du serveur
+// process.exit(1) en cas d'echec pour eviter un serveur sans base de donnees
 mongoose
   .connect(process.env.MONGO_URI)
-  .then(() => console.log("MongoDB connecté !"))
+  .then(() => {
+    console.log("MongoDB connecte !");
+    app.listen(port, () => {
+      console.log(`Serveur demarre au port ${port} !`);
+    });
+  })
   .catch((err) => {
     console.error("Erreur MongoDB:", err);
     process.exit(1);
   });
-
-app.use(methodoverride("_method"));
-app.use(router);
-
-app.listen(port, () => {
-  console.log(`Serveur démarré au port ${port} !`);
-});
