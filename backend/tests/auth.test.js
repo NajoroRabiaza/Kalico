@@ -6,21 +6,16 @@ const router = require("../router/router");
 const student = require("../model/client");
 require("dotenv").config({ path: require("path").resolve(__dirname, "../.env") });
 
-
-// on creer un app express minimale pour les tests sans lancer le vrai serveur sur un port
 const app = express();
 app.use(express.json());
 app.use(router);
 
-// utilisateur de base interne avant certains tests
 const utilisateurDeBase = {
     name: "TestUser",
     email: "testuser@gmail.com",
     password: "TestPass@1",
     level: "L2",
 };
-
-
 
 describe("POST /signup", () => {
     it("devrait creer un nouveau compte avec succees", async () => {
@@ -32,7 +27,6 @@ describe("POST /signup", () => {
     });
 
     it("devrait refuser un compte avec le meme email", async () => {
-        // on insere d'abrd un user en base
         const salt = await bcrypt.genSalt(10);
         const hashed = await bcrypt.hash(utilisateurDeBase.password, salt);
         await student.create({...utilisateurDeBase, password: hashed});
@@ -45,7 +39,6 @@ describe("POST /signup", () => {
 
 describe("POST /login", () => {
     beforeEach(async () => {
-        // insere un user hasher avant chaque test de login
         const salt = await bcrypt.genSalt(10);
         const hashed = await bcrypt.hash(utilisateurDeBase.password, salt);
         await student.create({...utilisateurDeBase, password: hashed});
@@ -72,7 +65,7 @@ describe("POST /login", () => {
         expect(res.body.message).toBe("Mot de passe incorrect");
     });
 
-    it("devrait refuser un compte existant", async () => {
+    it("devrait refuser un compte inexistant", async () => {
         const res = await request(app).post("/login").send({
             name: "Inconnu",
             email: "inconnu@gmail.com",
@@ -90,12 +83,13 @@ describe("POST /forgotPassword", () => {
         await student.create({...utilisateurDeBase, password: hashed});
     });
 
-    it("devrait retourner l'id si l'email existe", async () => {
+    it("devrait retourner un resetToken si l'email existe", async () => {
         const res = await request(app)
                     .post("/forgotPassword")
                     .send({email: utilisateurDeBase.email});
         expect(res.status).toBe(200);
-        expect(res.body.id).toBeDefined();
+        // La nouvelle API retourne un resetToken temporaire, plus l'_id permanent
+        expect(res.body.resetToken).toBeDefined();
     });
 
     it("devrait retourner 404 si l'email n'existe pas", async () => {
@@ -113,22 +107,42 @@ describe("POST /forgotPassword", () => {
     });
 });
 
-describe("POST /ChangePass/:id", () => {
-    it("devrait changer le mot de passe avec succees", async () => {
+describe("POST /ChangePass/:resetToken", () => {
+    it("devrait changer le mot de passe avec un resetToken valide", async () => {
         const salt = await bcrypt.genSalt(10);
         const hashed = await bcrypt.hash(utilisateurDeBase.password, salt);
-        const user = await student.create({...utilisateurDeBase, password: hashed});
+        await student.create({...utilisateurDeBase, password: hashed});
 
+        // On obtient le resetToken via forgotPassword
+        const forgotRes = await request(app)
+            .post("/forgotPassword")
+            .send({email: utilisateurDeBase.email});
+        expect(forgotRes.status).toBe(200);
+        const { resetToken } = forgotRes.body;
+
+        // On change le mot de passe avec ce token
         const res = await request(app)
-            .post(`/ChangePass/${user._id}`)
-            .send({passChange:"NouveauPass@1"});
+            .post(`/ChangePass/${resetToken}`)
+            .send({passChange: "NouveauPass@1"});
 
         expect(res.status).toBe(200);
         expect(res.body.message).toBe("Mot de passe mis a jour");
 
-        // verifier que le nouveau mot de passe est bien hasher en base
-        const updated = await student.findById(user._id);
-        const match = await bcrypt.compare("NouveauPass@1", updated.password);
+        // Verifier que le nouveau mot de passe est bien hashe en base
+        const user = await student.findOne({email: utilisateurDeBase.email});
+        const match = await bcrypt.compare("NouveauPass@1", user.password);
         expect(match).toBe(true);
+
+        // Verifier que le resetToken a bien ete supprimer apres usage
+        expect(user.resetToken).toBeNull();
+        expect(user.resetTokenExpire).toBeNull();
+    });
+
+    it("devrait refuser un resetToken invalide", async () => {
+        const res = await request(app)
+            .post("/ChangePass/token-invalide-inexistant")
+            .send({passChange: "NouveauPass@1"});
+        expect(res.status).toBe(400);
+        expect(res.body.message).toBe("Token invalide ou expire");
     });
 });
