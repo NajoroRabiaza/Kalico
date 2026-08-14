@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useState } from "react";
-import { Route, Routes, useLocation } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import ProtectedAdminRoute from "./component/ProtectedAdminRoute";
 
 const Home = lazy(() => import("./page/home"));
@@ -18,10 +18,24 @@ const AppAdmin = lazy(() => import("./admin/AppAdmin"));
 
 function App() {
   const location = useLocation();
+  const navigate = useNavigate();
+
   const [connecte, setConnecte] = useState(() => {
     const token = localStorage.getItem("token");
     return !!token;
   });
+
+  // Ecoute l'evenement emis par authFetch quand le backend retourne 401 ou 403
+  // Declenche une deconnexion propre sans recharger la page
+  useEffect(() => {
+    const handleExpire = () => {
+      setConnecte(false);
+      navigate("/login");
+    };
+
+    window.addEventListener("auth:expire", handleExpire);
+    return () => window.removeEventListener("auth:expire", handleExpire);
+  }, [navigate]);
 
   useEffect(() => {
     if (
