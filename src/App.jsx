@@ -26,7 +26,6 @@ function App() {
   });
 
   // Ecoute l'evenement emis par authFetch quand le backend retourne 401 ou 403
-  // Declenche une deconnexion propre sans recharger la page
   useEffect(() => {
     const handleExpire = () => {
       setConnecte(false);
@@ -56,7 +55,10 @@ function App() {
         <Route path="/" element={<Home Userconnecte={connecte} />} />
         <Route path="/SignUp" element={<Inscription />} />
         <Route path="/forgotPassword" element={<ForgotPassword />} />
-        <Route path="/ChangePassword/:id" element={<ChangePassword />} />
+
+        {/* Le parametre est desormais le resetToken temporaire et non plus l'_id */}
+        <Route path="/ChangePassword/:resetToken" element={<ChangePassword />} />
+
         <Route path="/login" element={<Loginpage setUserConnecte={setConnecte} />} />
         <Route path="/panier" element={<Panier Userconnecte={connecte} />} />
         <Route path="/Riz" element={<Riz Userconnecte={connecte} />} />
@@ -66,7 +68,6 @@ function App() {
         <Route path="/Menu" element={<Menu Userconnecte={connecte} />} />
         <Route path="/Soupe" element={<Soupe Userconnecte={connecte} />} />
 
-        {/* Route protegee : seul un utilisateur avec level "admin" y a acces */}
         <Route
           path="/admin/*"
           element={
