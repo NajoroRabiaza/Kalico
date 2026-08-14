@@ -8,8 +8,6 @@ const ForgotPassword = () => {
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
-  // On envoie uniquement l'email au backend qui fait la recherche
-  // Le backend retourne l'id si l'email existe, sans exposer les autres utilisateurs
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -32,8 +30,9 @@ const ForgotPassword = () => {
         return;
       }
 
-      // Redirection vers la page de changement de mot de passe avec l'id
-      navigate(`/ChangePassword/${data.id}`);
+      // Redirection avec le resetToken temporaire dans l'URL
+      // Ce token expire dans 15 minutes et ne peut etre utilise qu'une seule fois
+      navigate(`/ChangePassword/${data.resetToken}`);
 
     } catch (error) {
       setMessage("Erreur serveur, veuillez reessayer");
@@ -62,14 +61,9 @@ const ForgotPassword = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Entrer votre email"
                 style={{
-                  width: "100%",
-                  padding: "10px",
-                  marginTop: "5px",
-                  borderRadius: "5px",
-                  border: "1px solid #ccc",
-                  outline: "none",
-                  borderBottomColor: "black",
-                  background: "white",
+                  width: "100%", padding: "10px", marginTop: "5px",
+                  borderRadius: "5px", border: "1px solid #ccc",
+                  outline: "none", borderBottomColor: "black", background: "white",
                 }}
               />
             </div>
@@ -77,13 +71,8 @@ const ForgotPassword = () => {
               onClick={handleSubmit}
               style={{
                 backgroundColor: "rgb(149, 11, 255, 1)",
-                color: "white",
-                padding: "10px 20px",
-                marginTop: "20px",
-                border: "none",
-                borderRadius: "5px",
-                cursor: "pointer",
-                width: "100%",
+                color: "white", padding: "10px 20px", marginTop: "20px",
+                border: "none", borderRadius: "5px", cursor: "pointer", width: "100%",
               }}
             >
               Soumettre
@@ -91,7 +80,7 @@ const ForgotPassword = () => {
             <p></p>
             <Link to={"/login"} style={{ color: "white" }}>Retour</Link>
             {message && (
-              <p style={{ marginTop: "15px", color: "green" }}>{message}</p>
+              <p style={{ marginTop: "15px", color: "red" }}>{message}</p>
             )}
           </div>
         </div>

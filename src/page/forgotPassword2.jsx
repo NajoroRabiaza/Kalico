@@ -1,5 +1,5 @@
 import API_URL from "../api";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "./forgotPassword.css";
 import { Link, useParams, useNavigate } from "react-router-dom";
 
@@ -8,7 +8,10 @@ const ChangePassword = () => {
   const [message, setMessage] = useState("");
   const [updateSucces, setUpdateSucces] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { id } = useParams();
+
+  // Le parametre est desormais le resetToken temporaire
+  // et non plus l'_id permanent de l'utilisateur
+  const { resetToken } = useParams();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -27,19 +30,20 @@ const ChangePassword = () => {
     setLoading(true);
 
     try {
-      // On envoie le nouveau mot de passe au backend avec l'id de l'utilisateur
-      // Le backend se charge du hashage via bcrypt avant la sauvegarde
-      const res = await fetch(`${API_URL}/ChangePass/${id}`, {
+      const res = await fetch(`${API_URL}/ChangePass/${resetToken}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ passChange: newPassword }),
       });
 
-      if (!res.ok) throw new Error("Erreur serveur");
+      const data = await res.json();
+
+      if (!res.ok) {
+        setMessage(data.message || "Token invalide ou expire");
+        return;
+      }
 
       setUpdateSucces(true);
-
-      // Redirection vers login apres succes
       setTimeout(() => navigate("/login"), 2000);
 
     } catch (err) {
