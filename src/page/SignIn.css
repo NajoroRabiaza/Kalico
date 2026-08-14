@@ -466,3 +466,31 @@ body {
   color: rgba(197, 196, 196, 0.711);
   outline: none;
 }
+/* FIX FINAL DEBORDEMENT CARTE SIGNUP */
+
+.SignIn_container {
+  align-items: center !important;
+  padding-top: 1.5rem !important;
+  padding-bottom: 1.5rem !important;
+  overflow-y: auto !important;
+  min-height: 100vh !important;
+  height: auto !important;
+}
+
+.login-glass-card {
+  gap: 0.9rem !important;
+  padding: 1.8rem 2rem !important;
+}
+
+.login-titre {
+  font-size: 1.7rem !important;
+  margin-bottom: 0 !important;
+}
+
+.login-btn {
+  margin-top: 0.2rem !important;
+}
+
+.login-register {
+  margin-bottom: 0 !important;
+}
