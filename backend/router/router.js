@@ -3,11 +3,14 @@ const AllController = require('../collection/sign');
 const verifyToken = require("../middleware/verifyToken");
 const router = express.Router();
 
-// Route proteger : seul un user avec un token valide peut acceder aux donnees users
 router.get("/dataUser", verifyToken, AllController.dataUser);
 router.post("/signup", AllController.signup);
 router.post("/forgotPassword", AllController.forgotPassword);
 router.post("/login", AllController.login);
-router.post("/ChangePass/:id", AllController.ChangePass);
+
+// La route ChangePass utilise desormais le resetToken temporaire dans l'URL
+// et non plus l'_id permanent de l'utilisateur
+// Le token est verifie et supprime cote backend apres usage
+router.post("/ChangePass/:resetToken", AllController.ChangePass);
 
 module.exports = router;
