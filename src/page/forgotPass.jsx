@@ -1,13 +1,13 @@
 import API_URL from "../api";
 import React, { useState } from "react";
 import "./SignIn.css";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
+  const [succes, setSucces] = useState(false);
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,7 +32,9 @@ const ForgotPassword = () => {
         return;
       }
 
-      navigate(`/ChangePassword/${data.resetToken}`);
+      // Le backend envoie l'email avec le lien
+      // On affiche juste une confirmation, le token n'est plus expose ici
+      setSucces(true);
 
     } catch (error) {
       setMessage("Erreur serveur, veuillez reessayer");
@@ -44,41 +46,59 @@ const ForgotPassword = () => {
   return (
     <>
       <div className="SignIn_container">
-
-        {/* Colonne gauche : formulaire glassmorphism */}
         <div className="login-form-col">
           <div className="login-glass-card">
             <h2 className="login-titre">Mot de passe oublié ?</h2>
 
-            <p style={{
-              fontFamily: "Inter, sans-serif",
-              fontSize: "0.88rem",
-              color: "rgba(255,255,255,0.75)",
-              margin: 0,
-              textAlign: "center",
-            }}>
-              Entrez votre email pour recevoir un lien de reinitialisation.
-            </p>
+            {succes ? (
+              <>
+                <div className="login-succes">
+                  Un email a ete envoye a <strong>{email}</strong>.
+                  Verifiez votre boite de reception et cliquez sur le lien.
+                </div>
+                <p style={{
+                  fontFamily: "Inter, sans-serif",
+                  fontSize: "0.82rem",
+                  color: "rgba(255,255,255,0.6)",
+                  textAlign: "center",
+                  margin: 0,
+                }}>
+                  Le lien expire dans 15 minutes.
+                </p>
+              </>
+            ) : (
+              <>
+                <p style={{
+                  fontFamily: "Inter, sans-serif",
+                  fontSize: "0.88rem",
+                  color: "rgba(255,255,255,0.75)",
+                  margin: 0,
+                  textAlign: "center",
+                }}>
+                  Entrez votre email pour recevoir un lien de reinitialisation.
+                </p>
 
-            <div className="login-field">
-              <label className="login-label">Email</label>
-              <input
-                type="email"
-                className="login-input"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="exemple@domaine.com"
-              />
-              {message && <p className="login-error">{message}</p>}
-            </div>
+                <div className="login-field">
+                  <label className="login-label">Email</label>
+                  <input
+                    type="email"
+                    className="login-input"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="exemple@domaine.com"
+                  />
+                  {message && <p className="login-error">{message}</p>}
+                </div>
 
-            <button
-              onClick={handleSubmit}
-              disabled={loading}
-              className="login-btn"
-            >
-              {loading ? "Verification..." : "Soumettre"}
-            </button>
+                <button
+                  onClick={handleSubmit}
+                  disabled={loading}
+                  className="login-btn"
+                >
+                  {loading ? "Envoi en cours..." : "Envoyer le lien"}
+                </button>
+              </>
+            )}
 
             <p className="login-register">
               <Link to="/login">Retour a la connexion</Link>
@@ -86,7 +106,6 @@ const ForgotPassword = () => {
           </div>
         </div>
 
-        {/* Colonne droite : logo chef */}
         <div className="divImage">
           <div>
             <img src="/image/image_chef.webp" alt="imageDechef" id="imgeLogin" />
@@ -97,7 +116,6 @@ const ForgotPassword = () => {
         </div>
       </div>
 
-      {/* Ronds animes */}
       <div className="Rcontener">
         <img src="/image/b.webp" alt="0" className="rond1" />
         <img src="/image/b (2).webp" alt="0" className="rond2" />
