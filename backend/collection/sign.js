@@ -2,6 +2,7 @@ const student = require("../model/client");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
+const { envoyerEmailReinitialisation } = require("../services/emailService");
 
 const signup = async (req, res) => {
   try {
@@ -24,7 +25,7 @@ const signup = async (req, res) => {
     });
 
     await Client.save();
-    res.json({ message: "Compte creer avec succes !" });
+    res.json({ message: "Compte cree avec succes !" });
 
   } catch (error) {
     res.status(500).json({ message: "Erreur lors de la creation du compte" });
@@ -92,9 +93,8 @@ const forgotPassword = async (req, res) => {
       return res.status(404).json({ message: "Email introuvable" });
     }
 
-    // Generation d'un token aleatoire cryptographiquement sur avec crypto.randomBytes
-    // Ce token est stocke en base avec une expiration de 15 minutes
-    // Il remplace l'exposition de l'_id permanent dans l'URL
+    // Generation d'un token aleatoire cryptographiquement sur
+    // Stocke en base avec expiration 15 minutes
     const resetToken = crypto.randomBytes(32).toString("hex");
     const resetTokenExpire = new Date(Date.now() + 15 * 60 * 1000);
 
@@ -103,9 +103,14 @@ const forgotPassword = async (req, res) => {
       resetTokenExpire,
     });
 
-    res.json({ resetToken });
+    // Envoi du token par email uniquement
+    // Le token n'est jamais expose dans la reponse HTTP
+    await envoyerEmailReinitialisation(user.email, resetToken);
+
+    res.json({ message: "Un email de reinitialisation a ete envoye" });
 
   } catch (error) {
+    console.error("Erreur forgotPassword:", error);
     res.status(500).json({ message: "Erreur serveur" });
   }
 };
@@ -119,8 +124,7 @@ const ChangePass = async (req, res) => {
       return res.status(400).json({ message: "Nouveau mot de passe requis" });
     }
 
-    // Recherche de l'utilisateur par son resetToken
-    // On verifie simultanement que le token existe et qu'il n'est pas expire
+    // Recherche par resetToken avec verification de l'expiration simultanement
     const user = await student.findOne({
       resetToken,
       resetTokenExpire: { $gt: new Date() },
@@ -133,7 +137,7 @@ const ChangePass = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(passChange, salt);
 
-    // Le token est supprime apres usage : il ne peut servir qu'une seule fois
+    // Token supprimer apres usage : ne peut servir qu'une seule fois
     await student.findByIdAndUpdate(user._id, {
       $set: { password: hashedPassword },
       $unset: { resetToken: "", resetTokenExpire: "" },
