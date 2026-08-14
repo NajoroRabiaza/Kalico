@@ -1,6 +1,7 @@
 const student = require("../model/client");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const crypto = require("crypto");
 
 const signup = async (req, res) => {
   try {
@@ -12,7 +13,6 @@ const signup = async (req, res) => {
       return res.status(409).json({ message: "Compte deja existant" });
     }
 
-    // Le salt definit le cout du hashage (10 = standard recommande en production)
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
 
@@ -24,7 +24,7 @@ const signup = async (req, res) => {
     });
 
     await Client.save();
-    res.json({ message: "Compte cree avec succes !" });
+    res.json({ message: "Compte creer avec succes !" });
 
   } catch (error) {
     res.status(500).json({ message: "Erreur lors de la creation du compte" });
@@ -41,8 +41,6 @@ const login = async (req, res) => {
       return res.status(404).json({ message: "Compte introuvable" });
     }
 
-    // bcrypt.compare compare le mot de passe en clair avec le hash stocke en base
-    // Il est impossible de retrouver le mot de passe original a partir du hash
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
@@ -73,29 +71,13 @@ const login = async (req, res) => {
 
 const dataUser = async (req, res) => {
   try {
-    const users = await student.find({}).select("-password");
+    const users = await student.find({}).select("-password -resetToken -resetTokenExpire");
     res.json(users);
   } catch (err) {
     res.status(500).json({ message: "Erreur lors de la recuperation des utilisateurs" });
   }
 };
 
-const ChangePass = async (req, res) => {
-  try {
-    const getid = req.params.id;
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(req.body.passChange, salt);
-
-    await student.findByIdAndUpdate(getid, { $set: { password: hashedPassword } });
-    res.json({ message: "Mot de passe mis a jour" });
-
-  } catch (err) {
-    res.status(500).json({ message: "Erreur lors du changement de mot de passe" });
-  }
-};
-
-// forgotPassword doit etre declare avant module.exports
-// Le placer apres provoquait une ReferenceError au demarrage du serveur
 const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
@@ -104,16 +86,63 @@ const forgotPassword = async (req, res) => {
       return res.status(400).json({ message: "Email requis" });
     }
 
-    const user = await student.findOne({ email }).select("-password");
+    const user = await student.findOne({ email });
 
     if (!user) {
       return res.status(404).json({ message: "Email introuvable" });
     }
 
-    res.json({ id: user._id });
+    // Generation d'un token aleatoire cryptographiquement sur avec crypto.randomBytes
+    // Ce token est stocke en base avec une expiration de 15 minutes
+    // Il remplace l'exposition de l'_id permanent dans l'URL
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const resetTokenExpire = new Date(Date.now() + 15 * 60 * 1000);
+
+    await student.findByIdAndUpdate(user._id, {
+      resetToken,
+      resetTokenExpire,
+    });
+
+    res.json({ resetToken });
 
   } catch (error) {
     res.status(500).json({ message: "Erreur serveur" });
+  }
+};
+
+const ChangePass = async (req, res) => {
+  try {
+    const { resetToken } = req.params;
+    const { passChange } = req.body;
+
+    if (!passChange) {
+      return res.status(400).json({ message: "Nouveau mot de passe requis" });
+    }
+
+    // Recherche de l'utilisateur par son resetToken
+    // On verifie simultanement que le token existe et qu'il n'est pas expire
+    const user = await student.findOne({
+      resetToken,
+      resetTokenExpire: { $gt: new Date() },
+    });
+
+    if (!user) {
+      return res.status(400).json({ message: "Token invalide ou expire" });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(passChange, salt);
+
+    // Le token est supprime apres usage : il ne peut servir qu'une seule fois
+    await student.findByIdAndUpdate(user._id, {
+      $set: { password: hashedPassword },
+      $unset: { resetToken: "", resetTokenExpire: "" },
+    });
+
+    res.json({ message: "Mot de passe mis a jour" });
+
+  } catch (err) {
+    res.status(500).json({ message: "Erreur lors du changement de mot de passe" });
   }
 };
 
