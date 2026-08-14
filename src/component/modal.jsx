@@ -15,10 +15,7 @@ function Modal({ oneclose, condition, totalCommande }) {
   const [nameMvola, setNameMvola] = useState("");
   const [number, setNumber] = useState("");
 
-  const [takeNameCash, setTakeNameCash] = useState("");
-  const [takelevelCash, setTakelevelCash] = useState("");
-  const [takenameMvola, setTakenameMvola] = useState("");
-  const [takenumMvola, setTakenumMvola] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const [conditionnameCash, setConditionnameCash] = useState(false);
   const [conditionlevelCash, setConditionlevelCash] = useState(false);
@@ -26,7 +23,6 @@ function Modal({ oneclose, condition, totalCommande }) {
   const [conditionnumMvola, setConditionnumMvola] = useState(false);
 
   // Cache les messages d'erreur apres 8 secondes
-  // Encapsule dans useEffect pour eviter de relancer le timer a chaque re-render
   useEffect(() => {
     const hasError = conditionnameCash || conditionlevelCash || conditionnameMvola || conditionnumMvola;
     if (!hasError) return;
@@ -39,105 +35,85 @@ function Modal({ oneclose, condition, totalCommande }) {
     return () => clearTimeout(timer);
   }, [conditionnameCash, conditionlevelCash, conditionnameMvola, conditionnumMvola]);
 
-  function inputName(e) { setNameCash(e.target.value); }
-  function inputLevel(e) { setLevelCash(e.target.value); }
-  function inputnameMvola(e) { setNameMvola(e.target.value); }
-  function inputNumber(e) { setNumber(e.target.value); }
+  // Envoi de commande directement depuis le handler de clic
+  // Plus de useEffect comme declencheur : evite la double soumission
+  // et rend le flux de donnees explicite et lineaire
+  const envoyerCommande = async (commande) => {
+    setLoading(true);
+    try {
+      const res = await authFetch(`${API_URL}/commandes`, {
+        method: "POST",
+        body: JSON.stringify(commande),
+      });
+      if (!res.ok) throw new Error("Erreur serveur");
+      const savedCommande = await res.json();
+      setOrderHistory((prev) => [savedCommande, ...prev]);
+      setCart([]);
+      showToast("Votre commande est bien reçu, veuillez patienter !", "success");
+      oneclose();
+    } catch {
+      showToast("Erreur lors de l'envoi de la commande !", "error");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  function conditionalModal() {
+  async function conditionalModal() {
     if (nameCash.trim() === "") {
       setConditionnameCash(true);
-    } else if (levelCash === "") {
+      return;
+    }
+    if (levelCash === "") {
       setConditionlevelCash(true);
-    } else if (
+      return;
+    }
+    if (
       !levelCash.trim().includes("L1") &&
       !levelCash.trim().includes("L2") &&
       !levelCash.trim().includes("L3")
     ) {
       setConditionlevelCash(true);
-    } else {
-      setTakeNameCash(nameCash);
-      setTakelevelCash(levelCash);
-      condition();
+      return;
     }
-  }
 
-  // Envoi commande Cash : authFetch injecte le token JWT dans le header Authorization
-  useEffect(() => {
-    if (!takeNameCash) return;
-    const commande = {
-      clientNom: takeNameCash,
-      niveau: takelevelCash,
+    await envoyerCommande({
+      clientNom: nameCash,
+      niveau: levelCash,
       methodePaiement: "Cash",
       produits: cart,
       total: totalCommande,
       date: new Date(),
       statut: "en attente",
-    };
-    authFetch(`${API_URL}/commandes`, {
-      method: "POST",
-      body: JSON.stringify(commande),
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Erreur serveur");
-        return res.json();
-      })
-      .then((savedCommande) => {
-        setOrderHistory((prev) => [savedCommande, ...prev]);
-        setCart([]);
-        showToast("Votre commande est bien reçu, veuillez patienter !", "success");
-        oneclose();
-      })
-      .catch(() => {
-        showToast("Erreur lors de l'envoi de la commande !", "error");
-      });
-  }, [takeNameCash]);
+    });
+  }
 
-  // Envoi commande Mvola : authFetch injecte le token JWT dans le header Authorization
-  useEffect(() => {
-    if (!takenameMvola) return;
-    const commande = {
-      clientNom: takenameMvola,
-      numero: takenumMvola,
+  async function conditionMvolaModal() {
+    if (nameMvola.trim() === "") {
+      setConditionnameMvola(true);
+      return;
+    }
+    if (number.trim() === "") {
+      setConditionnumMvola(true);
+      return;
+    }
+    if (!number.trim().includes("034") && !number.trim().includes("038")) {
+      setConditionnumMvola(true);
+      return;
+    }
+    if (number.trim().length !== 10) {
+      setConditionnumMvola(true);
+      return;
+    }
+
+    await envoyerCommande({
+      clientNom: nameMvola,
+      numero: number,
       methodePaiement: "Mvola",
       produits: cart,
       total: totalCommande,
       date: new Date(),
       statut: "en attente",
-    };
-    authFetch(`${API_URL}/commandes`, {
-      method: "POST",
-      body: JSON.stringify(commande),
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Erreur serveur");
-        return res.json();
-      })
-      .then((savedCommande) => {
-        setOrderHistory((prev) => [savedCommande, ...prev]);
-        setCart([]);
-        showToast("Votre commande est bien reçu, veuillez patienter !", "success");
-        oneclose();
-      })
-      .catch(() => {
-        showToast("Erreur lors de l'envoi de la commande !", "error");
-      });
-  }, [takenameMvola]);
-
-  function conditionMvolaModal() {
-    if (nameMvola.trim() === "") {
-      setConditionnameMvola(true);
-    } else if (number.trim() === "") {
-      setConditionnumMvola(true);
-    } else if (!number.trim().includes("034") && !number.trim().includes("038")) {
-      setConditionnumMvola(true);
-    } else if (number.trim().length !== 10) {
-      setConditionnumMvola(true);
-    } else {
-      setTakenameMvola(nameMvola);
-      setTakenumMvola(number);
-      condition();
-    }
+    });
   }
 
   return (
@@ -165,18 +141,20 @@ function Modal({ oneclose, condition, totalCommande }) {
                 {conditionnameCash && <p className="errorModal" title="Entrer un nom">!</p>}
                 <label>Entrer votre Nom</label>
                 <br />
-                <input type="text" size={30} required value={nameCash} onChange={inputName} />
+                <input type="text" size={30} required value={nameCash} onChange={(e) => setNameCash(e.target.value)} />
                 <br />
                 <label>Entrer votre niveau</label>
                 {conditionlevelCash && <p className="errorModal" title="Entrer votre niveau">!</p>}
                 <br />
-                <input type="text" size={30} value={levelCash} onChange={inputLevel} required />
+                <input type="text" size={30} value={levelCash} onChange={(e) => setLevelCash(e.target.value)} required />
                 <div className="date">
                   <h6>Vous devez payer dans les :</h6>
                   <p>10 prochain minutes</p>
                 </div>
                 <div className="btnSubmit">
-                  <button id="SubmitBtn" onClick={conditionalModal}>Valider</button>
+                  <button id="SubmitBtn" onClick={conditionalModal} disabled={loading}>
+                    {loading ? "Envoi..." : "Valider"}
+                  </button>
                 </div>
               </div>
             ) : (
@@ -184,14 +162,16 @@ function Modal({ oneclose, condition, totalCommande }) {
                 {conditionnameMvola && <p className="erreurModal" title="Entrer un nom">!</p>}
                 <label>Entrer votre Nom</label>
                 <br />
-                <input type="text" size={30} value={nameMvola} onChange={inputnameMvola} required />
+                <input type="text" size={30} value={nameMvola} onChange={(e) => setNameMvola(e.target.value)} required />
                 <br />
                 {conditionnumMvola && <p className="erreurModal2" title="Entrer votre numero">!</p>}
                 <label>Entrer votre numero Mvola</label>
                 <br />
-                <input type="tel" size={30} onChange={inputNumber} value={number} required />
+                <input type="tel" size={30} onChange={(e) => setNumber(e.target.value)} value={number} required />
                 <div className="btnSubmit">
-                  <button id="SubmitBtn" onClick={conditionMvolaModal}>Valider</button>
+                  <button id="SubmitBtn" onClick={conditionMvolaModal} disabled={loading}>
+                    {loading ? "Envoi..." : "Valider"}
+                  </button>
                 </div>
               </div>
             )}
