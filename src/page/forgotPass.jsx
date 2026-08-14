@@ -1,21 +1,23 @@
 import API_URL from "../api";
 import React, { useState } from "react";
-import "./forgotPassword.css";
+import "./SignIn.css";
 import { Link, useNavigate } from "react-router-dom";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (email.trim() === "") {
-      setMessage("Entrer votre email");
+      setMessage("Entrez votre email");
       return;
     }
 
+    setLoading(true);
     try {
       const res = await fetch(`${API_URL}/forgotPassword`, {
         method: "POST",
@@ -30,60 +32,78 @@ const ForgotPassword = () => {
         return;
       }
 
-      // Redirection avec le resetToken temporaire dans l'URL
-      // Ce token expire dans 15 minutes et ne peut etre utilise qu'une seule fois
       navigate(`/ChangePassword/${data.resetToken}`);
 
     } catch (error) {
       setMessage("Erreur serveur, veuillez reessayer");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <>
-      <div className="ContainerForgot">
-        <div style={{
-          maxWidth: "400px", margin: "0 auto", height: "400px",
-          width: "500px", border: "0.3px solid black", display: "flex",
-          alignItems: "center", justifyContent: "center",
-          boxShadow: "0px 0px 1px black",
-        }}>
-          <div style={{ height: "200px" }}>
-            <h2 style={{ color: "white", position: "relative", bottom: "30px" }}>
-              Mot de passe oublier ?
-            </h2>
-            <br />
-            <div style={{ marginBottom: "15px" }}>
+      <div className="SignIn_container">
+
+        {/* Colonne gauche : formulaire glassmorphism */}
+        <div className="login-form-col">
+          <div className="login-glass-card">
+            <h2 className="login-titre">Mot de passe oublié ?</h2>
+
+            <p style={{
+              fontFamily: "Inter, sans-serif",
+              fontSize: "0.88rem",
+              color: "rgba(255,255,255,0.75)",
+              margin: 0,
+              textAlign: "center",
+            }}>
+              Entrez votre email pour recevoir un lien de reinitialisation.
+            </p>
+
+            <div className="login-field">
+              <label className="login-label">Email</label>
               <input
                 type="email"
-                id="email"
+                className="login-input"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Entrer votre email"
-                style={{
-                  width: "100%", padding: "10px", marginTop: "5px",
-                  borderRadius: "5px", border: "1px solid #ccc",
-                  outline: "none", borderBottomColor: "black", background: "white",
-                }}
+                placeholder="exemple@domaine.com"
               />
+              {message && <p className="login-error">{message}</p>}
             </div>
+
             <button
               onClick={handleSubmit}
-              style={{
-                backgroundColor: "rgb(149, 11, 255, 1)",
-                color: "white", padding: "10px 20px", marginTop: "20px",
-                border: "none", borderRadius: "5px", cursor: "pointer", width: "100%",
-              }}
+              disabled={loading}
+              className="login-btn"
             >
-              Soumettre
+              {loading ? "Verification..." : "Soumettre"}
             </button>
-            <p></p>
-            <Link to={"/login"} style={{ color: "white" }}>Retour</Link>
-            {message && (
-              <p style={{ marginTop: "15px", color: "red" }}>{message}</p>
-            )}
+
+            <p className="login-register">
+              <Link to="/login">Retour a la connexion</Link>
+            </p>
           </div>
         </div>
+
+        {/* Colonne droite : logo chef */}
+        <div className="divImage">
+          <div>
+            <img src="/image/image_chef.webp" alt="imageDechef" id="imgeLogin" />
+          </div>
+          <h2 style={{ color: "white", fontSize: "50px" }}>
+            <strong>Kalⁱco</strong>
+          </h2>
+        </div>
+      </div>
+
+      {/* Ronds animes */}
+      <div className="Rcontener">
+        <img src="/image/b.webp" alt="0" className="rond1" />
+        <img src="/image/b (2).webp" alt="0" className="rond2" />
+        <img src="/image/b (3).webp" alt="0" className="rond3" />
+        <img src="/image/b (4).webp" alt="0" className="rond4" />
+        <img src="/image/b (5).webp" alt="0" className="rond5" />
       </div>
     </>
   );
