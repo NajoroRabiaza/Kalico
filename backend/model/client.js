@@ -20,6 +20,17 @@ const utilisateur = new Schema({
         minlength: 8,
         required: true,
     },
+    // Token temporaire pour la reinitialisation du mot de passe
+    // Genere par forgotPassword, consomme et supprime par ChangePass
+    // Ne peut etre utilise qu'une seule fois et expire apres 15 minutes
+    resetToken: {
+        type: String,
+        default: null,
+    },
+    resetTokenExpire: {
+        type: Date,
+        default: null,
+    },
 }, {
     timestamps: true
 });
