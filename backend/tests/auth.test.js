@@ -6,6 +6,14 @@ const router = require("../router/router");
 const student = require("../model/client");
 require("dotenv").config({ path: require("path").resolve(__dirname, "../.env") });
 
+// Mock du service email pour eviter les vrais envois pendant les tests
+// Le mock remplace la fonction par une fonction vide qui retourne une promesse resolue
+jest.mock("../services/emailService", () => ({
+  envoyerEmailReinitialisation: jest.fn().mockResolvedValue(true),
+}));
+
+const { envoyerEmailReinitialisation } = require("../services/emailService");
+
 const app = express();
 app.use(express.json());
 app.use(router);
@@ -83,13 +91,21 @@ describe("POST /forgotPassword", () => {
         await student.create({...utilisateurDeBase, password: hashed});
     });
 
-    it("devrait retourner un resetToken si l'email existe", async () => {
+    it("devrait envoyer un email et retourner un message de confirmation", async () => {
         const res = await request(app)
                     .post("/forgotPassword")
                     .send({email: utilisateurDeBase.email});
         expect(res.status).toBe(200);
-        // La nouvelle API retourne un resetToken temporaire, plus l'_id permanent
-        expect(res.body.resetToken).toBeDefined();
+        expect(res.body.message).toBe("Un email de reinitialisation a ete envoye");
+        // Verifier que le service email a bien ete appele
+        expect(envoyerEmailReinitialisation).toHaveBeenCalledWith(
+            utilisateurDeBase.email,
+            expect.any(String)
+        );
+        // Verifier que le resetToken est bien stocke en base
+        const user = await student.findOne({ email: utilisateurDeBase.email });
+        expect(user.resetToken).toBeDefined();
+        expect(user.resetTokenExpire).toBeDefined();
     });
 
     it("devrait retourner 404 si l'email n'existe pas", async () => {
@@ -113,14 +129,15 @@ describe("POST /ChangePass/:resetToken", () => {
         const hashed = await bcrypt.hash(utilisateurDeBase.password, salt);
         await student.create({...utilisateurDeBase, password: hashed});
 
-        // On obtient le resetToken via forgotPassword
         const forgotRes = await request(app)
             .post("/forgotPassword")
             .send({email: utilisateurDeBase.email});
         expect(forgotRes.status).toBe(200);
-        const { resetToken } = forgotRes.body;
 
-        // On change le mot de passe avec ce token
+        // Recuperer le resetToken directement en base pour le test
+        const userAvant = await student.findOne({ email: utilisateurDeBase.email });
+        const { resetToken } = userAvant;
+
         const res = await request(app)
             .post(`/ChangePass/${resetToken}`)
             .send({passChange: "NouveauPass@1"});
@@ -128,12 +145,11 @@ describe("POST /ChangePass/:resetToken", () => {
         expect(res.status).toBe(200);
         expect(res.body.message).toBe("Mot de passe mis a jour");
 
-        // Verifier que le nouveau mot de passe est bien hashe en base
         const user = await student.findOne({email: utilisateurDeBase.email});
         const match = await bcrypt.compare("NouveauPass@1", user.password);
         expect(match).toBe(true);
 
-        // Verifier que le resetToken a bien ete supprimer apres usage
+        // Token supprimer apres usage
         expect(user.resetToken).toBeNull();
         expect(user.resetTokenExpire).toBeNull();
     });
