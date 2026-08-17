@@ -37,22 +37,20 @@ app.use(express.json());
 // methodoverride doit etre declare avant le montage des routes
 app.use(methodoverride("_method"));
 
-app.use("/uploads", express.static("uploads"));
+// Le dossier uploads/ local n'est plus utilise
+// Les images sont desormais stockees sur Cloudinary
+// app.use("/uploads", express.static("uploads")); — supprime
 
 app.use("/clients", clientsRoute);
 app.use("/produits", produitsRoute);
 app.use("/commandes", commandesRoute);
 app.use(router);
 
-// La connexion MongoDB est etablie avant le demarrage du serveur
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
     console.log("MongoDB connecte !");
 
-    // Job planifie : nettoie les commandes Cash expirees toutes les 5 minutes
-    // "*/5 * * * *" = toutes les 5 minutes
-    // Separe du GET /commandes pour respecter l'idempotence des requetes HTTP GET
     cron.schedule("*/5 * * * *", async () => {
       try {
         const count = await nettoyerCommandesExpires();
