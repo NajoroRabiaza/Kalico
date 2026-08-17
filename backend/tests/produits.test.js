@@ -83,7 +83,7 @@ describe("DELETE /produits/:id", () => {
             .set("Authorization", `Bearer ${token}`);
 
         expect(res.status).toBe(200);
-        expect(res.body.message).toBe("Produit supprimé");
+        expect(res.body.message).toBe("Produit supprime");
 
         // verifier que le produit n'existe plus en base
         const deleted = await Produit.findById(produit._id);
