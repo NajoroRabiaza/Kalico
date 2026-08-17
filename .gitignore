@@ -7,9 +7,7 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-
 node_modules
-pnpm-lock.yaml
 backend/node_modules
 dist
 dist-ssr
@@ -35,9 +33,8 @@ backend/.env
 /src/admin/pages/_data_backup/
 /src/admin/pages/_statistique_food_backup/
 
-# Ne pas pusher les fichiers d’image
-# uploads inclus dans le repo
-
-# script unecessary
-backend/script_unecessarysrc/image/original/
+# Images originales non optimisees
 src/image/original/
+
+# Scripts inutiles
+backend/script_unnecessary
