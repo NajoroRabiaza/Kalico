@@ -48,8 +48,7 @@ const nettoyerCommandesExpires = async () => {
 // La suppression des commandes expirees est desormais dans nettoyerCommandesExpires
 const getCommandes = async (req, res) => {
   try {
-    const commandes = await Commande.find().sort({ date: -1 });
-    res.status(200).json(commandes);
+const commandes = await Commande.find().sort({ date: -1 }).lean();    res.status(200).json(commandes);
   } catch (err) {
     console.error("Erreur lors de la recuperation des commandes :", err);
     res.status(500).json({ message: "Erreur serveur" });
@@ -58,7 +57,7 @@ const getCommandes = async (req, res) => {
 
 const getCommandeById = async (req, res) => {
   try {
-    const commande = await Commande.findById(req.params.id);
+  const commande = await Commande.findById(req.params.id).lean();
     if (!commande) return res.status(404).json({ error: "Commande non trouvee" });
     res.status(200).json(commande);
   } catch (error) {
