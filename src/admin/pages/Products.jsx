@@ -88,10 +88,8 @@ export default function Products() {
 
       // authFetch injecte le token : routes POST et PUT protegees par verifyToken
       // Pour FormData on ne met pas Content-Type, le navigateur le gere avec le boundary
-      const token = localStorage.getItem("token");
-      const res = await fetch(url, {
+      const res = await authFetch(url, {
         method,
-        headers: { Authorization: `Bearer ${token}` },
         body: formData,
       });
 
