@@ -94,7 +94,9 @@ const CustomNavbar = ({ size, onSearchChange, UserConnect }) => {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    navigate("/");
+    localStorage.removeItem("userLevel");
+    localStorage.removeItem("userName");
+    window.dispatchEvent(new Event("auth:expire"));
   };
 
   return (
