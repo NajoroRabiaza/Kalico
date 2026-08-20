@@ -27,8 +27,7 @@ function Home({ Userconnecte }) {
       .then((res) => res.json())
       .then((data) => {
         const produitsAvecImageUrl = data
-          .map((p) => ({ ...p, img: `${API_URL}/${p.img}` }))
-          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+          .map((p) => ({ ...p, img: `${API_URL}/${p.img}` }));
         setProduits(produitsAvecImageUrl);
       })
       .catch((err) => console.error("Erreur de chargement des produits :", err));
