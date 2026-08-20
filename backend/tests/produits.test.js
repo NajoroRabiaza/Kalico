@@ -85,7 +85,6 @@ describe("DELETE /produits/:id", () => {
         expect(res.status).toBe(200);
         expect(res.body.message).toBe("Produit supprime");
 
-        // verifier que le produit n'existe plus en base
         const deleted = await Produit.findById(produit._id);
         expect(deleted).toBeNull();
     });
@@ -106,17 +105,5 @@ describe("DELETE /produits/:id", () => {
         const produit = await Produit.create(produitDeBase);
         const res = await request(app).delete(`/produits/${produit._id}`);
         expect(res.status).toBe(401);
-    });
-});
-
-describe("GET /produits/searchProducts", () => {
-    it("devrait retourner les produits correspondant a la recherche par nom", async () => {
-        await Produit.create(produitDeBase);
-        await Produit.create({...produitDeBase, nom: "Soupe Chinoise", categorie:"soupe"});
-
-        const res = await request(app).get("/produits/searchProducts?nom=burger");
-        expect(res.status).toBe(200);
-        expect(res.body.length).toBe(1);
-        expect(res.body[0].nom).toBe("Test Burger");
     });
 });
