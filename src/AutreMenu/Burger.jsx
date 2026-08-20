@@ -14,9 +14,7 @@ function MenuBurger({ Userconnecte }) {
   useEffect(() => {
     fetch(`${API_URL}/produits/categorie/burger`)
       .then((res) => res.json())
-      .then((data) =>
-        setProduits(data.map((p) => ({ ...p, img: `${API_URL}/${p.img}` })))
-      )
+      .then((data) => setProduits(data))
       .catch((err) => console.error("Erreur chargement Burger :", err));
   }, []);
 

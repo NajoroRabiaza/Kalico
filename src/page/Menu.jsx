@@ -14,13 +14,8 @@ function Menu({ Userconnecte }) {
   useEffect(() => {
     fetch(`${API_URL}/produits/menuSpecial`)
       .then((res) => res.json())
-      .then((data) =>
-        setMenuSpecial(data.map((p) => ({
-          ...p,
-          img: `${API_URL}/${p.img}`,
-        })))
-      )
-      .catch((err) => console.error("Erreur fetch menu spécial:", err));
+      .then((data) => setMenuSpecial(data))
+      .catch((err) => console.error("Erreur fetch menu special:", err));
   }, []);
 
   return (

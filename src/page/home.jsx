@@ -26,9 +26,9 @@ function Home({ Userconnecte }) {
     fetch(`${API_URL}/produits`)
       .then((res) => res.json())
       .then((data) => {
-        const produitsAvecImageUrl = data
-          .map((p) => ({ ...p, img: `${API_URL}/${p.img}` }));
-        setProduits(produitsAvecImageUrl);
+        // p.img contient deja une URL Cloudinary absolue depuis la migration
+        // ne pas prefixer avec API_URL sinon l'URL devient invalide
+        setProduits(data);
       })
       .catch((err) => console.error("Erreur de chargement des produits :", err));
   };
@@ -48,8 +48,6 @@ function Home({ Userconnecte }) {
   );
 
   return (
-    /* page-wrapper : min-h-screen + flex-col pour que le footer reste en bas
-       meme quand le contenu est court */
     <div className="page-wrapper">
       <CustomNavbar
         size={cart.length}
@@ -57,7 +55,6 @@ function Home({ Userconnecte }) {
         UserConnect={Userconnecte}
       />
 
-      {/* padding-top compense la navbar fixe de 75px */}
       <main className="page-main">
         <header>
           <section className={`animated-section ${isSearching ? "slide-up" : "slide-down"}`}>
