@@ -1,23 +1,23 @@
 // Wrapper autour de fetch qui injecte automatiquement le token JWT
 // dans le header Authorization de chaque requete vers le backend
 // Utilise partout ou la route backend exige un utilisateur connecte
-
 const authFetch = async (url, options = {}) => {
   const token = localStorage.getItem("token");
+
+  // Ne pas poser Content-Type si le body est un FormData
+  // Le navigateur le gere lui-meme avec le boundary multipart correct
+  // Poser application/json dans ce cas ecrase le Content-Type et casse multer
+  const isFormData = options.body instanceof FormData;
 
   const response = await fetch(url, {
     ...options,
     headers: {
-      "Content-Type": "application/json",
-      // Le format "Bearer <token>" est la convention standard pour JWT
+      ...(isFormData ? {} : { "Content-Type": "application/json" }),
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...options.headers,
     },
   });
 
-  // Si le backend retourne 401 ou 403, le token est expire ou invalide
-  // On nettoie le localStorage et on emet un evenement global pour
-  // notifier App.jsx sans coupler authFetch au state React
   if (response.status === 401 || response.status === 403) {
     localStorage.removeItem("token");
     localStorage.removeItem("userLevel");
