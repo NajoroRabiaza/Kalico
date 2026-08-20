@@ -1,4 +1,4 @@
-import { createContext, useEffect, useRef, useState } from "react";
+import { createContext, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useToast } from "../context/ToastContext";
 
 export const CartContext = createContext();
@@ -19,15 +19,11 @@ export function CartProvider({ children }) {
 
   const { showToast } = useToast();
 
-  // On utilise une ref pour lire orderHistory dans l'interval sans en faire une dependance
-  // Si on mettait orderHistory dans les deps du useEffect, chaque setOrderHistory
-  // redeclencherait l'effet, creant une boucle infinie quand une commande expire
   const orderHistoryRef = useRef(orderHistory);
   useEffect(() => {
     orderHistoryRef.current = orderHistory;
   }, [orderHistory]);
 
-  // Verifie toutes les 60 secondes si des commandes Cash ont expirer
   useEffect(() => {
     const interval = setInterval(() => {
       const now = new Date();
@@ -58,7 +54,10 @@ export function CartProvider({ children }) {
     localStorage.setItem("historique_commandes", JSON.stringify(orderHistory));
   }, [orderHistory]);
 
-  const handleClick = (item, toastFn) => {
+  // useCallback evite de recreer handleClick a chaque rendu
+  // cart est en dependance car la fonction lit cart pour detecter un produit existant
+  // sans cart dans les deps, la closure serait perimee et le panier ne se mettrait plus a jour
+  const handleClick = useCallback((item, toastFn) => {
     const existItem = cart.find((produit) => produit._id === item._id);
     if (existItem) {
       setCart(cart.map((produit) =>
@@ -70,12 +69,20 @@ export function CartProvider({ children }) {
       setCart([...cart, { ...item, quantity: item.quantity || 1 }]);
     }
     if (toastFn) toastFn("Produit ajoute", "success");
-  };
+  }, [cart]);
+
+  // useMemo evite de creer un nouvel objet value a chaque rendu
+  // sans cela, tous les consommateurs du contexte se re-rendent meme si cart n'a pas change
+  const value = useMemo(() => ({
+    cart,
+    setCart,
+    handleClick,
+    orderHistory,
+    setOrderHistory,
+  }), [cart, handleClick, orderHistory]);
 
   return (
-    <CartContext.Provider
-      value={{ cart, setCart, handleClick, orderHistory, setOrderHistory }}
-    >
+    <CartContext.Provider value={value}>
       {children}
     </CartContext.Provider>
   );
