@@ -3,52 +3,38 @@ const Commande = require("../model/commande");
 const ajouterCommande = async (req, res) => {
   try {
     const { methodePaiement, niveau, numero } = req.body;
-
-    // Validation selon la methode de paiement
-    // Pour Cash : niveau obligatoire
-    // Pour Mvola : numero obligatoire
     if (methodePaiement === "Cash" && !niveau) {
       return res.status(400).json({ message: "Le niveau est requis pour un paiement Cash" });
     }
-
     if (methodePaiement === "Mvola" && !numero) {
       return res.status(400).json({ message: "Le numero est requis pour un paiement Mvola" });
     }
-
     const nouvelleCommande = new Commande(req.body);
     await nouvelleCommande.save();
     res.status(201).json(nouvelleCommande);
-
   } catch (err) {
     console.error("Erreur lors de l'enregistrement :", err);
     res.status(500).json({ message: err.message });
   }
 };
 
-// Fonction utilitaire separee pour nettoyer les commandes Cash expirees
-// Ne doit pas etre appelee dans un GET — un GET ne doit jamais modifier l'etat
-// Peut etre appelee depuis un job planifie ou une route POST dediee
 const nettoyerCommandesExpires = async () => {
   const maintenant = new Date();
   const limiteExpiration = new Date(maintenant.getTime() - 10 * 60 * 1000);
-
   const result = await Commande.deleteMany({
     methodePaiement: "Cash",
     date: { $lte: limiteExpiration },
   });
-
   if (result.deletedCount > 0) {
     console.log(`${result.deletedCount} commande(s) Cash expiree(s) supprimee(s)`);
   }
-
   return result.deletedCount;
 };
 
-// GET pur : ne modifie plus l'etat de la base
-// La suppression des commandes expirees est desormais dans nettoyerCommandesExpires
 const getCommandes = async (req, res) => {
   try {
-const commandes = await Commande.find().sort({ date: -1 }).lean();    res.status(200).json(commandes);
+    const commandes = await Commande.find().sort({ date: -1 }).lean();
+    res.status(200).json(commandes);
   } catch (err) {
     console.error("Erreur lors de la recuperation des commandes :", err);
     res.status(500).json({ message: "Erreur serveur" });
@@ -57,7 +43,7 @@ const commandes = await Commande.find().sort({ date: -1 }).lean();    res.status
 
 const getCommandeById = async (req, res) => {
   try {
-  const commande = await Commande.findById(req.params.id).lean();
+    const commande = await Commande.findById(req.params.id).lean();
     if (!commande) return res.status(404).json({ error: "Commande non trouvee" });
     res.status(200).json(commande);
   } catch (error) {
@@ -67,23 +53,17 @@ const getCommandeById = async (req, res) => {
 
 const updateCommande = async (req, res) => {
   try {
-    // Liste blanche des champs autorisés a etre modifies
-    // req.body est filtre : aucun champ arbitraire ne peut etre ecrit en base
     const { statut, archive } = req.body;
     const champsAutorises = {};
-
     if (statut !== undefined) champsAutorises.statut = statut;
     if (archive !== undefined) champsAutorises.archive = archive;
-
     const updated = await Commande.findByIdAndUpdate(
       req.params.id,
       champsAutorises,
       { new: true, runValidators: true }
     );
-
     if (!updated) return res.status(404).json({ message: "Commande non trouvee" });
     res.json(updated);
-
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
