@@ -20,10 +20,7 @@ export default function Products() {
     fetch(`${API_URL}/produits`)
       .then((res) => res.json())
       .then((data) => {
-        const produitsAvecTri = data.sort(
-          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-        );
-        setRows(produitsAvecTri);
+        setRows(data);
       })
       .catch((err) => console.error("Erreur de chargement :", err))
       .finally(() => setLoading(false));
