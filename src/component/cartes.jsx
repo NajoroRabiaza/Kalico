@@ -13,7 +13,7 @@ const Cartes = ({ item, handleClick }) => {
       <div className="cartes">
 
         <div className="cartes-image-wrapper">
-          <img className="cartesimage" src={item.img} alt={nom} />
+          <img className="cartesimage" src={item.img} alt={nom} loading="lazy" />
           <span className="cartes-prix-badge">{prix} Ar</span>
         </div>
 

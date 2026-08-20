@@ -12,15 +12,11 @@ const Cards = ({ item, handleClick }) => {
     <div className="cards_container">
       <div className="card">
 
-        {/* Zone image avec hauteur fixe et overflow hidden
-            Le badge prix est positionne en absolu sur l'image
-            pour ne pas chevaucher le titre en dessous */}
         <div className="card-image-wrapper">
-          <img className="carteimage" src={item.img} alt={nom} />
+          <img className="carteimage" src={item.img} alt={nom} loading="lazy" />
           <span className="prix-badge">{prix} Ar</span>
         </div>
 
-        {/* Zone contenu en flex-col pour empiler proprement */}
         <div className="card-body">
           <p className="titre_card">{nom}</p>
           <p className="description">{description}</p>
