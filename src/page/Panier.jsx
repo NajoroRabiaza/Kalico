@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 import { CartContext } from "../context/CartContext";
 import Navbar from "../component/navbar";
 import "./panier.css";
@@ -7,7 +7,58 @@ import { createPortal } from "react-dom";
 import SimpleDropdown from "../component/SimpleDropdown";
 import { useToast } from "../context/ToastContext";
 import { useNavigate } from "react-router";
-import ConfirmDeleteModal from "../component/ConfirmDeleteModal";
+
+// Composant inline de confirmation de suppression
+// Pas de modal, pas d'overlay : tout se passe dans la carte de l'article
+function DeleteControl({ onConfirm }) {
+  const [confirming, setConfirming] = useState(false);
+  const timerRef = useRef(null);
+
+  const handleTrashClick = () => {
+    setConfirming(true);
+    timerRef.current = setTimeout(() => {
+      setConfirming(false);
+    }, 10000);
+  };
+
+  const handleConfirm = () => {
+    clearTimeout(timerRef.current);
+    onConfirm();
+  };
+
+  const handleClickOutside = () => {
+    clearTimeout(timerRef.current);
+    setConfirming(false);
+  };
+
+  useEffect(() => {
+    return () => clearTimeout(timerRef.current);
+  }, []);
+
+  if (confirming) {
+    return (
+      <div className="delete-confirm-inline">
+        <button className="delete-confirm-btn" onClick={handleConfirm}>
+          Supprimer vraiment ?
+        </button>
+        <div className="delete-confirm-backdrop" onClick={handleClickOutside} />
+      </div>
+    );
+  }
+
+  return (
+    <button className="trash-btn" onClick={handleTrashClick} aria-label="Supprimer cet article">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
+        className="trash-icon">
+        <polyline points="3 6 5 6 21 6" />
+        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+        <path d="M10 11v6M14 11v6" />
+        <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+      </svg>
+    </button>
+  );
+}
 
 function Panier({ Userconnecte }) {
   const { cart, setCart } = useContext(CartContext);
@@ -17,7 +68,6 @@ function Panier({ Userconnecte }) {
   const [back, setBack] = useState(false);
   const [redirect, setRedirect] = useState(false);
   const navigate = useNavigate();
-  const [itemToDelete, setItemToDelete] = useState(null);
 
   const increase = (_id) => {
     setCart((prev) =>
@@ -39,7 +89,6 @@ function Panier({ Userconnecte }) {
 
   const removeItem = (_id) => {
     setCart((prev) => prev.filter((item) => item._id !== _id));
-    setItemToDelete(null);
   };
 
   const ConditionalFunc = () => {
@@ -82,19 +131,15 @@ function Panier({ Userconnecte }) {
       <Navbar size={cart.length} UserConnect={Userconnecte} />
 
       <main className="panier-main">
-        {/* Bouton historique des commandes */}
         <div className="panier-dropdown-wrapper">
           <SimpleDropdown />
         </div>
 
         <div className="panier-layout">
-
-          {/* Colonne gauche : liste des articles */}
           <div className="panier-liste">
             <h1 className="panier-titre">Mon Panier</h1>
 
             {isEmpty ? (
-              /* Empty state : panier vide */
               <div className="panier-empty">
                 <svg
                   className="panier-empty-icon"
@@ -120,7 +165,6 @@ function Panier({ Userconnecte }) {
                 </button>
               </div>
             ) : (
-              /* Liste des articles */
               <div className="panier-articles">
                 {cart.map((item) => (
                   <div className="cart_box" key={item._id}>
@@ -137,12 +181,7 @@ function Panier({ Userconnecte }) {
                     </div>
                     <div className="cart_prix">
                       <span className="prix_pan">{item.prix * item.quantity} Ar</span>
-                      <img
-                        src="/image/remove.webp"
-                        alt="supprimer"
-                        className="remove"
-                        onClick={() => setItemToDelete(item)}
-                      />
+                      <DeleteControl onConfirm={() => removeItem(item._id)} />
                     </div>
                   </div>
                 ))}
@@ -150,7 +189,6 @@ function Panier({ Userconnecte }) {
             )}
           </div>
 
-          {/* Colonne droite : résumé de commande */}
           <div className="panier-resume">
             <div className="panier-resume-card">
               <h2 className="panier-resume-titre">Résumé</h2>
@@ -163,8 +201,6 @@ function Panier({ Userconnecte }) {
                 <span>Total</span>
                 <span className="panier-resume-total-prix">{total} Ar</span>
               </div>
-
-              {/* Bouton desactive si panier vide */}
               <button
                 className={`panier-btn-commander ${isEmpty ? "panier-btn-disabled" : ""}`}
                 onClick={ConditionalFunc}
@@ -172,7 +208,6 @@ function Panier({ Userconnecte }) {
               >
                 Commander
               </button>
-
               {isEmpty && (
                 <p className="panier-resume-hint">
                   Ajoutez des articles pour commander
@@ -182,7 +217,6 @@ function Panier({ Userconnecte }) {
           </div>
         </div>
 
-        {/* Message redirection login */}
         {redirect && (
           <div className="return">
             <p>Connectez vous d'abord</p>
@@ -205,17 +239,8 @@ function Panier({ Userconnecte }) {
           />,
           document.body
         )}
-        {itemToDelete && (
-          <ConfirmDeleteModal
-            itemName={itemToDelete.nom}
-            onConfirm={() => removeItem(itemToDelete._id)}
-            onCancel={() => setItemToDelete(null)}
-          />
-        )}
     </div>
-    
   );
-  
 }
 
 export default Panier;

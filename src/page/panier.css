@@ -345,3 +345,63 @@
     padding-right: 1rem;
   }
 }
+
+/* Bouton poubelle SVG inline — remplace remove.webp */
+.trash-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.trash-icon {
+  width: 20px;
+  height: 20px;
+  color: #e60d0d;
+  opacity: 0.9;
+  transition: opacity 0.4s ease, transform 0.2s ease;
+}
+
+.trash-btn:hover .trash-icon {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* Conteneur du mode confirmation inline */
+.delete-confirm-inline {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* Backdrop invisible qui couvre le reste de la page
+   Un clic dessus annule la confirmation */
+.delete-confirm-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+}
+
+/* Bouton "Supprimer ?" qui remplace la poubelle */
+.delete-confirm-btn {
+  position: relative;
+  z-index: 11;
+  background: #c92323;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  font-family: "Inter", sans-serif;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s ease;
+}
+
+.delete-confirm-btn:hover {
+  background: #c94d00;
+}
