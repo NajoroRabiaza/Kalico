@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const verifyToken = require("../middleware/verifyToken");
+const verifyAdmin = require("../middleware/verifyAdmin");
 const {
   ajouterCommande,
   getCommandes,
@@ -12,8 +13,8 @@ const {
 router.post("/", verifyToken, ajouterCommande);
 
 // Routes proteger : seul un admin connecte peut consulter et gerer les commandes
-router.get("/", verifyToken, getCommandes);
-router.put("/:id", verifyToken, updateCommande);
-router.delete("/:id", verifyToken, deleteCommandeById);
+router.get("/", verifyToken, verifyAdmin, getCommandes);
+router.put("/:id", verifyToken, verifyAdmin, updateCommande);
+router.delete("/:id", verifyToken, verifyAdmin, deleteCommandeById);
 
 module.exports = router;

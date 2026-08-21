@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const verifyToken = require("../middleware/verifyToken");
+const verifyAdmin = require("../middleware/verifyAdmin");
 const { upload } = require("../services/cloudinaryService");
 const {
   getProduits,
@@ -17,8 +18,8 @@ router.get("/categorie/:categorie", getProduitsParCategorie);
 router.get("/menuSpecial", getMenuSpecial);
 
 // Routes protegees : seul un admin connecte peut modifier le catalogue
-router.post("/", verifyToken, upload.single("img"), addProduit);
-router.put("/:id", verifyToken, upload.single("img"), updateProduit);
-router.delete("/:id", verifyToken, deleteProduit);
+router.post("/", verifyToken, verifyAdmin, upload.single("img"), addProduit);
+router.put("/:id", verifyToken, verifyAdmin, upload.single("img"), updateProduit);
+router.delete("/:id", verifyToken, verifyAdmin, deleteProduit);
 
 module.exports = router;
