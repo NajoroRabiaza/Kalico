@@ -44,15 +44,6 @@ const getCommandes = async (req, res) => {
   }
 };
 
-const getCommandeById = async (req, res) => {
-  try {
-    const commande = await Commande.findById(req.params.id).lean();
-    if (!commande) return res.status(404).json({ error: "Commande non trouvee" });
-    res.status(200).json(commande);
-  } catch (error) {
-    res.status(500).json({ error: "Erreur serveur" });
-  }
-};
 
 const updateCommande = async (req, res) => {
   try {
@@ -87,7 +78,6 @@ const deleteCommandeById = async (req, res) => {
 module.exports = {
   ajouterCommande,
   getCommandes,
-  getCommandeById,
   updateCommande,
   deleteCommandeById,
   nettoyerCommandesExpires,
