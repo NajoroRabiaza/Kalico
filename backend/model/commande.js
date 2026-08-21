@@ -28,4 +28,5 @@ const commandeSchema = new mongoose.Schema({
   },
 });
 
+commandeSchema.index({date: -1});
 module.exports = mongoose.model("Commande", commandeSchema);
