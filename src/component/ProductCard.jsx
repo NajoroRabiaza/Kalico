@@ -65,7 +65,10 @@ const ProductCard = ({ item, handleClick, variant = "card" }) => {
               <button className={s.btnIncrement} onClick={increment}>+</button>
             </div>
             <button
-              onClick={() => handleClick({ ...item, quantity })}
+              onClick={() => {
+                handleClick({ ...item, quantity });
+                setQuantity(1);
+              }}
               className={s.btnAjouter}
             >
               Ajouter
