@@ -14,6 +14,20 @@ const signup = async (req, res) => {
       return res.status(409).json({ message: "Compte deja existant" });
     }
 
+    const niveauxAutorises = ["L1", "L2", "L3"];
+    if (!niveauxAutorises.includes(req.body.level)) {
+      return res.status(400).json({ message: "Niveau invalide : L1, L2 ou L3 uniquement" });
+    }
+
+    const { password } = req.body;
+    const caracteresSpeciaux = ["@", "#", "$", "&", "*"];
+    if (!password || password.length < 8) {
+      return res.status(400).json({ message: "Le mot de passe doit contenir au moins 8 caracteres" });
+    }
+    if (!caracteresSpeciaux.some((c) => password.includes(c))) {
+      return res.status(400).json({ message: "Le mot de passe doit contenir au moins un caractere special : @ # $ & ou *" });
+    }
+
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
 
