@@ -31,11 +31,7 @@ const isMultipart = (req) =>
   (req.headers["content-type"] || "").startsWith("multipart/form-data");
 
 app.use((req, res, next) => {
-  console.log("[DEBUG]", req.method, req.path, "content-type:", req.headers["content-type"]);
-  if (isMultipart(req)) {
-    console.log("[DEBUG] multipart detecte — skip json parser");
-    return next();
-  }
+  if (isMultipart(req)) return next();
   express.json({ limit: "10mb" })(req, res, next);
 });
 
