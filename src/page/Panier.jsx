@@ -8,6 +8,7 @@ import SimpleDropdown from "../component/SimpleDropdown";
 import { useToast } from "../context/ToastContext";
 import { useNavigate } from "react-router";
 import { formatPrice } from "../utils/formatPrice";
+import CartItemNote from "../component/CartItemNote";
 
 function DeleteControl({ onConfirm }) {
   const [confirming, setConfirming] = useState(false);
@@ -88,6 +89,14 @@ function Panier({ Userconnecte }) {
 
   const removeItem = (_id) => {
     setCart((prev) => prev.filter((item) => item._id !== _id));
+  };
+
+  const handleNoteChange = (_id, note) => {
+    setCart((prev) =>
+      prev.map((item) =>
+        item._id === _id ? { ...item, note } : item
+      )
+    );
   };
 
   const ConditionalFunc = () => {
@@ -178,6 +187,10 @@ function Panier({ Userconnecte }) {
                         <span className="quantity">{item.quantity}</span>
                         <button className="bouttons" onClick={() => increase(item._id)}>+</button>
                       </div>
+                      <CartItemNote
+                        itemId={item._id}
+                        onNoteChange={handleNoteChange}
+                      />
                     </div>
                     <div className="cart_prix">
                       <span className="prix_pan">{formatPrice(item.prix * item.quantity)}</span>
