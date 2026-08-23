@@ -1,0 +1,94 @@
+.promo {
+  border-top: 1px solid #f1f5f9;
+  padding-top: 0.75rem;
+}
+
+.promo-trigger {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: "Inter", sans-serif;
+  font-size: 0.75rem;
+  color: #94a3b8;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.2s ease;
+}
+
+.promo-trigger:hover {
+  color: #e65d0d;
+}
+
+.promo-body {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.promo-row {
+  display: flex;
+  gap: 8px;
+}
+
+.promo-input {
+  flex: 1;
+  padding: 7px 10px;
+  font-family: "Inter", sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: #1e293b;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  outline: none;
+  text-transform: uppercase;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.promo-input::placeholder {
+  color: #cbd5e1;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+}
+
+.promo-input:focus {
+  border-color: #e65d0d;
+  box-shadow: 0 0 0 3px rgba(230, 93, 13, 0.08);
+}
+
+.promo-input--error {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.08);
+}
+
+.promo-btn {
+  padding: 7px 14px;
+  background-color: #1e293b;
+  color: white;
+  font-family: "Inter", sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.2s ease;
+}
+
+.promo-btn:hover {
+  background-color: #334155;
+}
+
+.promo-btn:active {
+  background-color: #0f172a;
+}
+
+.promo-error {
+  font-family: "Inter", sans-serif;
+  font-size: 0.72rem;
+  color: #ef4444;
+  margin: 0;
+}

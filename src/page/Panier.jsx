@@ -9,6 +9,7 @@ import { useToast } from "../context/ToastContext";
 import { useNavigate } from "react-router";
 import { formatPrice } from "../utils/formatPrice";
 import CartItemNote from "../component/CartItemNote";
+import PromoCode from "../component/PromoCode";
 
 function DeleteControl({ onConfirm }) {
   const [confirming, setConfirming] = useState(false);
@@ -97,6 +98,10 @@ function Panier({ Userconnecte }) {
         item._id === _id ? { ...item, note } : item
       )
     );
+  };
+
+  const handlePromoApply = (code) => {
+    showToast(`Code "${code}" soumis — fonctionnalité à venir.`, "warning");
   };
 
   const ConditionalFunc = () => {
@@ -220,6 +225,7 @@ function Panier({ Userconnecte }) {
                 <span>Total</span>
                 <span className="panier-resume-total-prix">{formatPrice(total)}</span>
               </div>
+              <PromoCode onApply={handlePromoApply} />
               <button
                 className={`panier-btn-commander ${isEmpty ? "panier-btn-disabled" : ""}`}
                 onClick={ConditionalFunc}
