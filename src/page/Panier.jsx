@@ -7,9 +7,8 @@ import { createPortal } from "react-dom";
 import SimpleDropdown from "../component/SimpleDropdown";
 import { useToast } from "../context/ToastContext";
 import { useNavigate } from "react-router";
+import { formatPrice } from "../utils/formatPrice";
 
-// Composant inline de confirmation de suppression
-// Pas de modal, pas d'overlay : tout se passe dans la carte de l'article
 function DeleteControl({ onConfirm }) {
   const [confirming, setConfirming] = useState(false);
   const timerRef = useRef(null);
@@ -173,6 +172,7 @@ function Panier({ Userconnecte }) {
                     </div>
                     <div className="cart_info">
                       <p className="name">{item.nom}</p>
+                      <p className="unit-price">{formatPrice(item.prix)} / unité</p>
                       <div className="quantiti">
                         <button className="bouttons" onClick={() => decrease(item._id)}>-</button>
                         <span className="quantity">{item.quantity}</span>
@@ -180,7 +180,7 @@ function Panier({ Userconnecte }) {
                       </div>
                     </div>
                     <div className="cart_prix">
-                      <span className="prix_pan">{item.prix * item.quantity} Ar</span>
+                      <span className="prix_pan">{formatPrice(item.prix * item.quantity)}</span>
                       <DeleteControl onConfirm={() => removeItem(item._id)} />
                     </div>
                   </div>
@@ -194,12 +194,12 @@ function Panier({ Userconnecte }) {
               <h2 className="panier-resume-titre">Résumé</h2>
               <div className="panier-resume-ligne">
                 <span>Sous-total</span>
-                <span>{total} Ar</span>
+                <span>{formatPrice(total)}</span>
               </div>
               <div className="panier-resume-separateur" />
               <div className="panier-resume-total">
                 <span>Total</span>
-                <span className="panier-resume-total-prix">{total} Ar</span>
+                <span className="panier-resume-total-prix">{formatPrice(total)}</span>
               </div>
               <button
                 className={`panier-btn-commander ${isEmpty ? "panier-btn-disabled" : ""}`}
