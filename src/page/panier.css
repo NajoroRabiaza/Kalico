@@ -139,7 +139,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.25rem;
 }
 
 .name {
@@ -148,6 +148,14 @@
   font-weight: 600;
   color: #1e293b;
   margin: 0;
+}
+
+/* Prix unitaire sous le nom du produit */
+.unit-price {
+  font-family: "Inter", sans-serif;
+  font-size: 0.75rem;
+  color: #94a3b8;
+  margin: 0 0 0.25rem 0;
 }
 
 .quantiti {
@@ -214,7 +222,6 @@
 
 /* COLONNE DROITE : RESUME */
 
-/* sticky : le resume reste visible quand on scrolle la liste */
 .panier-resume {
   position: sticky;
   top: 95px;
@@ -268,7 +275,7 @@
 /* Bouton Commander actif */
 .panier-btn-commander {
   width: 100%;
-  padding: 12px;
+  padding: 13px 20px;
   background-color: #e65d0d;
   color: white;
   font-family: "Inter", sans-serif;
@@ -277,12 +284,35 @@
   border: none;
   border-radius: 50px;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 8px 24px rgba(230, 93, 13, 0.25);
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .panier-btn-commander:hover:not(.panier-btn-disabled) {
   background-color: #c94d00;
   transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(230, 93, 13, 0.35);
+}
+
+.panier-btn-commander:active:not(.panier-btn-disabled) {
+  transform: scale(0.99);
+  box-shadow: 0 4px 12px rgba(230, 93, 13, 0.2);
+}
+
+/* Icone fleche dans le bouton Commander */
+.commander-arrow {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.panier-btn-commander:hover:not(.panier-btn-disabled) .commander-arrow {
+  transform: translateX(3px);
 }
 
 /* Bouton Commander desactive quand panier vide */
@@ -290,6 +320,7 @@
   background-color: #e2e8f0;
   color: #94a3b8;
   cursor: not-allowed;
+  box-shadow: none;
 }
 
 .panier-resume-hint {
@@ -346,27 +377,32 @@
   }
 }
 
-/* Bouton poubelle SVG inline — remplace remove.webp */
+/* Bouton poubelle SVG inline */
 .trash-btn {
   background: none;
   border: none;
-  padding: 0;
+  padding: 6px;
+  border-radius: 8px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.trash-btn:hover {
+  background-color: #fef2f2;
 }
 
 .trash-icon {
   width: 20px;
   height: 20px;
-  color: #e60d0d;
-  opacity: 0.9;
-  transition: opacity 0.4s ease, transform 0.2s ease;
+  color: #94a3b8;
+  transition: color 0.2s ease, transform 0.2s ease;
 }
 
 .trash-btn:hover .trash-icon {
-  opacity: 1;
+  color: #ef4444;
   transform: scale(1.1);
 }
 
@@ -377,15 +413,12 @@
   align-items: center;
 }
 
-/* Backdrop invisible qui couvre le reste de la page
-   Un clic dessus annule la confirmation */
 .delete-confirm-backdrop {
   position: fixed;
   inset: 0;
   z-index: 10;
 }
 
-/* Bouton "Supprimer ?" qui remplace la poubelle */
 .delete-confirm-btn {
   position: relative;
   z-index: 11;
@@ -404,11 +437,4 @@
 
 .delete-confirm-btn:hover {
   background: #c94d00;
-}
-/* Prix unitaire sous le nom du produit */
-.unit-price {
-  font-family: "Inter", sans-serif;
-  font-size: 0.75rem;
-  color: #94a3b8;
-  margin: 0;
 }
