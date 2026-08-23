@@ -9,7 +9,7 @@ const ajouterCommande = async (req, res) => {
     if (methodePaiement === "Mvola" && !numero) {
       return res.status(400).json({ message: "Le numero est requis pour un paiement Mvola" });
     }
-    const {clientNom, methodePaiement, niveau, numero, produits, total} = req.body;
+    const {clientNom, produits, total} = req.body;
     const nouvelleCommande = new Commande({
       clientNom, methodePaiement, niveau, numero, produits, total,
     });
