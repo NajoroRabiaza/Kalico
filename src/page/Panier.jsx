@@ -10,6 +10,8 @@ import { useNavigate } from "react-router";
 import { formatPrice } from "../utils/formatPrice";
 import CartItemNote from "../component/CartItemNote";
 import PromoCode from "../component/PromoCode";
+import UndoToast from "../component/UndoToast";
+import useCartWithUndo from "../hooks/useCartWithUndo";
 
 function DeleteControl({ onConfirm }) {
   const [confirming, setConfirming] = useState(false);
@@ -61,13 +63,6 @@ function DeleteControl({ onConfirm }) {
   );
 }
 
-/**
- * Wrapper anime pour chaque article du panier.
- * Quand isRemoving passe a true, les classes CSS declenchent
- * une transition sur opacity et max-height.
- * Le parent attend 320ms (duree de la transition + marge)
- * avant de retirer l'item du state React.
- */
 function AnimatedCartItem({ children, isRemoving }) {
   return (
     <div className={`cart-item-wrapper ${isRemoving ? "cart-item-wrapper--removing" : ""}`}>
@@ -85,6 +80,9 @@ function Panier({ Userconnecte }) {
   const [redirect, setRedirect] = useState(false);
   const [removingIds, setRemovingIds] = useState([]);
   const navigate = useNavigate();
+
+  const { removeItem, pendingRemoval, undoRemoval, dismissUndo } =
+    useCartWithUndo(cart, setCart);
 
   const increase = (_id) => {
     setCart((prev) =>
@@ -104,10 +102,10 @@ function Panier({ Userconnecte }) {
     );
   };
 
-  const removeItem = (_id) => {
+  const handleRemove = (_id) => {
     setRemovingIds((prev) => [...prev, _id]);
     setTimeout(() => {
-      setCart((prev) => prev.filter((item) => item._id !== _id));
+      removeItem(_id);
       setRemovingIds((prev) => prev.filter((id) => id !== _id));
     }, 320);
   };
@@ -172,7 +170,7 @@ function Panier({ Userconnecte }) {
           <div className="panier-liste">
             <h1 className="panier-titre">Mon Panier</h1>
 
-            {isEmpty ? (
+            {isEmpty && !pendingRemoval ? (
               <div className="panier-empty">
                 <svg
                   className="panier-empty-icon"
@@ -223,7 +221,7 @@ function Panier({ Userconnecte }) {
                       </div>
                       <div className="cart_prix">
                         <span className="prix_pan">{formatPrice(item.prix * item.quantity)}</span>
-                        <DeleteControl onConfirm={() => removeItem(item._id)} />
+                        <DeleteControl onConfirm={() => handleRemove(item._id)} />
                       </div>
                     </div>
                   </AnimatedCartItem>
@@ -290,7 +288,7 @@ function Panier({ Userconnecte }) {
                 </svg>
                 <span>Paiement 100&nbsp;% sécurisé</span>
               </div>
-              {isEmpty && (
+              {isEmpty && !pendingRemoval && (
                 <p className="panier-resume-hint">
                   Ajoutez des articles pour commander
                 </p>
@@ -309,6 +307,14 @@ function Panier({ Userconnecte }) {
           </div>
         )}
       </main>
+
+      {pendingRemoval && (
+        <UndoToast
+          item={pendingRemoval}
+          onUndo={undoRemoval}
+          onDismiss={dismissUndo}
+        />
+      )}
 
       {show &&
         createPortal(
