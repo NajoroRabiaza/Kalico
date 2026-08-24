@@ -61,6 +61,21 @@ function DeleteControl({ onConfirm }) {
   );
 }
 
+/**
+ * Wrapper anime pour chaque article du panier.
+ * Quand isRemoving passe a true, les classes CSS declenchent
+ * une transition sur opacity et max-height.
+ * Le parent attend 320ms (duree de la transition + marge)
+ * avant de retirer l'item du state React.
+ */
+function AnimatedCartItem({ children, isRemoving }) {
+  return (
+    <div className={`cart-item-wrapper ${isRemoving ? "cart-item-wrapper--removing" : ""}`}>
+      {children}
+    </div>
+  );
+}
+
 function Panier({ Userconnecte }) {
   const { cart, setCart } = useContext(CartContext);
   const [show, setshow] = useState(false);
@@ -68,6 +83,7 @@ function Panier({ Userconnecte }) {
   const { showToast } = useToast();
   const [back, setBack] = useState(false);
   const [redirect, setRedirect] = useState(false);
+  const [removingIds, setRemovingIds] = useState([]);
   const navigate = useNavigate();
 
   const increase = (_id) => {
@@ -89,7 +105,11 @@ function Panier({ Userconnecte }) {
   };
 
   const removeItem = (_id) => {
-    setCart((prev) => prev.filter((item) => item._id !== _id));
+    setRemovingIds((prev) => [...prev, _id]);
+    setTimeout(() => {
+      setCart((prev) => prev.filter((item) => item._id !== _id));
+      setRemovingIds((prev) => prev.filter((id) => id !== _id));
+    }, 320);
   };
 
   const handleNoteChange = (_id, note) => {
@@ -180,28 +200,33 @@ function Panier({ Userconnecte }) {
             ) : (
               <div className="panier-articles">
                 {cart.map((item) => (
-                  <div className="cart_box" key={item._id}>
-                    <div className="cart_img">
-                      <img src={item.img} className="pan_image" alt={item.nom} />
-                    </div>
-                    <div className="cart_info">
-                      <p className="name">{item.nom}</p>
-                      <p className="unit-price">{formatPrice(item.prix)} / unité</p>
-                      <div className="quantiti">
-                        <button className="bouttons" onClick={() => decrease(item._id)}>-</button>
-                        <span className="quantity">{item.quantity}</span>
-                        <button className="bouttons" onClick={() => increase(item._id)}>+</button>
+                  <AnimatedCartItem
+                    key={item._id}
+                    isRemoving={removingIds.includes(item._id)}
+                  >
+                    <div className="cart_box">
+                      <div className="cart_img">
+                        <img src={item.img} className="pan_image" alt={item.nom} />
                       </div>
-                      <CartItemNote
-                        itemId={item._id}
-                        onNoteChange={handleNoteChange}
-                      />
+                      <div className="cart_info">
+                        <p className="name">{item.nom}</p>
+                        <p className="unit-price">{formatPrice(item.prix)} / unité</p>
+                        <div className="quantiti">
+                          <button className="bouttons" onClick={() => decrease(item._id)}>-</button>
+                          <span className="quantity">{item.quantity}</span>
+                          <button className="bouttons" onClick={() => increase(item._id)}>+</button>
+                        </div>
+                        <CartItemNote
+                          itemId={item._id}
+                          onNoteChange={handleNoteChange}
+                        />
+                      </div>
+                      <div className="cart_prix">
+                        <span className="prix_pan">{formatPrice(item.prix * item.quantity)}</span>
+                        <DeleteControl onConfirm={() => removeItem(item._id)} />
+                      </div>
                     </div>
-                    <div className="cart_prix">
-                      <span className="prix_pan">{formatPrice(item.prix * item.quantity)}</span>
-                      <DeleteControl onConfirm={() => removeItem(item._id)} />
-                    </div>
-                  </div>
+                  </AnimatedCartItem>
                 ))}
               </div>
             )}
