@@ -308,6 +308,35 @@ function Panier({ Userconnecte }) {
         )}
       </main>
 
+      {/* Barre fixe mobile — masquee sur desktop via CSS */}
+      {!isEmpty && (
+        <div className="mobile-bar">
+          <div className="mobile-bar-total">
+            <p className="mobile-bar-label">Total</p>
+            <p className="mobile-bar-prix">{formatPrice(total)}</p>
+          </div>
+          <button
+            className="mobile-bar-btn"
+            onClick={ConditionalFunc}
+          >
+            <span>Commander</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="mobile-bar-arrow"
+              aria-hidden="true"
+            >
+              <path d="M5 12h14M13 6l6 6-6 6" />
+            </svg>
+          </button>
+        </div>
+      )}
+
       {pendingRemoval && (
         <UndoToast
           item={pendingRemoval}

@@ -485,3 +485,90 @@
   margin-bottom: 0;
   pointer-events: none;
 }
+
+/* Barre fixe mobile */
+.mobile-bar {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 12px 20px;
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+    background: white;
+    border-top: 1px solid #e2e8f0;
+    z-index: 60;
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.06);
+  }
+
+  /* Evite que le contenu passe sous la barre fixe */
+  .panier-main {
+    padding-bottom: 90px;
+  }
+
+  /* La carte resume desktop est masquee sur mobile */
+  .panier-resume {
+    display: none;
+  }
+}
+
+.mobile-bar-total {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.mobile-bar-label {
+  font-family: "Inter", sans-serif;
+  font-size: 0.72rem;
+  color: #94a3b8;
+  margin: 0;
+}
+
+.mobile-bar-prix {
+  font-family: "Inter", sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #e65d0d;
+  margin: 0;
+}
+
+.mobile-bar-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #e65d0d;
+  color: white;
+  font-family: "Inter", sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  padding: 11px 22px;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(230, 93, 13, 0.25);
+  transition: background-color 0.2s ease, transform 0.15s ease;
+  white-space: nowrap;
+}
+
+.mobile-bar-btn:hover {
+  background-color: #c94d00;
+}
+
+.mobile-bar-btn:active {
+  transform: scale(0.98);
+}
+
+.mobile-bar-arrow {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+}
