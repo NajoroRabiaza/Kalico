@@ -101,3 +101,9 @@
 .nav__active i {
   color: #e65d0d;
 }
+/* Separation visuelle du bouton Sortir */
+.sidebar__bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 1rem;
+  padding-bottom: 1.5rem;
+}

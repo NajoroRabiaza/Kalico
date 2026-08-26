@@ -10,7 +10,8 @@ const Sidebar = () => {
     localStorage.removeItem("userLevel");
     localStorage.removeItem("userName");
     navigate("/");
-};
+  };
+
   return (
     <div className="sidebar">
       <div className="sidebar__top">
@@ -29,7 +30,6 @@ const Sidebar = () => {
                   }
                 >
                   <i className={item.icon}></i>
-
                   {item.display}
                 </NavLink>
               </li>
@@ -38,7 +38,7 @@ const Sidebar = () => {
         </div>
 
         <div className="sidebar__bottom">
-          <span onClick={handleLogout} style={{ cursor: "pointer" }}>
+          <span onClick={handleLogout}>
             <i className="ri-logout-circle-r-line"></i> Sortir
           </span>
         </div>
