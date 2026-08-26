@@ -1,11 +1,15 @@
 import API_URL from "../api";
 import authFetch from "../utils/authFetch";
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import "./modal.css";
 import { CartContext } from "../context/CartContext";
 import { useToast } from "../context/ToastContext";
+import { formatPrice } from "../utils/formatPrice";
 
-function Modal({ oneclose, condition, totalCommande }) {
+// Regex identique a celle du backend — 034 ou 038 suivi de 7 chiffres
+const MVOLA_REGEX = /^03[48]\d{7}$/;
+
+function Modal({ oneclose, totalCommande }) {
   const { cart, setCart, setOrderHistory } = useContext(CartContext);
   const [showCash, setShowCash] = useState(true);
   const { showToast } = useToast();
@@ -17,27 +21,24 @@ function Modal({ oneclose, condition, totalCommande }) {
 
   const [loading, setLoading] = useState(false);
 
-  const [conditionnameCash, setConditionnameCash] = useState(false);
-  const [conditionlevelCash, setConditionlevelCash] = useState(false);
-  const [conditionnameMvola, setConditionnameMvola] = useState(false);
-  const [conditionnumMvola, setConditionnumMvola] = useState(false);
+  const [erreurNomCash, setErreurNomCash] = useState("");
+  const [erreurNiveauCash, setErreurNiveauCash] = useState("");
+  const [erreurNomMvola, setErreurNomMvola] = useState("");
+  const [erreurNumMvola, setErreurNumMvola] = useState("");
 
   // Cache les messages d'erreur apres 8 secondes
   useEffect(() => {
-    const hasError = conditionnameCash || conditionlevelCash || conditionnameMvola || conditionnumMvola;
+    const hasError = erreurNomCash || erreurNiveauCash || erreurNomMvola || erreurNumMvola;
     if (!hasError) return;
     const timer = setTimeout(() => {
-      setConditionnameCash(false);
-      setConditionlevelCash(false);
-      setConditionnameMvola(false);
-      setConditionnumMvola(false);
+      setErreurNomCash("");
+      setErreurNiveauCash("");
+      setErreurNomMvola("");
+      setErreurNumMvola("");
     }, 8000);
     return () => clearTimeout(timer);
-  }, [conditionnameCash, conditionlevelCash, conditionnameMvola, conditionnumMvola]);
+  }, [erreurNomCash, erreurNiveauCash, erreurNomMvola, erreurNumMvola]);
 
-  // Envoi de commande directement depuis le handler de clic
-  // Plus de useEffect comme declencheur : evite la double soumission
-  // et rend le flux de donnees explicite et lineaire
   const envoyerCommande = async (commande) => {
     setLoading(true);
     try {
@@ -49,7 +50,7 @@ function Modal({ oneclose, condition, totalCommande }) {
       const savedCommande = await res.json();
       setOrderHistory((prev) => [savedCommande, ...prev]);
       setCart([]);
-      showToast("Votre commande est bien reçu, veuillez patienter !", "success");
+      showToast("Votre commande est bien recu, veuillez patienter !", "success");
       oneclose();
     } catch {
       showToast("Erreur lors de l'envoi de la commande !", "error");
@@ -58,24 +59,16 @@ function Modal({ oneclose, condition, totalCommande }) {
     }
   };
 
-  async function conditionalModal() {
+  async function soumettreCash() {
     if (nameCash.trim() === "") {
-      setConditionnameCash(true);
+      setErreurNomCash("Veuillez entrer votre nom.");
       return;
     }
-    if (levelCash === "") {
-      setConditionlevelCash(true);
+    const niveau = levelCash.trim().toUpperCase();
+    if (!niveau || (!niveau.includes("L1") && !niveau.includes("L2") && !niveau.includes("L3"))) {
+      setErreurNiveauCash("Niveau invalide. Entrez L1, L2 ou L3.");
       return;
     }
-    if (
-      !levelCash.trim().includes("L1") &&
-      !levelCash.trim().includes("L2") &&
-      !levelCash.trim().includes("L3")
-    ) {
-      setConditionlevelCash(true);
-      return;
-    }
-
     await envoyerCommande({
       clientNom: nameCash,
       niveau: levelCash,
@@ -87,24 +80,15 @@ function Modal({ oneclose, condition, totalCommande }) {
     });
   }
 
-  async function conditionMvolaModal() {
+  async function soumettreMvola() {
     if (nameMvola.trim() === "") {
-      setConditionnameMvola(true);
+      setErreurNomMvola("Veuillez entrer votre nom.");
       return;
     }
-    if (number.trim() === "") {
-      setConditionnumMvola(true);
+    if (!MVOLA_REGEX.test(number.trim())) {
+      setErreurNumMvola("Numero invalide. Format attendu : 034XXXXXXX ou 038XXXXXXX.");
       return;
     }
-    if (!number.trim().includes("034") && !number.trim().includes("038")) {
-      setConditionnumMvola(true);
-      return;
-    }
-    if (number.trim().length !== 10) {
-      setConditionnumMvola(true);
-      return;
-    }
-
     await envoyerCommande({
       clientNom: nameMvola,
       numero: number,
@@ -121,15 +105,38 @@ function Modal({ oneclose, condition, totalCommande }) {
       <div className="Container_MOdal">
         <h2>Page de payement</h2>
         <div>
-          <h1 title="Annuler" onClick={oneclose}>x</h1>
+          <button
+            type="button"
+            className="modal-close-btn"
+            onClick={oneclose}
+            aria-label="Fermer la fenetre de paiement"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="modal-close-icon"
+              aria-hidden="true"
+            >
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+
           <div className="butonPayment">
             <button
+              type="button"
               onClick={() => setShowCash(true)}
               className={`cashPay ${showCash ? "active" : ""}`}
             >
               <img src="/image/imageMoney.webp" alt="imageCash" /> | Cash
             </button>
             <button
+              type="button"
               onClick={() => setShowCash(false)}
               className={`MvolaPay ${!showCash ? "active" : ""}`}
             >
@@ -138,51 +145,102 @@ function Modal({ oneclose, condition, totalCommande }) {
 
             {showCash ? (
               <div className="inputText">
-                {conditionnameCash && <p className="errorModal" title="Entrer un nom">!</p>}
-                <label>Entrer votre Nom</label>
-                <br />
-                <input type="text" size={30} required value={nameCash} onChange={(e) => setNameCash(e.target.value)} />
-                <br />
-                <label>Entrer votre niveau</label>
-                {conditionlevelCash && <p className="errorModal" title="Entrer votre niveau">!</p>}
-                <br />
-                <input type="text" size={30} value={levelCash} onChange={(e) => setLevelCash(e.target.value)} required />
+                <label htmlFor="nameCash">Entrer votre Nom</label>
+                {erreurNomCash && (
+                  <p className="modal-erreur" role="alert">{erreurNomCash}</p>
+                )}
+                <input
+                  id="nameCash"
+                  type="text"
+                  size={30}
+                  value={nameCash}
+                  onChange={(e) => {
+                    setNameCash(e.target.value);
+                    if (erreurNomCash) setErreurNomCash("");
+                  }}
+                />
+                <label htmlFor="levelCash">Entrer votre niveau</label>
+                {erreurNiveauCash && (
+                  <p className="modal-erreur" role="alert">{erreurNiveauCash}</p>
+                )}
+                <input
+                  id="levelCash"
+                  type="text"
+                  size={30}
+                  value={levelCash}
+                  onChange={(e) => {
+                    setLevelCash(e.target.value);
+                    if (erreurNiveauCash) setErreurNiveauCash("");
+                  }}
+                />
                 <div className="date">
                   <h6>Vous devez payer dans les :</h6>
                   <p>10 prochain minutes</p>
                 </div>
                 <div className="btnSubmit">
-                  <button id="SubmitBtn" onClick={conditionalModal} disabled={loading}>
+                  <button
+                    id="SubmitBtn"
+                    type="button"
+                    onClick={soumettreCash}
+                    disabled={loading}
+                  >
                     {loading ? "Envoi..." : "Valider"}
                   </button>
                 </div>
               </div>
             ) : (
               <div className="inputText">
-                {conditionnameMvola && <p className="erreurModal" title="Entrer un nom">!</p>}
-                <label>Entrer votre Nom</label>
-                <br />
-                <input type="text" size={30} value={nameMvola} onChange={(e) => setNameMvola(e.target.value)} required />
-                <br />
-                {conditionnumMvola && <p className="erreurModal2" title="Entrer votre numero">!</p>}
-                <label>Entrer votre numero Mvola</label>
-                <br />
-                <input type="tel" size={30} onChange={(e) => setNumber(e.target.value)} value={number} required />
+                <label htmlFor="nameMvola">Entrer votre Nom</label>
+                {erreurNomMvola && (
+                  <p className="modal-erreur" role="alert">{erreurNomMvola}</p>
+                )}
+                <input
+                  id="nameMvola"
+                  type="text"
+                  size={30}
+                  value={nameMvola}
+                  onChange={(e) => {
+                    setNameMvola(e.target.value);
+                    if (erreurNomMvola) setErreurNomMvola("");
+                  }}
+                />
+                <label htmlFor="numMvola">Entrer votre numero Mvola</label>
+                {erreurNumMvola && (
+                  <p className="modal-erreur" role="alert">{erreurNumMvola}</p>
+                )}
+                <input
+                  id="numMvola"
+                  type="tel"
+                  size={30}
+                  value={number}
+                  placeholder="034XXXXXXX ou 038XXXXXXX"
+                  onChange={(e) => {
+                    setNumber(e.target.value);
+                    if (erreurNumMvola) setErreurNumMvola("");
+                  }}
+                />
                 <div className="btnSubmit">
-                  <button id="SubmitBtn" onClick={conditionMvolaModal} disabled={loading}>
+                  <button
+                    id="SubmitBtn"
+                    type="button"
+                    onClick={soumettreMvola}
+                    disabled={loading}
+                  >
                     {loading ? "Envoi..." : "Valider"}
                   </button>
                 </div>
               </div>
             )}
           </div>
+
           <div className="verticalLineModal"></div>
+
           <div className="price">
             <div className="title">
               <img src="/image/kalico.webp" alt="logo" />
             </div>
             <div className="totalModal">
-              <h4>Total Acheter : {totalCommande} Ariary</h4>
+              <h4>Total : {formatPrice(totalCommande)}</h4>
             </div>
           </div>
         </div>
