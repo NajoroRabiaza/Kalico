@@ -16,7 +16,7 @@ const navLinks = [
   },
   {
     path: "/admin/clients",
-    icon: "ri-clients-2-line",
+    icon: "ri-group-line",
     display: "Nos clients",
   },
 ];
