@@ -11,12 +11,21 @@ const app = express();
 app.use(express.json());
 app.use("/commandes", commandesRoute);
 
-// genere un token valide pour les routes proteger par verifyToken
-const genererToken = () => {
+// Token utilisateur standard — pour les routes qui exigent seulement verifyToken
+const genererTokenUser = () => {
     return jwt.sign(
         {id: new mongoose.Types.ObjectId(), name: "TestUser", level: "L2"},
         process.env.JWT_SECRET,
-        {expiresIn: '1h'}
+        {expiresIn: "1h"}
+    );
+};
+
+// Token admin — pour les routes qui exigent verifyToken + verifyAdmin
+const genererTokenAdmin = () => {
+    return jwt.sign(
+        {id: new mongoose.Types.ObjectId(), name: "AdminTest", level: "admin"},
+        process.env.JWT_SECRET,
+        {expiresIn: "1h"}
     );
 };
 
@@ -32,7 +41,7 @@ const commandeDeBase = {
 
 describe("POST /commandes", () => {
     it("devrait creer une commande Cash avec succes", async () => {
-        const token = genererToken();
+        const token = genererTokenUser();
         const res = await request(app)
             .post("/commandes")
             .set("Authorization", `Bearer ${token}`)
@@ -44,7 +53,7 @@ describe("POST /commandes", () => {
     });
 
     it("devrait refuser une commande Cash sans niveau", async () => {
-        const token = genererToken();
+        const token = genererTokenUser();
         const res = await request(app)
             .post("/commandes")
             .set("Authorization", `Bearer ${token}`)
@@ -58,7 +67,7 @@ describe("POST /commandes", () => {
     });
 
     it("devrait creer une commande Mvola avec succes", async () => {
-        const token = genererToken();
+        const token = genererTokenUser();
         const res = await request(app)
             .post("/commandes")
             .set("Authorization", `Bearer ${token}`)
@@ -73,13 +82,28 @@ describe("POST /commandes", () => {
     });
 
     it("devrait refuser une commande Mvola sans numero", async () => {
-        const token = genererToken();
+        const token = genererTokenUser();
         const res = await request(app)
             .post("/commandes")
             .set("Authorization", `Bearer ${token}`)
             .send({...commandeDeBase, methodePaiement: "Mvola", niveau: undefined});
         expect(res.status).toBe(400);
         expect(res.body.message).toBe("Le numero est requis pour un paiement Mvola");
+    });
+
+    it("devrait refuser un numero Mvola au format invalide", async () => {
+        const token = genererTokenUser();
+        const res = await request(app)
+            .post("/commandes")
+            .set("Authorization", `Bearer ${token}`)
+            .send({
+                ...commandeDeBase,
+                methodePaiement: "Mvola",
+                niveau: undefined,
+                numero: "0321234567",
+            });
+        expect(res.status).toBe(400);
+        expect(res.body.message).toBe("Le numero Mvola est invalide (034XXXXXXX ou 038XXXXXXX)");
     });
 
     it("devrait retourner 401 sans token", async () => {
@@ -89,8 +113,8 @@ describe("POST /commandes", () => {
 });
 
 describe("GET /commandes", () => {
-    it("devrait retourner toutes les commandes", async () => {
-        const token = genererToken();
+    it("devrait retourner toutes les commandes pour un admin", async () => {
+        const token = genererTokenAdmin();
         await Commande.create(commandeDeBase);
         await Commande.create({...commandeDeBase, clientNom: "Marie Test"});
 
@@ -102,6 +126,14 @@ describe("GET /commandes", () => {
         expect(res.body.length).toBe(2);
     });
 
+    it("devrait retourner 403 pour un utilisateur non admin", async () => {
+        const token = genererTokenUser();
+        const res = await request(app)
+            .get("/commandes")
+            .set("Authorization", `Bearer ${token}`);
+        expect(res.status).toBe(403);
+    });
+
     it("devrait retourner 401 sans token", async () => {
         const res = await request(app).get("/commandes");
         expect(res.status).toBe(401);
@@ -110,7 +142,7 @@ describe("GET /commandes", () => {
 
 describe("PUT /commandes/:id", () => {
     it("devrait mettre a jour le statut d'une commande", async () => {
-        const token = genererToken();
+        const token = genererTokenAdmin();
         const commande = await Commande.create(commandeDeBase);
 
         const res = await request(app)
@@ -122,8 +154,19 @@ describe("PUT /commandes/:id", () => {
         expect(res.body.statut).toBe("en cours");
     });
 
+    it("devrait retourner 403 pour un utilisateur non admin", async () => {
+        const token = genererTokenUser();
+        const commande = await Commande.create(commandeDeBase);
+
+        const res = await request(app)
+            .put(`/commandes/${commande._id}`)
+            .set("Authorization", `Bearer ${token}`)
+            .send({statut: "en cours"});
+        expect(res.status).toBe(403);
+    });
+
     it("devrait retourner 404 si la commande n'existe pas", async () => {
-        const token = genererToken();
+        const token = genererTokenAdmin();
         const fakeId = new mongoose.Types.ObjectId();
 
         const res = await request(app)
@@ -136,7 +179,7 @@ describe("PUT /commandes/:id", () => {
 
 describe("DELETE /commandes/:id", () => {
     it("devrait supprimer une commande existante", async () => {
-        const token = genererToken();
+        const token = genererTokenAdmin();
         const commande = await Commande.create(commandeDeBase);
 
         const res = await request(app)
@@ -150,8 +193,18 @@ describe("DELETE /commandes/:id", () => {
         expect(deleted).toBeNull();
     });
 
+    it("devrait retourner 403 pour un utilisateur non admin", async () => {
+        const token = genererTokenUser();
+        const commande = await Commande.create(commandeDeBase);
+
+        const res = await request(app)
+            .delete(`/commandes/${commande._id}`)
+            .set("Authorization", `Bearer ${token}`);
+        expect(res.status).toBe(403);
+    });
+
     it("devrait retourner 404 si la commande n'existe pas", async () => {
-        const token = genererToken();
+        const token = genererTokenAdmin();
         const fakeId = new mongoose.Types.ObjectId();
 
         const res = await request(app)
