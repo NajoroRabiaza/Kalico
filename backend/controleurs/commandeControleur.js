@@ -1,15 +1,27 @@
 const Commande = require("../model/commande");
 
+// Regex stricte : numéro Mvola commence par 034 ou 038, suivi de 7 chiffres
+// Ancres ^ et $ garantissent qu'on valide toute la chaine, pas juste une sous-chaine
+const MVOLA_REGEX = /^03[48]\d{7}$/;
+
 const ajouterCommande = async (req, res) => {
   try {
     const { methodePaiement, niveau, numero } = req.body;
+
     if (methodePaiement === "Cash" && !niveau) {
       return res.status(400).json({ message: "Le niveau est requis pour un paiement Cash" });
     }
-    if (methodePaiement === "Mvola" && !numero) {
-      return res.status(400).json({ message: "Le numero est requis pour un paiement Mvola" });
+
+    if (methodePaiement === "Mvola") {
+      if (!numero) {
+        return res.status(400).json({ message: "Le numero est requis pour un paiement Mvola" });
+      }
+      if (!MVOLA_REGEX.test(numero.trim())) {
+        return res.status(400).json({ message: "Le numero Mvola est invalide (034XXXXXXX ou 038XXXXXXX)" });
+      }
     }
-    const {clientNom, produits, total} = req.body;
+
+    const { clientNom, produits, total } = req.body;
     const nouvelleCommande = new Commande({
       clientNom, methodePaiement, niveau, numero, produits, total,
     });
@@ -43,7 +55,6 @@ const getCommandes = async (req, res) => {
     res.status(500).json({ message: "Erreur serveur" });
   }
 };
-
 
 const updateCommande = async (req, res) => {
   try {

@@ -10,6 +10,7 @@ const commandeSchema = new mongoose.Schema({
       nom: String,
       prix: Number,
       quantity: Number,
+      note: { type: String, default: "" },
     }
   ],
   total: Number,
