@@ -33,7 +33,12 @@ export function formatCommandes(commandes) {
       total: formatPrice(cmd.total),
       date: `${datePart} à ${timePart}`,
       produitsDisplay: Array.isArray(cmd.produits)
-        ? cmd.produits.map(p => `${p.nom} x${p.quantity} (${p.prix} Ar)`).join(", ")
+        ? cmd.produits
+            .map(p => {
+              const base = `${p.nom} x${p.quantity} (${p.prix} Ar)`;
+              return p.note ? `${base} — note : ${p.note}` : base;
+            })
+            .join(", ")
         : '',
     };
   });
