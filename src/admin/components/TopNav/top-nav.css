@@ -6,15 +6,21 @@
   background: var(--primary-color);
   width: calc(100% - 260px);
   height: 70px;
-  line-height: 70px;
 }
 
 .top__nav-wrapper {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
   padding: 0px 30px;
   height: 70px;
+}
+
+.top__nav-titre {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--heading-color);
+  letter-spacing: 0.3px;
 }
 
 .top__nav-right {
