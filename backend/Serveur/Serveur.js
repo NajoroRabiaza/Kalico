@@ -11,6 +11,7 @@ const { nettoyerCommandesExpires } = require("../controleurs/commandeControleur"
 const clientsRoute = require("../router/clients");
 const produitsRoute = require("../router/produits");
 const commandesRoute = require("../router/commandes");
+const promoRoute = require("../router/promo");
 
 const originesAutorisees = [
   process.env.FRONTEND_URL,
@@ -45,6 +46,7 @@ app.use(methodoverride("_method"));
 app.use("/clients", clientsRoute);
 app.use("/produits", produitsRoute);
 app.use("/commandes", commandesRoute);
+app.use("/promo", promoRoute);
 app.use(router);
 
 mongoose
