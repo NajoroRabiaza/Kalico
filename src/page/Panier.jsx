@@ -12,6 +12,8 @@ import CartItemNote from "../component/CartItemNote";
 import PromoCode from "../component/PromoCode";
 import UndoToast from "../component/UndoToast";
 import useCartWithUndo from "../hooks/useCartWithUndo";
+import authFetch from "../utils/authFetch";
+import API_URL from "../api";
 
 function DeleteControl({ onConfirm }) {
   const [confirming, setConfirming] = useState(false);
@@ -81,6 +83,10 @@ function Panier({ Userconnecte }) {
   const [removingIds, setRemovingIds] = useState([]);
   const navigate = useNavigate();
 
+  // Etat de la promo appliquee : null si aucune, sinon { code, typeReduction, valeur }
+  const [promoAppliquee, setPromoAppliquee] = useState(null);
+  const [promoLoading, setPromoLoading] = useState(false);
+
   const { removeItem, pendingRemoval, undoRemoval, dismissUndo } =
     useCartWithUndo(cart, setCart);
 
@@ -118,8 +124,38 @@ function Panier({ Userconnecte }) {
     );
   };
 
-  const handlePromoApply = (code) => {
-    showToast(`Code "${code}" soumis — fonctionnalité à venir.`, "warning");
+  // Appelle la route POST /promo/validate et met a jour l'etat promoAppliquee.
+  // Retourne { ok, message } pour que PromoCode affiche le bon feedback.
+  const handlePromoApply = async (code) => {
+    setPromoLoading(true);
+    try {
+      const res = await authFetch(`${API_URL}/promo/validate`, {
+        method: "POST",
+        body: JSON.stringify({ code }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setPromoAppliquee(null);
+        return { ok: false, message: data.message || "Code invalide." };
+      }
+
+      setPromoAppliquee({
+        code,
+        typeReduction: data.typeReduction,
+        valeur: data.valeur,
+      });
+      return { ok: true, message: data.message };
+    } catch {
+      setPromoAppliquee(null);
+      return { ok: false, message: "Erreur réseau. Réessayez." };
+    } finally {
+      setPromoLoading(false);
+    }
+  };
+
+  const handlePromoReset = () => {
+    setPromoAppliquee(null);
   };
 
   const ConditionalFunc = () => {
@@ -154,7 +190,20 @@ function Panier({ Userconnecte }) {
     return () => clearTimeout(timer);
   }, [showError]);
 
-  const total = cart.reduce((acc, item) => acc + item.prix * item.quantity, 0);
+  const sousTotal = cart.reduce((acc, item) => acc + item.prix * item.quantity, 0);
+
+  // Calcul de la reduction selon le type retourne par le backend
+  const calculerReduction = () => {
+    if (!promoAppliquee) return 0;
+    if (promoAppliquee.typeReduction === "pourcentage") {
+      return Math.round(sousTotal * (promoAppliquee.valeur / 100));
+    }
+    // type "fixe" : reduction plafonnee au sous-total pour eviter un total negatif
+    return Math.min(promoAppliquee.valeur, sousTotal);
+  };
+
+  const reduction = calculerReduction();
+  const total = sousTotal - reduction;
   const isEmpty = cart.length === 0;
 
   return (
@@ -235,8 +284,21 @@ function Panier({ Userconnecte }) {
               <h2 className="panier-resume-titre">Résumé</h2>
               <div className="panier-resume-ligne">
                 <span>Sous-total</span>
-                <span>{formatPrice(total)}</span>
+                <span>{formatPrice(sousTotal)}</span>
               </div>
+
+              {promoAppliquee && (
+                <div className="panier-resume-ligne panier-resume-promo">
+                  <span>
+                    Code{" "}
+                    <strong className="panier-promo-code">{promoAppliquee.code}</strong>
+                  </span>
+                  <span className="panier-promo-reduction">
+                    -{formatPrice(reduction)}
+                  </span>
+                </div>
+              )}
+
               <div className="panier-resume-ligne panier-resume-livraison">
                 <span>Livraison</span>
                 <span className="panier-resume-livraison-valeur">
@@ -248,7 +310,14 @@ function Panier({ Userconnecte }) {
                 <span>Total</span>
                 <span className="panier-resume-total-prix">{formatPrice(total)}</span>
               </div>
-              <PromoCode onApply={handlePromoApply} />
+
+              <PromoCode
+                onApply={handlePromoApply}
+                onReset={handlePromoReset}
+                loading={promoLoading}
+                appliquee={promoAppliquee}
+              />
+
               <button
                 className={`panier-btn-commander ${isEmpty ? "panier-btn-disabled" : ""}`}
                 onClick={ConditionalFunc}
@@ -308,7 +377,6 @@ function Panier({ Userconnecte }) {
         )}
       </main>
 
-      {/* Barre fixe mobile — masquee sur desktop via CSS */}
       {!isEmpty && (
         <div className="mobile-bar">
           <div className="mobile-bar-total">
