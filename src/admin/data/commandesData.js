@@ -1,3 +1,5 @@
+import { formatPrice } from "../../utils/formatPrice";
+
 export const columns = [
   { id: 'clientNom', label: 'Client', minWidth: 150 },
   { id: 'niveau', label: 'Niveau', minWidth: 100 },
@@ -28,11 +30,11 @@ export function formatCommandes(commandes) {
       ...cmd,
       niveau: cmd.methodePaiement === "Cash" ? (cmd.niveau || " - ") : " - ",
       numero: cmd.methodePaiement === "Mvola" ? (cmd.numero || " - ") : " - ",
-      total: `${cmd.total} Ariary`,
+      total: formatPrice(cmd.total),
       date: `${datePart} à ${timePart}`,
       produitsDisplay: Array.isArray(cmd.produits)
         ? cmd.produits.map(p => `${p.nom} x${p.quantity} (${p.prix} Ar)`).join(", ")
         : '',
-    };    
+    };
   });
 }
