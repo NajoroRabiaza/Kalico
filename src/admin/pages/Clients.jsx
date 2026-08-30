@@ -2,10 +2,27 @@ import API_URL from "../../api";
 import authFetch from "../../utils/authFetch";
 import { useEffect, useState } from 'react';
 import CustomTable from '../components/CustomTable';
+import "../styles/clients.css";
+
+const niveauStyles = {
+  admin:  "badge badge--admin",
+  vip:    "badge badge--vip",
+  normal: "badge badge--normal",
+  L2:     "badge badge--l2",
+};
 
 const columns = [
   { id: 'name', label: 'Nom', minWidth: 150 },
-  { id: 'level', label: 'Niveau', minWidth: 100 },
+  {
+    id: 'level',
+    label: 'Niveau',
+    minWidth: 100,
+    render: (value) => (
+      <span className={niveauStyles[value] || "badge badge--normal"}>
+        {value}
+      </span>
+    ),
+  },
   { id: 'createdAt', label: 'Date', minWidth: 150 },
 ];
 
@@ -32,7 +49,6 @@ export default function Clients() {
 
   useEffect(() => {
     const fetchClients = () => {
-      // authFetch injecte le token : route protegee par verifyToken
       authFetch(`${API_URL}/dataUser`)
         .then(res => res.json())
         .then(data => {
@@ -46,7 +62,6 @@ export default function Clients() {
     };
 
     fetchClients();
-
     const intervalId = setInterval(fetchClients, 60000);
     return () => clearInterval(intervalId);
   }, []);
