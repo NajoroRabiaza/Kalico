@@ -3,7 +3,8 @@
   top: 0;
   left: 260px;
   z-index: 999;
-  background: var(--primary-color);
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
   width: calc(100% - 260px);
   height: 70px;
 }
@@ -12,34 +13,35 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0px 30px;
+  padding: 0 30px;
   height: 70px;
 }
 
 .top__nav-titre {
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 600;
-  color: var(--heading-color);
-  letter-spacing: 0.3px;
+  color: #1e293b;
+  letter-spacing: 0.2px;
 }
 
 .top__nav-right {
   display: flex;
   align-items: center;
-  column-gap: 2rem;
-  justify-content: flex-end;
 }
 
+/* Conteneur explicitement dimensionne pour neutraliser img { width: 100% } dans AppAdmin.css */
 .profile {
   width: 40px;
   height: 40px;
   flex-shrink: 0;
+  overflow: hidden;
+  border-radius: 50%;
+  border: 2px solid #e2e8f0;
 }
 
 .profile img {
   width: 40px;
   height: 40px;
-  border-radius: 50%;
   object-fit: cover;
   display: block;
 }

@@ -6,7 +6,7 @@ const pageTitles = {
   "/admin/dashboard": "Tableau de bord",
   "/admin/Commande": "Les Commandes",
   "/admin/Products": "Les Produits",
-  "/admin/Clients": "Nos Clients",
+  "/admin/clients": "Nos Clients",
 };
 
 const TopNav = () => {
