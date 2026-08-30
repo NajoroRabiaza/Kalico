@@ -4,8 +4,8 @@ import "./sidebar.css";
 
 const Sidebar = () => {
   const navigate = useNavigate();
+
   const handleLogout = () => {
-    // Nettoyage complet de la session admin dans le localStorage
     localStorage.removeItem("token");
     localStorage.removeItem("userLevel");
     localStorage.removeItem("userName");
@@ -39,7 +39,8 @@ const Sidebar = () => {
 
         <div className="sidebar__bottom">
           <span onClick={handleLogout}>
-            <i className="ri-logout-circle-r-line"></i> Sortir
+            <i className="ri-logout-circle-r-line"></i>
+            Sortir
           </span>
         </div>
       </div>

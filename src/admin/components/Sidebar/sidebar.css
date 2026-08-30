@@ -48,62 +48,81 @@
 
 .menuAdmin {
   width: 90%;
-  height: 40%;
+  /* height: auto remplace height: 40% qui pouvait couper la nav sur petits ecrans */
+  height: auto;
   border-radius: 10px;
   display: flex;
   flex-direction: row;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
+  padding-top: 2rem;
 }
 
 .nav__link,
 .sidebar__bottom span {
   display: flex;
   align-items: center;
-  column-gap: 5px;
+  column-gap: 8px;
   cursor: pointer;
   transition: 0.3s;
 }
 
-.sidebar__bottom span {
-  color: #a8b2c8;
-  cursor: pointer;
-}
-
-.sidebar__bottom span:hover {
-  color: #ffffff;
-}
-
 .nav__list {
   display: flex;
-  row-gap: 2rem;
+  row-gap: 0.5rem;
   flex-direction: column;
-  /* Valeur corrigee : #a8b2c8 sur #181b3a atteint un ratio > 4.5:1 (WCAG AA) */
+  /* #a8b2c8 sur #181b3a : ratio > 4.5:1 — conforme WCAG AA */
   color: #a8b2c8;
+  width: 100%;
+}
+
+.nav__link {
+  padding: 8px 10px;
+  border-radius: 8px;
+  color: #a8b2c8;
+  font-size: 0.9rem;
 }
 
 .nav__link i {
-  color: var(--secondary-color);
+  color: #a8b2c8;
+  font-size: 1rem;
+  transition: 0.3s;
 }
 
 .nav__link:hover {
   color: #ffffff;
+  background: rgba(255, 255, 255, 0.05);
 }
 
+.nav__link:hover i {
+  color: #ffffff;
+}
+
+/* Etat actif : fond semi-transparent + barre orange gauche */
 .nav__active {
   color: #ffffff;
   background: rgba(255, 255, 255, 0.08);
   border-left: 3px solid #e65d0d;
-  padding: 6px 8px;
-  border-radius: 5px;
+  padding: 8px 10px;
+  border-radius: 6px;
 }
 
 .nav__active i {
   color: #e65d0d;
 }
-/* Separation visuelle du bouton Sortir */
+
+/* Separation et bouton Sortir */
 .sidebar__bottom {
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   padding-top: 1rem;
   padding-bottom: 1.5rem;
+}
+
+.sidebar__bottom span {
+  color: #a8b2c8;
+  font-size: 0.9rem;
+}
+
+.sidebar__bottom span:hover {
+  color: #ffffff;
 }
