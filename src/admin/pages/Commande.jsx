@@ -76,6 +76,7 @@ export default function Commande() {
       rows={commandes}
       uniqueKey="_id"
       onDelete={handleDeleteCommande}
+      emptyLabel="Aucune commande pour le moment"
     />
   );
 }
