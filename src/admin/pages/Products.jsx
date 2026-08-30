@@ -16,12 +16,9 @@ export default function Products() {
 
   const fetchProduits = () => {
     setLoading(true);
-    // GET public : pas besoin de token pour consulter le catalogue
     fetch(`${API_URL}/produits`)
       .then((res) => res.json())
-      .then((data) => {
-        setRows(data);
-      })
+      .then((data) => setRows(data))
       .catch((err) => console.error("Erreur de chargement :", err))
       .finally(() => setLoading(false));
   };
@@ -50,7 +47,6 @@ export default function Products() {
 
   const handleDelete = async (id) => {
     try {
-      // authFetch injecte le token : route protegee par verifyToken
       const res = await authFetch(`${API_URL}/produits/${id}`, { method: "DELETE" });
       if (!res.ok) throw new Error("Erreur suppression");
       fetchProduits();
@@ -86,13 +82,7 @@ export default function Products() {
         : `${API_URL}/produits`;
       const method = isEdit ? "PUT" : "POST";
 
-      // authFetch injecte le token : routes POST et PUT protegees par verifyToken
-      // Pour FormData on ne met pas Content-Type, le navigateur le gere avec le boundary
-      const res = await authFetch(url, {
-        method,
-        body: formData,
-      });
-
+      const res = await authFetch(url, { method, body: formData });
       if (!res.ok) throw new Error("Erreur lors de la sauvegarde du produit");
       await fetchProduits();
       handleClose();
@@ -103,17 +93,65 @@ export default function Products() {
 
   return (
     <>
-      <Box sx={{ mb: 2, mt: 2, mr: 4, ml: 4, display: "flex", justifyContent: "space-between" }}>
-        <button
+      <Box sx={{ mb: 2, mt: 2, mr: 4, ml: 4, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+
+        {/* Bouton Actualiser — outline discret */}
+        <Button
           onClick={fetchProduits}
-          style={{
-            padding: "6px 12px", backgroundColor: "#007bff",
-            color: "white", border: "none", borderRadius: "4px", cursor: "pointer",
+          disabled={loading}
+          variant="outlined"
+          size="small"
+          sx={{
+            borderColor: "#e2e8f0",
+            color: "#475569",
+            backgroundColor: "#ffffff",
+            textTransform: "none",
+            fontSize: "0.8rem",
+            fontWeight: 500,
+            "&:hover": {
+              backgroundColor: "#f8fafc",
+              borderColor: "#cbd5e1",
+            },
           }}
+          startIcon={
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
+              <path d="M21 3v5h-5" />
+              <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
+              <path d="M8 16H3v5" />
+            </svg>
+          }
         >
           Actualiser
-        </button>
-        <Button variant="contained" color="primary" onClick={handleOpenCreate}>
+        </Button>
+
+        {/* Bouton Nouveau produit — orange primaire */}
+        <Button
+          variant="contained"
+          onClick={handleOpenCreate}
+          size="small"
+          sx={{
+            backgroundColor: "#e65d0d",
+            textTransform: "none",
+            fontSize: "0.8rem",
+            fontWeight: 600,
+            boxShadow: "0 2px 8px rgba(230, 93, 13, 0.25)",
+            "&:hover": {
+              backgroundColor: "#cf5209",
+              boxShadow: "0 2px 12px rgba(230, 93, 13, 0.35)",
+            },
+          }}
+          startIcon={
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+          }
+        >
           Nouveau produit
         </Button>
       </Box>
@@ -160,8 +198,18 @@ export default function Products() {
             }
           />
           <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-            <Button onClick={handleClose} sx={{ mr: 1 }}>Annuler</Button>
-            <Button variant="contained" onClick={handleSave}>
+            <Button onClick={handleClose} sx={{ mr: 1, textTransform: "none" }}>
+              Annuler
+            </Button>
+            <Button
+              variant="contained"
+              onClick={handleSave}
+              sx={{
+                backgroundColor: "#e65d0d",
+                textTransform: "none",
+                "&:hover": { backgroundColor: "#cf5209" },
+              }}
+            >
               {editingProduct?._id ? "Mettre à jour" : "Créer"}
             </Button>
           </Box>
