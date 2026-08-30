@@ -11,6 +11,87 @@ import {
   Button,
 } from '@mui/material';
 
+// Bouton de suppression avec confirmation inline.
+// Premier clic : passe en mode "confirming" avec timer 10s.
+// Deuxieme clic : execute la suppression.
+// Clic sur le backdrop ou expiration du timer : annule.
+function DeleteButton({ onConfirm }) {
+  const [confirming, setConfirming] = React.useState(false);
+  const timerRef = React.useRef(null);
+
+  const handleFirstClick = () => {
+    setConfirming(true);
+    timerRef.current = setTimeout(() => {
+      setConfirming(false);
+    }, 10000);
+  };
+
+  const handleConfirm = () => {
+    clearTimeout(timerRef.current);
+    setConfirming(false);
+    onConfirm();
+  };
+
+  const handleCancel = () => {
+    clearTimeout(timerRef.current);
+    setConfirming(false);
+  };
+
+  React.useEffect(() => {
+    return () => clearTimeout(timerRef.current);
+  }, []);
+
+  if (confirming) {
+    return (
+      <div style={{ position: 'relative', display: 'inline-block' }}>
+        {/* Backdrop invisible qui couvre toute la page pour detecter le clic exterieur */}
+        <div
+          onClick={handleCancel}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 10,
+          }}
+        />
+        <Button
+          size="small"
+          variant="contained"
+          onClick={handleConfirm}
+          style={{ position: 'relative', zIndex: 11 }}
+          sx={{
+            textTransform: 'none',
+            backgroundColor: '#dc2626',
+            fontSize: '0.75rem',
+            whiteSpace: 'nowrap',
+            '&:hover': { backgroundColor: '#b91c1c' },
+          }}
+        >
+          Supprimer vraiment ?
+        </Button>
+      </div>
+    );
+  }
+
+  return (
+    <Button
+      size="small"
+      variant="outlined"
+      onClick={handleFirstClick}
+      sx={{
+        textTransform: 'none',
+        borderColor: '#fecaca',
+        color: '#dc2626',
+        '&:hover': {
+          backgroundColor: '#fef2f2',
+          borderColor: '#f87171',
+        },
+      }}
+    >
+      Retirer
+    </Button>
+  );
+}
+
 export default function CustomTable({
   columns,
   rows,
@@ -42,7 +123,7 @@ export default function CustomTable({
         {
           id: 'actions',
           label: 'Actions',
-          minWidth: 150,
+          minWidth: 180,
           align: 'center',
           isAction: true,
         },
@@ -74,18 +155,10 @@ export default function CustomTable({
             alignItems: 'center',
             justifyContent: 'center',
           }}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="22"
-              height="22"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#94a3b8"
-              strokeWidth="1.8"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+              viewBox="0 0 24 24" fill="none" stroke="#94a3b8"
+              strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
+              aria-hidden="true">
               <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
             </svg>
           </div>
@@ -124,7 +197,7 @@ export default function CustomTable({
                   if (col.isAction) {
                     return (
                       <TableCell key="actions" align="center">
-                        <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>
+                        <div style={{ display: 'flex', gap: '6px', justifyContent: 'center', alignItems: 'center' }}>
                           {onEdit && (
                             <Button
                               size="small"
@@ -144,22 +217,7 @@ export default function CustomTable({
                             </Button>
                           )}
                           {onDelete && (
-                            <Button
-                              size="small"
-                              variant="outlined"
-                              onClick={() => onDelete(row[uniqueKey])}
-                              sx={{
-                                textTransform: 'none',
-                                borderColor: '#fecaca',
-                                color: '#dc2626',
-                                '&:hover': {
-                                  backgroundColor: '#fef2f2',
-                                  borderColor: '#f87171',
-                                },
-                              }}
-                            >
-                              Retirer
-                            </Button>
+                            <DeleteButton onConfirm={() => onDelete(row[uniqueKey])} />
                           )}
                         </div>
                       </TableCell>
