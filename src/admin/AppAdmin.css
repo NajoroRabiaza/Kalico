@@ -24,6 +24,7 @@
 body {
   font-family: "DM Sans", sans-serif;
 }
+
 ul {
   list-style: none;
 }
@@ -42,19 +43,16 @@ img {
   width: 100%;
 }
 
+/* En-tete des tableaux MUI — gris neutre sobre a la place du jaune #FCC737 */
 .MuiTableHead-root .MuiTableCell-root {
   position: sticky;
   top: 0;
-  background-color: #FCC737 !important;
-  color: black !important;
-  font-weight: bold;
   z-index: 1;
-}
-
-
-.MuiTableHead-root .MuiTableCell-root {
-  color: #000000 !important;
-  font-weight: bold;
-  font-size: 1rem;
-  letter-spacing: 0.5px;
+  background-color: #f8fafc !important;
+  color: #64748b !important;
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  border-bottom: 1px solid #e2e8f0 !important;
 }
