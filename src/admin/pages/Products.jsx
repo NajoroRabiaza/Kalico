@@ -1,18 +1,50 @@
 import API_URL from "../../api";
 import authFetch from "../../utils/authFetch";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import CustomTable from "../components/CustomTable";
 import { productsColumns as originalColumns } from "../data/productsData";
 import {
-  Modal, Box, Typography, TextField,
-  Button, FormControlLabel, Checkbox
+  Modal, Box, Typography, FormControlLabel, Checkbox, Button
 } from "@mui/material";
+
+// Champ de formulaire avec label fixe au-dessus — cohérent entre création et modification
+function Field({ label, children }) {
+  return (
+    <div style={{ marginBottom: '1rem' }}>
+      <label style={{
+        display: 'block',
+        fontSize: '0.75rem',
+        fontWeight: 600,
+        color: '#475569',
+        marginBottom: '0.35rem',
+      }}>
+        {label}
+      </label>
+      {children}
+    </div>
+  );
+}
+
+const inputStyle = {
+  width: '100%',
+  padding: '9px 12px',
+  border: '1px solid #e2e8f0',
+  borderRadius: '8px',
+  fontSize: '0.875rem',
+  color: '#1e293b',
+  outline: 'none',
+  boxSizing: 'border-box',
+  fontFamily: 'inherit',
+  transition: 'border-color 0.2s',
+};
 
 export default function Products() {
   const [rows, setRows] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [dragOver, setDragOver] = useState(false);
+  const fileInputRef = useRef(null);
 
   const fetchProduits = () => {
     setLoading(true);
@@ -43,6 +75,7 @@ export default function Products() {
   const handleClose = () => {
     setOpenModal(false);
     setEditingProduct(null);
+    setDragOver(false);
   };
 
   const handleDelete = async (id) => {
@@ -61,6 +94,19 @@ export default function Products() {
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
+  };
+
+  const handleFileChange = (file) => {
+    if (file && file.type.startsWith('image/')) {
+      setEditingProduct((prev) => ({ ...prev, imgFile: file }));
+    }
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setDragOver(false);
+    const file = e.dataTransfer.files[0];
+    handleFileChange(file);
   };
 
   const handleSave = async () => {
@@ -91,11 +137,17 @@ export default function Products() {
     }
   };
 
+  const isEdit = !!editingProduct?._id;
+
   return (
     <>
-      <Box sx={{ mb: 2, mt: 2, mr: 4, ml: 4, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-
-        {/* Bouton Actualiser — outline discret */}
+      {/* Barre d'actions au-dessus du tableau */}
+      <Box sx={{
+        mb: 2, mt: 2, mr: 4, ml: 4,
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+      }}>
         <Button
           onClick={fetchProduits}
           disabled={loading}
@@ -108,10 +160,7 @@ export default function Products() {
             textTransform: "none",
             fontSize: "0.8rem",
             fontWeight: 500,
-            "&:hover": {
-              backgroundColor: "#f8fafc",
-              borderColor: "#cbd5e1",
-            },
+            "&:hover": { backgroundColor: "#f8fafc", borderColor: "#cbd5e1" },
           }}
           startIcon={
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
@@ -127,7 +176,6 @@ export default function Products() {
           Actualiser
         </Button>
 
-        {/* Bouton Nouveau produit — orange primaire */}
         <Button
           variant="contained"
           onClick={handleOpenCreate}
@@ -162,56 +210,233 @@ export default function Products() {
         uniqueKey="_id"
         onEdit={handleEdit}
         onDelete={handleDelete}
+        emptyLabel="Aucun produit pour le moment"
       />
 
+      {/* Modale création / modification */}
       <Modal open={openModal} onClose={handleClose}>
         <Box sx={{
-          position: "absolute", top: "50%", left: "50%",
+          position: "absolute",
+          top: "50%",
+          left: "50%",
           transform: "translate(-50%, -50%)",
-          width: 430, bgcolor: "background.paper",
-          boxShadow: 24, p: 4, borderRadius: 2,
+          width: 460,
+          bgcolor: "background.paper",
+          borderRadius: "12px",
+          boxShadow: "0 20px 60px rgba(0,0,0,0.15)",
+          outline: "none",
+          maxHeight: "90vh",
+          overflowY: "auto",
         }}>
-          <Typography variant="h6" gutterBottom>
-            {editingProduct?._id ? "Modifier un produit" : "Créer un produit"}
-          </Typography>
-          <TextField fullWidth label="Nom" name="nom" margin="normal"
-            value={editingProduct?.nom || ""} onChange={handleChange} />
-          <TextField fullWidth label="Prix" name="prix" margin="normal" type="number"
-            value={editingProduct?.prix || ""} onChange={handleChange} />
-          <TextField fullWidth label="Quantité" name="quantite" margin="normal" type="number"
-            value={editingProduct?.quantite || ""} onChange={handleChange} />
-          <TextField fullWidth label="Description" name="description" margin="normal"
-            multiline rows={2} value={editingProduct?.description || ""} onChange={handleChange} />
-          <TextField fullWidth label="Catégorie" name="categorie" margin="normal"
-            value={editingProduct?.categorie || ""} onChange={handleChange} />
-          <FormControlLabel
-            control={
-              <Checkbox name="menuSpecial"
-                checked={editingProduct?.menuSpecial || false}
-                onChange={handleChange} />
-            }
-            label="Menu Spécial"
-          />
-          <input type="file" accept="image/*"
-            onChange={(e) =>
-              setEditingProduct((prev) => ({ ...prev, imgFile: e.target.files[0] }))
-            }
-          />
-          <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-            <Button onClick={handleClose} sx={{ mr: 1, textTransform: "none" }}>
-              Annuler
-            </Button>
-            <Button
-              variant="contained"
-              onClick={handleSave}
-              sx={{
-                backgroundColor: "#e65d0d",
-                textTransform: "none",
-                "&:hover": { backgroundColor: "#cf5209" },
+          {/* En-tete de la modale */}
+          <Box sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "20px 24px 16px",
+            borderBottom: "1px solid #f1f5f9",
+          }}>
+            <Typography sx={{ fontSize: "1rem", fontWeight: 700, color: "#1e293b" }}>
+              {isEdit ? "Modifier un produit" : "Créer un produit"}
+            </Typography>
+            {/* Bouton fermeture X */}
+            <button
+              type="button"
+              onClick={handleClose}
+              style={{
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                padding: '4px',
+                borderRadius: '6px',
+                color: '#94a3b8',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
               }}
             >
-              {editingProduct?._id ? "Mettre à jour" : "Créer"}
-            </Button>
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+          </Box>
+
+          {/* Corps du formulaire */}
+          <Box sx={{ padding: "20px 24px" }}>
+            <Field label="Nom du produit">
+              <input
+                style={inputStyle}
+                name="nom"
+                placeholder="ex : Soupe légume"
+                value={editingProduct?.nom || ""}
+                onChange={handleChange}
+              />
+            </Field>
+
+            {/* Champ prix avec suffixe Ar */}
+            <Field label="Prix">
+              <div style={{ position: 'relative' }}>
+                <input
+                  style={{ ...inputStyle, paddingRight: '36px' }}
+                  name="prix"
+                  type="number"
+                  placeholder="0"
+                  value={editingProduct?.prix || ""}
+                  onChange={handleChange}
+                />
+                <span style={{
+                  position: 'absolute',
+                  right: '12px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  color: '#94a3b8',
+                  pointerEvents: 'none',
+                }}>
+                  Ar
+                </span>
+              </div>
+            </Field>
+
+            <Field label="Quantité">
+              <input
+                style={inputStyle}
+                name="quantite"
+                type="number"
+                placeholder="0"
+                value={editingProduct?.quantite || ""}
+                onChange={handleChange}
+              />
+            </Field>
+
+            <Field label="Description">
+              <textarea
+                style={{ ...inputStyle, resize: 'vertical', minHeight: '72px' }}
+                name="description"
+                placeholder="Ingrédients, allergènes..."
+                value={editingProduct?.description || ""}
+                onChange={handleChange}
+              />
+            </Field>
+
+            <Field label="Catégorie">
+              <input
+                style={inputStyle}
+                name="categorie"
+                placeholder="ex : soupe, plat principal..."
+                value={editingProduct?.categorie || ""}
+                onChange={handleChange}
+              />
+            </Field>
+
+            <FormControlLabel
+              control={
+                <Checkbox
+                  name="menuSpecial"
+                  checked={editingProduct?.menuSpecial || false}
+                  onChange={handleChange}
+                  size="small"
+                  sx={{ color: '#e65d0d', '&.Mui-checked': { color: '#e65d0d' } }}
+                />
+              }
+              label={
+                <span style={{ fontSize: '0.875rem', color: '#475569' }}>
+                  Menu Spécial
+                </span>
+              }
+              sx={{ mb: 1 }}
+            />
+
+            {/* Zone d'upload image drag-and-drop */}
+            <Field label="Image du produit">
+              <div
+                onClick={() => fileInputRef.current?.click()}
+                onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+                onDragLeave={() => setDragOver(false)}
+                onDrop={handleDrop}
+                style={{
+                  border: `2px dashed ${dragOver ? '#e65d0d' : '#e2e8f0'}`,
+                  borderRadius: '8px',
+                  padding: '20px',
+                  textAlign: 'center',
+                  cursor: 'pointer',
+                  backgroundColor: dragOver ? '#fff4ee' : '#f8fafc',
+                  transition: 'all 0.2s',
+                }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                  viewBox="0 0 24 24" fill="none"
+                  stroke={dragOver ? '#e65d0d' : '#94a3b8'}
+                  strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
+                  style={{ marginBottom: '8px' }}>
+                  <polyline points="16 16 12 12 8 16" />
+                  <line x1="12" y1="12" x2="12" y2="21" />
+                  <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3" />
+                </svg>
+                <p style={{ fontSize: '0.8rem', color: '#475569', margin: 0, fontWeight: 500 }}>
+                  {editingProduct?.imgFile
+                    ? editingProduct.imgFile.name
+                    : "Cliquez ou glissez une image ici"}
+                </p>
+                <p style={{ fontSize: '0.72rem', color: '#94a3b8', margin: '4px 0 0' }}>
+                  PNG, JPG jusqu'à 5 Mo
+                </p>
+              </div>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                style={{ display: 'none' }}
+                onChange={(e) => handleFileChange(e.target.files[0])}
+              />
+            </Field>
+          </Box>
+
+          {/* Pied de modale */}
+          <Box sx={{
+            display: "flex",
+            justifyContent: "flex-end",
+            gap: "8px",
+            padding: "16px 24px 20px",
+            borderTop: "1px solid #f1f5f9",
+          }}>
+            <button
+              type="button"
+              onClick={handleClose}
+              style={{
+                padding: '9px 16px',
+                borderRadius: '8px',
+                border: 'none',
+                background: 'none',
+                fontSize: '0.85rem',
+                fontWeight: 500,
+                color: '#64748b',
+                cursor: 'pointer',
+              }}
+            >
+              Annuler
+            </button>
+            <button
+              type="button"
+              onClick={handleSave}
+              style={{
+                padding: '9px 20px',
+                borderRadius: '8px',
+                border: 'none',
+                backgroundColor: '#e65d0d',
+                color: '#ffffff',
+                fontSize: '0.85rem',
+                fontWeight: 600,
+                cursor: 'pointer',
+                boxShadow: '0 2px 8px rgba(230, 93, 13, 0.3)',
+              }}
+            >
+              {isEdit ? "Mettre à jour" : "Créer"}
+            </button>
           </Box>
         </Box>
       </Modal>
