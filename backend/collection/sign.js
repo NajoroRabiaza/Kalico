@@ -103,7 +103,15 @@ const forgotPassword = async (req, res) => {
       return res.status(400).json({ message: "Email requis" });
     }
 
-    const user = await student.findOne({ email });
+    // Validation du format email avant toute requete en base.
+    // Evite un findOne inutile sur une chaine manifestement invalide.
+    // RFC 5322 simplifie : presence d'un @ avec du texte de chaque cote.
+    const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!EMAIL_REGEX.test(email.trim())) {
+      return res.status(400).json({ message: "Format d'email invalide" });
+    }
+
+    const user = await student.findOne({ email: email.trim() });
 
     if (!user) {
       return res.status(404).json({ message: "Email introuvable" });
