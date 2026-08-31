@@ -28,8 +28,10 @@ const signup = async (req, res) => {
       return res.status(400).json({ message: "Le mot de passe doit contenir au moins un caractere special : @ # $ & ou *" });
     }
 
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(req.body.password, salt);
+    // bcrypt.hash(password, saltRounds) gere le genSalt en interne —
+    // passer directement le cout (10) evite une variable salt intermediaire
+    // qui n'a aucune utilite et cree une fragilite si le code est modifie
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const Client = new student({
       name: req.body.name,
@@ -148,10 +150,10 @@ const ChangePass = async (req, res) => {
       return res.status(400).json({ message: "Token invalide ou expire" });
     }
 
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(passChange, salt);
+    // Meme simplification que signup : pas de salt intermediaire
+    const hashedPassword = await bcrypt.hash(passChange, 10);
 
-    // Token supprimer apres usage : ne peut servir qu'une seule fois
+    // Token supprime apres usage : ne peut servir qu'une seule fois
     await student.findByIdAndUpdate(user._id, {
       $set: { password: hashedPassword },
       $unset: { resetToken: "", resetTokenExpire: "" },
