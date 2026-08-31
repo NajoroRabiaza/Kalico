@@ -45,11 +45,27 @@ const getMenuSpecial = async (req, res) => {
 
 const addProduit = async (req, res) => {
   try {
-    const { nom, prix, quantite, description, categorie, menuSpecial } = req.body;
+    const { nom, description, categorie, menuSpecial } = req.body;
+
+    // Conversion explicite en nombre — le body multipart envoie tout en string.
+    // Number("20000") -> 20000, Number("abc") -> NaN.
+    const prix = Number(req.body.prix);
+    const quantite = Number(req.body.quantite);
+
+    if (!nom || !nom.trim()) {
+      return res.status(400).json({ message: "Le nom du produit est requis" });
+    }
+    if (isNaN(prix) || prix <= 0) {
+      return res.status(400).json({ message: "Le prix doit etre un nombre positif" });
+    }
+    if (isNaN(quantite) || quantite < 0) {
+      return res.status(400).json({ message: "La quantite doit etre un nombre positif ou nul" });
+    }
+
     const imagePath = req.file ? req.file.path : null;
 
     const nouveauProduit = new Produit({
-      nom,
+      nom: nom.trim(),
       prix,
       quantite,
       description,
@@ -85,10 +101,24 @@ const deleteProduit = async (req, res) => {
 
 const updateProduit = async (req, res) => {
   try {
-    const { nom, prix, quantite, description, categorie, menuSpecial } = req.body;
+    const { nom, description, categorie, menuSpecial } = req.body;
+
+    // Meme conversion que addProduit : le body multipart envoie tout en string
+    const prix = Number(req.body.prix);
+    const quantite = Number(req.body.quantite);
+
+    if (!nom || !nom.trim()) {
+      return res.status(400).json({ message: "Le nom du produit est requis" });
+    }
+    if (isNaN(prix) || prix <= 0) {
+      return res.status(400).json({ message: "Le prix doit etre un nombre positif" });
+    }
+    if (isNaN(quantite) || quantite < 0) {
+      return res.status(400).json({ message: "La quantite doit etre un nombre positif ou nul" });
+    }
 
     const updated = {
-      nom,
+      nom: nom.trim(),
       prix,
       quantite,
       description,
@@ -97,6 +127,7 @@ const updateProduit = async (req, res) => {
     };
 
     if (req.file) {
+      // Suppression de l'ancienne image Cloudinary avant d'ecraser la reference
       const ancienProduit = await Produit.findById(req.params.id).lean();
       if (ancienProduit) {
         const publicId = extrairePublicId(ancienProduit.img);
@@ -107,7 +138,11 @@ const updateProduit = async (req, res) => {
       updated.img = req.file.path;
     }
 
-    const produit = await Produit.findByIdAndUpdate(req.params.id, updated, { new: true });
+    const produit = await Produit.findByIdAndUpdate(
+      req.params.id,
+      updated,
+      { new: true, runValidators: true }
+    );
     if (!produit) {
       return res.status(404).json({ message: "Produit introuvable" });
     }
