@@ -6,8 +6,25 @@ const MVOLA_REGEX = /^03[48]\d{7}$/;
 
 const ajouterCommande = async (req, res) => {
   try {
-    const { methodePaiement, niveau, numero } = req.body;
+    const { clientNom, methodePaiement, niveau, numero, produits, total } = req.body;
 
+    // Validation de clientNom
+    if (!clientNom || typeof clientNom !== "string" || !clientNom.trim()) {
+      return res.status(400).json({ message: "Le nom du client est requis" });
+    }
+
+    // Validation de produits : doit etre un tableau non vide
+    if (!Array.isArray(produits) || produits.length === 0) {
+      return res.status(400).json({ message: "La commande doit contenir au moins un produit" });
+    }
+
+    // Validation de total : doit etre un nombre strictement positif
+    const totalNum = Number(total);
+    if (isNaN(totalNum) || totalNum <= 0) {
+      return res.status(400).json({ message: "Le total de la commande est invalide" });
+    }
+
+    // Validation selon la methode de paiement
     if (methodePaiement === "Cash" && !niveau) {
       return res.status(400).json({ message: "Le niveau est requis pour un paiement Cash" });
     }
@@ -21,10 +38,15 @@ const ajouterCommande = async (req, res) => {
       }
     }
 
-    const { clientNom, produits, total } = req.body;
     const nouvelleCommande = new Commande({
-      clientNom, methodePaiement, niveau, numero, produits, total,
+      clientNom: clientNom.trim(),
+      methodePaiement,
+      niveau,
+      numero,
+      produits,
+      total: totalNum,
     });
+
     await nouvelleCommande.save();
     res.status(201).json(nouvelleCommande);
   } catch (err) {
